@@ -1,0 +1,16 @@
+This directory contains libraries and dependencies for custom ant tasks:
+It contains jar-files distributed with Apache Ant 1.6.5:
+
+ant-jsch.jar 
+catalina-ant.jar
+jaxrpc.jar
+log4j-1.2.8.jar  
+wsdl4j-1.5.1.jar
+axis-ant.jar
+commons-discovery-0.2.jar  
+jsch-0.1.24.jar 
+axis.jar
+commons-logging-1.0.4.jar
+jsch-0.1.34.jar
+saaj.jar
+ant-contrib.jar

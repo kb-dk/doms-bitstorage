@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://objectmanipulation.doms.statsbiblioteket.dk" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://objectmanipulation.doms.statsbiblioteket.dk" xmlns:intf="http://objectmanipulation.doms.statsbiblioteket.dk" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema elementFormDefault="qualified" targetNamespace="http://objectmanipulation.doms.statsbiblioteket.dk" xmlns="http://www.w3.org/2001/XMLSchema">
+   <element name="addFile">
+    <complexType>
+     <sequence>
+      <element name="username" type="xsd:string"/>
+      <element name="password" type="xsd:string"/>
+      <element name="fileInformation" type="impl:FileInformation"/>
+      <element name="pid" type="xsd:anyURI"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="FileInformation">
+    <sequence>
+     <element name="fileName" nillable="true" type="xsd:string"/>
+     <element name="md5Sum" nillable="true" type="xsd:string"/>
+     <element name="uri" nillable="true" type="xsd:anyURI"/>
+    </sequence>
+   </complexType>
+   <element name="addFileResponse">
+    <complexType/>
+   </element>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="addFileRequest">
+
+      <wsdl:part element="impl:addFile" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addFileResponse">
+
+      <wsdl:part element="impl:addFileResponse" name="parameters"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="DOMSObjectManipulation">
+
+      <wsdl:operation name="addFile">
+
+         <wsdl:input message="impl:addFileRequest" name="addFileRequest"/>
+
+         <wsdl:output message="impl:addFileResponse" name="addFileResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="DomsObjectManipulationSoapBinding" type="impl:DOMSObjectManipulation">
+
+      <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="addFile">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addFileRequest">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addFileResponse">
+
+            <wsdlsoap:body use="literal"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="DOMSObjectManipulationService">
+
+      <wsdl:port binding="impl:DomsObjectManipulationSoapBinding" name="DomsObjectManipulation">
+
+         <wsdlsoap:address location="http://localhost:7910/objectmanipulation/services/DomsObjectManipulation"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>
