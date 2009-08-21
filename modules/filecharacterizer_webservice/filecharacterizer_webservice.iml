@@ -33,10 +33,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lib1" level="project" />
-    <orderEntry type="library" name="antlib2" level="project" />
-    <orderEntry type="library" name="antlib" level="project" />
-    <orderEntry type="library" name="antlib1" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -44,6 +40,48 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="axis 1.4">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/axis-1.4/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/axis-1.4/apidocs/axis-1.4-apidocs.zip!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/axis-1.4/src/axis-1.4-src.zip!/" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/axis-1.4/jars" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="sbutil 0.4.6">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/sbutil-0.4.6/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/sbutil-0.4.6/apidocs/sbutil-0.4.6-apidocs.zip!/sbutil-0.4.6/doc" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/sbutil-0.4.6/src/sbutil-0.4.6-src.zip!/sbutil-0.4.6/src" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/sbutil-0.4.6/jars" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="junit 3.8.2">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/junit-3.8.2/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/junit-3.8.2/apidocs/junit-3.8.2-apidocs.zip!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/junit-3.8.2/src/src.jar!/" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/junit-3.8.2/jars" recursive="false" />
       </library>
     </orderEntry>
   </component>

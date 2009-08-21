@@ -9,6 +9,9 @@
         <webroots>
           <root url="file://$MODULE_DIR$/web" relative="/" />
         </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/src" />
+        </sourceRoots>
         <building>
           <setting name="EXPLODED_URL" value="file://" />
           <setting name="EXPLODED_ENABLED" value="false" />
@@ -28,15 +31,12 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/helperClasses" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="lib1" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
-    <orderEntry type="library" name="antlib2" level="project" />
-    <orderEntry type="library" name="antlib" level="project" />
-    <orderEntry type="library" name="antlib1" level="project" />
+    <orderEntry type="module" module-name="bitstorage_webservice" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -46,7 +46,48 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="bitstorage_webservice" />
+    <orderEntry type="module-library">
+      <library name="sbutil 0.4.6">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/sbutil-0.4.6/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/sbutil-0.4.6/apidocs/sbutil-0.4.6-apidocs.zip!/sbutil-0.4.6/doc" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/sbutil-0.4.6/src/sbutil-0.4.6-src.zip!/sbutil-0.4.6/src" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/sbutil-0.4.6/jars" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="doms-domsutil-0.0.2">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/doms-domsutil-0.0.2/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/doms-domsutil-0.0.2/src/doms-domsutil-0.0.2-src.zip!/apidocs" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/doms-domsutil-0.0.2/src/doms-domsutil-0.0.2-src.zip!/src" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/doms-domsutil-0.0.2/jars" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="axis 1.4">
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/lib/axis-1.4/jars" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/axis-1.4/apidocs/axis-1.4-apidocs.zip!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/axis-1.4/src/axis-1.4-src.zip!/" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/lib/axis-1.4/jars" recursive="false" />
+      </library>
+    </orderEntry>
   </component>
 </module>
 

@@ -66,11 +66,13 @@ public class BitstorageUtil {
     public BitstorageUtil(BitstorageProperties properties) {
         xProperties = properties.getXProperties();
 
-        log.info("Creating BitstorageUtil object with '" +
-                 xProperties.getString(BitstorageProperties.SSH_COMMAND) + " " +
-                 xProperties.getString(BitstorageProperties.SERVER) + " " +
-                 xProperties.getString(BitstorageProperties.SCRIPT) +
-                 "' command");
+        log.info(
+                "Creating BitstorageUtil object with '" + xProperties
+                        .getString(BitstorageProperties.SSH_COMMAND) + " "
+                        + xProperties.getString(BitstorageProperties.SERVER)
+                        + " "
+                        + xProperties.getString(BitstorageProperties.SCRIPT)
+                        + "' command");
     }
 
     /**
@@ -87,34 +89,36 @@ public class BitstorageUtil {
         for (String datafile : dataIDs) {
             List<String> command = new ArrayList<String>(10);
 
-            command.add(xProperties.getString(
-                    BitstorageProperties.SSH_COMMAND));
+            command.add(
+                    xProperties.getString(
+                            BitstorageProperties.SSH_COMMAND));
             command.add(xProperties.getString(BitstorageProperties.SERVER));
-            final String script =
-                    xProperties.getString(BitstorageProperties.SCRIPT).trim();
+            final String script = xProperties
+                    .getString(BitstorageProperties.SCRIPT).trim();
 
             if (!script.isEmpty()) {
                 command.add(script);
             }
-            command.add(xProperties.getString(
-                    BitstorageProperties.APPROVE_COMMAND));
+            command.add(
+                    xProperties.getString(
+                            BitstorageProperties.APPROVE_COMMAND));
             command.add(datafile);
 
             ProcessRunner nr = new ProcessRunner(command);
             try {
-                nr.executeNoCollect();
+                nr.run();
             } catch (Exception e) {
                 //potentially a very big exception
-                throw new IOException("Error while commiting the datafile '"
-                                      + datafile + "'. The error output was '"
-                                      + nr.getProcessErrorAsString() + "' and"
-                                      + "the output was '"
-                                      + nr.getProcessOutputAsString() + "'", e);
+                throw new IOException(
+                        "Error while commiting the datafile '" + datafile
+                                + "'. The error output was '"
+                                + nr.getProcessErrorAsString() + "' and"
+                                + "the output was '"
+                                + nr.getProcessOutputAsString() + "'", e);
             }
             log.debug("Committed '" + datafile + "' to Bitstorage");
         }
     }
-
 
     /**
      * Delete previously transfered data-objects from Bitstorage. Only works on
@@ -130,31 +134,34 @@ public class BitstorageUtil {
         for (String file : dataIDs) {
 
             List<String> command = new ArrayList<String>();
-            command.add(xProperties.getString(
-                    BitstorageProperties.SSH_COMMAND));
+            command.add(
+                    xProperties.getString(
+                            BitstorageProperties.SSH_COMMAND));
             command.add(xProperties.getString(BitstorageProperties.SERVER));
 
-            final String script =
-                    xProperties.getString(BitstorageProperties.SCRIPT).trim();
+            final String script = xProperties
+                    .getString(BitstorageProperties.SCRIPT).trim();
 
             if (!script.isEmpty()) {
                 command.add(script);
             }
-            command.add(xProperties.getString(
-                    BitstorageProperties.DELETE_COMMAND));
+            command.add(
+                    xProperties.getString(
+                            BitstorageProperties.DELETE_COMMAND));
             command.add(file);
 
             ProcessRunner nr = new ProcessRunner(command);
             try {
-                nr.executeNoCollect();
+                nr.run();
                 log.debug("Deleted '" + file + "' from Bitstorage");
             } catch (Exception e) {
                 //potentially a very big exception
-                throw new IOException("The Delete failed for file '" + file
-                                      + "'. The error output was '"
-                                      + nr.getProcessErrorAsString() + "' and"
-                                      + "the output was '"
-                                      + nr.getProcessOutputAsString() + "'", e);
+                throw new IOException(
+                        "The Delete failed for file '" + file
+                                + "'. The error output was '"
+                                + nr.getProcessErrorAsString() + "' and"
+                                + "the output was '"
+                                + nr.getProcessOutputAsString() + "'", e);
             }
         }
         log.debug("The uploaded files was discarded");
@@ -169,19 +176,21 @@ public class BitstorageUtil {
      * @param bitstorageFolder The main folder to place the files in, in the
      *                         Bitstorage
      * @return a list of IDs for the data, usabale for later commit or fail.
+     *
      * @throws java.io.IOException if the data could not be transferred.
      */
-    public List<String> upload(File uploadDir,
-                               String bitstorageFolder)
+    public List<String> upload(File uploadDir, String bitstorageFolder)
             throws IOException {
-        log.trace("upload for '" + uploadDir + "' called to '"
-                  + bitstorageFolder + "'");
+        log.trace(
+                "upload for '" + uploadDir + "' called to '" + bitstorageFolder
+                        + "'");
 
         List<String> excludeList = new ArrayList();
 
         try {
-            excludeList.addAll((List<String>)
-                    xProperties.getObject(BitstorageProperties.EXCLUDE_LIST));
+            excludeList.addAll(
+                    (List<String>) xProperties
+                            .getObject(BitstorageProperties.EXCLUDE_LIST));
         } catch (NullPointerException npe) {
             log.info("No excludelist defined in properties");
         }
@@ -219,9 +228,9 @@ public class BitstorageUtil {
             //The relative path, ie. inside the data dir is needed for Bitstorage
             String relativePath = null;
             try {
-                relativePath = relativePath(datafile,
-                                            uploadDir.getCanonicalPath(),
-                                            bitstorageFolder + "/");
+                relativePath = relativePath(
+                        datafile, uploadDir.getCanonicalPath(),
+                        bitstorageFolder + "/");
 
                 final String script = xProperties.getString(
                         BitstorageProperties.SCRIPT).trim();
@@ -231,10 +240,10 @@ public class BitstorageUtil {
                     //once again
                     relativePath = "\"" + relativePath + "\"";
                 }
-/*
-                relativePath = relativePath.replaceAll("\\","%5C");
-                relativePath = relativePath.replaceAll("'","%27");
-*/
+                /*
+                                relativePath = relativePath.replaceAll("\\","%5C");
+                                relativePath = relativePath.replaceAll("'","%27");
+                */
             } catch (Exception e) {//wrap any exception in a IO exception.
                 datafilestream.close();
                 discard(dataIDs);
@@ -244,38 +253,41 @@ public class BitstorageUtil {
             //prepare the upload command
             List<String> command = new ArrayList<String>(10);
 
-            command.add(xProperties.getString(
-                    BitstorageProperties.SSH_COMMAND));
+            command.add(
+                    xProperties.getString(
+                            BitstorageProperties.SSH_COMMAND));
             command.add(xProperties.getString(BitstorageProperties.SERVER));
 
-            final String script =
-                    xProperties.getString(BitstorageProperties.SCRIPT).trim();
+            final String script = xProperties
+                    .getString(BitstorageProperties.SCRIPT).trim();
 
             if (!script.isEmpty()) {
                 command.add(script);
             }
-            command.add(xProperties.getString(
-                    BitstorageProperties.UPLOAD_COMMAND));
+            command.add(
+                    xProperties.getString(
+                            BitstorageProperties.UPLOAD_COMMAND));
             command.add(relativePath);
 
             //So that TE can sleep calmly. Not needed
-/*
-            datafilestream.close();
-            datafilestream = new FileInputStream(datafile);
-*/
+            /*
+                        datafilestream.close();
+                        datafilestream = new FileInputStream(datafile);
+            */
 
             //make the process, and feed it the file in a stream
-            ProcessRunner nr = new ProcessRunner(command, datafilestream);
-
+            ProcessRunner nr = new ProcessRunner(command);
+            nr.setInputStream(datafilestream);
 
             try {
                 //Run the upload command
-                nr.executeNoCollect();
+                nr.run();
             } catch (Exception e) {
                 discard(dataIDs);
-                throw new IOException("The Upload failed for file '" + datafile
-                                      + "'. The error output was '"
-                                      + nr.getProcessErrorAsString() + "'", e);
+                throw new IOException(
+                        "The Upload failed for file '" + datafile
+                                + "'. The error output was '"
+                                + nr.getProcessErrorAsString() + "'", e);
             } finally {
                 datafilestream.close();//no use any longer, free it
             }
@@ -288,36 +300,36 @@ public class BitstorageUtil {
             //System.out.println(remote_checksum);
             if (remote_checksum.contains("WAS STORED")) {
                 //file has already been committed. Just ignore it and log
-                log.warn("The file '" + relativePath
-                         + "' has already been committed"
-                         + " to Bitstorage. Cannot upload before it has been deleted by"
-                         + " and admin. Continuing with next file.");
+                log.warn(
+                        "The file '" + relativePath
+                                + "' has already been committed"
+                                + " to Bitstorage. Cannot upload before it has been deleted by"
+                                + " and admin. Continuing with next file.");
                 continue;
             } else {
                 //mark the file as uploaded
                 dataIDs.add(relativePath);
             }
 
-/*
-            System.out.println(remote_checksum);
-            System.out.println(local_checksum);
-*/
+            /*
+                        System.out.println(remote_checksum);
+                        System.out.println(local_checksum);
+            */
 
             //compare checksums
             if (!local_checksum.equalsIgnoreCase(remote_checksum)) {
                 discard(dataIDs);
-                throw new IOException("Checksums for file '"
-                                      + datafile.getPath()
-                                      + "' locally and in Bitstorage disagree."
-                                      + " Local '" + local_checksum + "' and "
-                                      + "remote '" + remote_checksum + "'. The"
-                                      + "error was '"
-                                      + nr.getProcessErrorAsString() + "'");
+                throw new IOException(
+                        "Checksums for file '" + datafile.getPath()
+                                + "' locally and in Bitstorage disagree."
+                                + " Local '" + local_checksum + "' and "
+                                + "remote '" + remote_checksum + "'. The"
+                                + "error was '" + nr.getProcessErrorAsString()
+                                + "'");
             }
         }
         return dataIDs;
     }
-
 
     /**
      * For a file, return the path relative to some parent directory. Allows the
@@ -330,6 +342,7 @@ public class BitstorageUtil {
      * @param root   the parent dir, that the relative path should begin in.
      * @param prefix the prefix to add.
      * @return the new path.
+     *
      * @throws IllegalArgumentException if the file does not use the root
      *                                  prefix. Beware this for soft links.
      * @throws java.io.IOException      if the filesystem cannot understand the
@@ -342,10 +355,9 @@ public class BitstorageUtil {
             return prefix + file.getCanonicalPath().substring(
                     root.length() + 1);
         } else {
-            throw new IllegalArgumentException("The file '"
-                                               + file.getCanonicalPath()
-                                               + "' does not use the '"
-                                               + root + "' prefix");
+            throw new IllegalArgumentException(
+                    "The file '" + file.getCanonicalPath()
+                            + "' does not use the '" + root + "' prefix");
         }
     }
 
