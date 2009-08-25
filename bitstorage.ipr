@@ -44,6 +44,19 @@
     <option name="MAXIMUM_HEAP_SIZE" value="128" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="web">
+        <modules>
+          <module name="lowlevelbitstorage">
+            <files>
+              <file url="file://$PROJECT_DIR$/modules/web/WEB-INF/web.xml" />
+            </files>
+          </module>
+        </modules>
+      </facet-type>
+    </autodetection-disabled>
+  </component>
   <component name="IdProvider" IDEtalkID="195E396ACF566D0C7D82EB3299A1982E" />
   <component name="InspectionProjectProfileManager">
     <option name="PROJECT_PROFILE" value="Project Default" />
@@ -222,6 +235,7 @@
       <module fileurl="file://$PROJECT_DIR$//bitstorage.iml" filepath="$PROJECT_DIR$//bitstorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/bitstorage_webservice/bitstorage_webservice.iml" filepath="$PROJECT_DIR$/modules/bitstorage_webservice/bitstorage_webservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/filecharacterizer_webservice/filecharacterizer_webservice.iml" filepath="$PROJECT_DIR$/modules/filecharacterizer_webservice/filecharacterizer_webservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbistorage.iml" filepath="$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbistorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/objectmanipulation_webservice/objectmanipulation_webservice.iml" filepath="$PROJECT_DIR$/modules/objectmanipulation_webservice/objectmanipulation_webservice.iml" />
     </modules>
   </component>
@@ -243,7 +257,38 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="SvnBranchConfigurationManager">
-    <option name="mySupportsUserInfoFilter" value="true" />
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/branches" />
+                  <option value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="myVersion" value="124" />
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="svn" />
@@ -330,6 +375,90 @@
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/modules/bitstorage_webservice/lib" recursive="false" />
+    </library>
+    <library name="sbutils-0.4.6">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.6/jars/sbutil-0.4.6.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.6/jars/qaScan-0.4.6.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.6/apidocs/sbutil-0.4.6-apidocs.zip!/sbutil-0.4.6/doc" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.6/src/sbutil-0.4.6-src.zip!/sbutil-0.4.6/src" />
+      </SOURCES>
+    </library>
+    <library name="lib (2)">
+      <CLASSES>
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/activation.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/FastInfoset.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/http.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-impl.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-xjc.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-rt.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-tools.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr173_api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr181-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr250-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/resolver.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-impl.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/sjsxp.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/stax-ex.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/streambuffer.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="lib (3)">
+      <CLASSES>
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/activation.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/FastInfoset.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/http.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-impl.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-xjc.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-rt.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-tools.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr173_api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr181-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr250-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/resolver.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-impl.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/sjsxp.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/stax-ex.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/streambuffer.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="lib (4)">
+      <CLASSES>
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/activation.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/FastInfoset.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/http.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-impl.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-xjc.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-rt.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-tools.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr173_api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr181-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr250-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/resolver.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-api.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-impl.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/sjsxp.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/stax-ex.jar!/" />
+        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/streambuffer.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
   </component>
 </project>
