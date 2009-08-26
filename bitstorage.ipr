@@ -2,6 +2,14 @@
 <project relativePaths="false" version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
+    <buildFile url="file://$PROJECT_DIR$/modules/lowlevelbitstorage/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <maximumStackSize value="32" />
+      <properties />
+    </buildFile>
   </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
@@ -218,10 +226,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$//bitstorage.iml" filepath="$PROJECT_DIR$//bitstorage.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/bitstorage_webservice/bitstorage_webservice.iml" filepath="$PROJECT_DIR$/modules/bitstorage_webservice/bitstorage_webservice.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/filecharacterizer_webservice/filecharacterizer_webservice.iml" filepath="$PROJECT_DIR$/modules/filecharacterizer_webservice/filecharacterizer_webservice.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbistorage.iml" filepath="$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbistorage.iml" />
-      <module fileurl="file://$PROJECT_DIR$/modules/objectmanipulation_webservice/objectmanipulation_webservice.iml" filepath="$PROJECT_DIR$/modules/objectmanipulation_webservice/objectmanipulation_webservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/bitstorage_webservice/bitstorage_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/bitstorage_webservice/bitstorage_webservice.iml" group="oldwebservices" />
+      <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/filecharacterizer_webservice/filecharacterizer_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/filecharacterizer_webservice/filecharacterizer_webservice.iml" group="oldwebservices" />
+      <module fileurl="file://$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbitstorage.iml" filepath="$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbitstorage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/objectmanipulation_webservice/objectmanipulation_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/objectmanipulation_webservice/objectmanipulation_webservice.iml" group="oldwebservices" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">

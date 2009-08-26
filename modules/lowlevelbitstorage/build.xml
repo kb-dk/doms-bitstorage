@@ -1,0 +1,83 @@
+<project name="lowlevelbitstorage" basedir=".">
+
+    <!-- Global- and module specific libs -->
+    <fileset id="module.libs" dir="${basedir}/lib">
+        <include name="**/jars/**/*.jar"/>
+    </fileset>
+
+    <property name="global.dir" value="${basedir}/../../"/>
+
+    <fileset id="project.libs" dir="${global.dir}/lib">
+        <include name="sbutils-0.4.6/jars/**/*.jar"/>
+    </fileset>
+
+    <fileset id="module.dependencies" dir="${global.dir}/modules">
+    </fileset>
+
+        <property name="warfilename" value="lowlevelbitstorage.war"/>
+
+
+    <path id="build.classpath">
+        <fileset refid="module.libs"/>
+        <fileset refid="project.libs"/>
+        <fileset refid="module.dependencies"/>
+    </path>
+
+    <target  name="depends">
+        <!--        <ant dir="${modules.dir}/repository" target="jar"/>-->
+    </target>
+
+    <target name="compile" depends="depends"
+            description="Compile all production classes, and copy properties to class dir">
+
+        <mkdir dir="classes"/>
+
+        <javac source="1.6" destdir="classes" debug="on"
+               encoding="UTF-8">
+            <src path="src"/>
+            <classpath refid="build.classpath"/>
+        </javac>
+        <copy todir="classes">
+          <fileset dir="src">
+            <include name="**/*.xml"/>
+          </fileset>
+        </copy>
+
+    </target>
+
+
+    <target name="clean">
+        <delete dir="classes"/>
+    </target>
+
+    <target name="distclean" depends="clean">
+        <delete dir="dist"/>
+
+    </target>
+
+
+    <target name="war" depends="distclean,compile"
+            description="Pack the webdirectory into a warfile ready for deployment">
+        <mkdir dir="dist"/>
+
+
+        <copy todir="libtemp" flatten="true">
+            <fileset refid="module.libs"/>
+            <fileset refid="project.libs"/>
+        </copy>
+
+        <war destfile="dist/${warfilename}"
+             webxml="web/WEB-INF/web.xml">
+            <classes dir="classes"/>
+            <lib dir="libtemp"/>
+            <webinf dir="web/WEB-INF" excludes="web.xml"/>
+            <fileset dir="web"/>
+        </war>
+
+        <delete dir="libtemp"/>
+
+    </target>
+
+    
+
+</project>
