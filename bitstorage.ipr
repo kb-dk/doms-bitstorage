@@ -36,13 +36,6 @@
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
-  <component name="EclipseCompilerSettings">
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="true" />
-    <option name="DEPRECATION" value="false" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
-    <option name="MAXIMUM_HEAP_SIZE" value="128" />
-  </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
   <component name="FacetAutodetectingManager">
     <autodetection-disabled>
@@ -93,14 +86,6 @@
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
-  </component>
-  <component name="JikesSettings">
-    <option name="JIKES_PATH" value="" />
-    <option name="DEBUGGING_INFO" value="true" />
-    <option name="DEPRECATION" value="true" />
-    <option name="GENERATE_NO_WARNINGS" value="false" />
-    <option name="IS_EMACS_ERRORS_MODE" value="true" />
-    <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="Palette2">
     <group name="Swing">
@@ -228,7 +213,7 @@
   </component>
   <component name="ProjectFileVersion" converted="true" />
   <component name="ProjectKey">
-    <option name="state" value="http://doms.svn.sourceforge.net/svnroot/doms/bitstorage/trunk/bitstorage.ipr" />
+    <option name="state" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/trunk/bitstorage.ipr" />
   </component>
   <component name="ProjectModuleManager">
     <modules>
@@ -325,7 +310,7 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="bitarchive_antlib">
+    <library name="antlib2">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/antlib/ant-contrib.jar!/" />
         <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/antlib/log4j-1.2.8.jar!/" />
@@ -348,34 +333,6 @@
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="bitstorage_lib">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/log4j-1.2.14.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/commons-discovery-0.2.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/xml-apis.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/axis-ant.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/imq-4.1-b22g.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/dom4j-1.5.2.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/commons-logging-1.0.4.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/xalan.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/saaj.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/wsdl4j-1.5.1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/doms-domsutil-0.0.1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/mail-1.4.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/xmlsec.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/axis.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/xercesImpl.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/activation-1.1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/jaxrpc.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/commons-net-1.4.1.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/harvester2.jar!/" />
-        <root url="jar://$PROJECT_DIR$/modules/bitstorage_webservice/lib/jaxen-1.1.jar!/" />
-        <root url="file://$PROJECT_DIR$/modules/bitstorage_webservice/lib" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/modules/bitstorage_webservice/lib" recursive="false" />
-    </library>
     <library name="sbutils-0.4.6">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.6/jars/sbutil-0.4.6.jar!/" />
@@ -387,78 +344,6 @@
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.6/src/sbutil-0.4.6-src.zip!/sbutil-0.4.6/src" />
       </SOURCES>
-    </library>
-    <library name="lib (2)">
-      <CLASSES>
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/activation.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/FastInfoset.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/http.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-impl.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-xjc.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-rt.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-tools.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr173_api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr181-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr250-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/resolver.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-impl.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/sjsxp.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/stax-ex.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/streambuffer.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="lib (3)">
-      <CLASSES>
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/activation.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/FastInfoset.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/http.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-impl.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-xjc.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-rt.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-tools.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr173_api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr181-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr250-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/resolver.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-impl.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/sjsxp.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/stax-ex.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/streambuffer.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="lib (4)">
-      <CLASSES>
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/activation.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/FastInfoset.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/http.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-impl.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxb-xjc.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-rt.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jaxws-tools.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr173_api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr181-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/jsr250-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/resolver.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-api.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/saaj-impl.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/sjsxp.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/stax-ex.jar!/" />
-        <root url="jar:///home/abr/.IntelliJIdea80/system/webservices/jaxws/2.1/streambuffer.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
     </library>
   </component>
 </project>
