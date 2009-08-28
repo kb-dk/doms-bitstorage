@@ -1,4 +1,4 @@
-package hjsdf.lowlevel;
+package dk.statsbiblioteket.doms.bitstorage.lowlevel;
 
 /**
  * TODO abr forgot to document this class
