@@ -228,7 +228,7 @@
       <module fileurl="file://$PROJECT_DIR$//bitstorage.iml" filepath="$PROJECT_DIR$//bitstorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/bitstorage_webservice/bitstorage_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/bitstorage_webservice/bitstorage_webservice.iml" group="oldwebservices" />
       <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/filecharacterizer_webservice/filecharacterizer_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/filecharacterizer_webservice/filecharacterizer_webservice.iml" group="oldwebservices" />
-      <module fileurl="file://$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbitstorage.iml" filepath="$PROJECT_DIR$/modules/lowlevelbistorage/lowlevelbitstorage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/lowlevelbitstorage/lowlevelbitstorage.iml" filepath="$PROJECT_DIR$/modules/lowlevelbitstorage/lowlevelbitstorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/objectmanipulation_webservice/objectmanipulation_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/objectmanipulation_webservice/objectmanipulation_webservice.iml" group="oldwebservices" />
     </modules>
   </component>
