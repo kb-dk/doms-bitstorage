@@ -1,11 +1,11 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel;
+package hjsdf.lowlevel;
 
 
 import com.sun.xml.ws.developer.StreamingDataHandler;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileNotFoundException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.NotEnoughFreeSpaceException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.UploadFailedException;
+import hjsdf.lowlevel.exceptions.CommunicationException;
+import hjsdf.lowlevel.exceptions.FileNotFoundException;
+import hjsdf.lowlevel.exceptions.NotEnoughFreeSpaceException;
+import hjsdf.lowlevel.exceptions.UploadFailedException;
 
 import javax.activation.DataHandler;
 import javax.jws.WebMethod;

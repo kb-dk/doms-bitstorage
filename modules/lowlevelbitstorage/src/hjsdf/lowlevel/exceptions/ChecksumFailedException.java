@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions;
+package hjsdf.lowlevel.exceptions;
 
 /**
  * TODO abr forgot to document this class

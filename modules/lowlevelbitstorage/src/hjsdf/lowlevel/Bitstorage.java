@@ -1,11 +1,11 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel;
+package hjsdf.lowlevel;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.NotEnoughFreeSpaceException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileNotFoundException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.UploadFailedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.ChecksumFailedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileAlreadyApprovedException;
+import hjsdf.lowlevel.exceptions.CommunicationException;
+import hjsdf.lowlevel.exceptions.NotEnoughFreeSpaceException;
+import hjsdf.lowlevel.exceptions.FileNotFoundException;
+import hjsdf.lowlevel.exceptions.UploadFailedException;
+import hjsdf.lowlevel.exceptions.ChecksumFailedException;
+import hjsdf.lowlevel.exceptions.FileAlreadyApprovedException;
 
 import java.io.InputStream;
 import java.net.URL;

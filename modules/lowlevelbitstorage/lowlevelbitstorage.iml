@@ -34,6 +34,7 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/lib/jaxws-ri-2.1.7/samples/mtom/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
@@ -52,25 +53,25 @@
     <orderEntry type="module-library">
       <library name="jaxws-ri-2.17">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jsr181-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jaxws-rt.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/activation.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/saaj-impl.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jaxb-xjc.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/stax-ex.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jaxws-tools.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/resolver.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jsr250-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/streambuffer.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jaxws-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jsr173_api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jaxb-impl.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/mimepull.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/jaxb-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/woodstox.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/FastInfoset.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/saaj-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/lib/http.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/http.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/saaj-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jaxws-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/stax-ex.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/saaj-impl.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jaxws-tools.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jsr250-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jaxb-impl.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jaxb-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/resolver.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jsr181-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jaxws-rt.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jaxb-xjc.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/FastInfoset.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/woodstox.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/mimepull.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/jsr173_api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/activation.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/jaxws-ri-2.1.7/jars/streambuffer.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

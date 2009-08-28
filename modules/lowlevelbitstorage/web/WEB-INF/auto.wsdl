@@ -1,0 +1,240 @@
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://lowlevel.bitstorage.doms.statsbiblioteket.dk/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://lowlevel.bitstorage.doms.statsbiblioteket.dk/"
+             name="SoapWebserviceService">
+    <types>
+        <xs:schema
+                xmlns:tns="http://lowlevel.bitstorage.doms.statsbiblioteket.dk/"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                version="1.0"
+                targetNamespace="http://lowlevel.bitstorage.doms.statsbiblioteket.dk/">
+
+            <xs:element name="CommunicationException"
+                        type="tns:CommunicationException"/>
+
+            <xs:element name="FileNotFoundException"
+                        type="tns:FileNotFoundException"/>
+
+            <xs:element name="NotEnoughFreeSpaceException"
+                        type="tns:NotEnoughFreeSpaceException"/>
+
+            <xs:element name="UploadFailedException"
+                        type="tns:UploadFailedException"/>
+
+            <xs:element name="approve" type="tns:approve"/>
+
+            <xs:element name="approveResponse" type="tns:approveResponse"/>
+
+            <xs:element name="disapprove" type="tns:disapprove"/>
+
+            <xs:element name="disapproveResponse"
+                        type="tns:disapproveResponse"/>
+
+            <xs:element name="uploadFile" type="tns:uploadFile"/>
+
+            <xs:element name="uploadFileResponse"
+                        type="tns:uploadFileResponse"/>
+
+            <xs:complexType name="disapprove">
+                <xs:sequence>
+                    <xs:element name="arg0" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="arg1" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="disapproveResponse">
+                <xs:sequence/>
+            </xs:complexType>
+
+            <xs:complexType name="CommunicationException">
+
+                <xs:sequence>
+                    <xs:element name="message" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="FileNotFoundException">
+                <xs:sequence>
+                    <xs:element name="message" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="approve">
+                <xs:sequence>
+                    <xs:element name="arg0" type="xs:anyURI" minOccurs="0"/>
+                    <xs:element name="arg1" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="approveResponse">
+                <xs:sequence/>
+            </xs:complexType>
+
+            <xs:complexType name="NotEnoughFreeSpaceException">
+                <xs:sequence>
+                    <xs:element name="message" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="uploadFile">
+                <xs:sequence>
+                    <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+                    <xs:element xmlns:ns1="http://www.w3.org/2005/05/xmlmime"
+                                name="arg1"
+                                ns1:expectedContentTypes="application/octet-stream"
+                                type="xs:base64Binary" minOccurs="0"/>
+                    <xs:element name="arg2" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+
+            </xs:complexType>
+
+            <xs:complexType name="uploadFileResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:anyURI" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="UploadFailedException">
+                <xs:sequence>
+                    <xs:element name="message" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </types>
+    <message name="uploadFile">
+        <part name="parameters" element="tns:uploadFile"/>
+    </message>
+    <message name="uploadFileResponse">
+        <part name="parameters" element="tns:uploadFileResponse"/>
+    </message>
+    <message name="UploadFailedException">
+        <part name="fault" element="tns:UploadFailedException"/>
+    </message>
+    <message name="CommunicationException">
+        <part name="fault" element="tns:CommunicationException"/>
+
+    </message>
+    <message name="NotEnoughFreeSpaceException">
+        <part name="fault" element="tns:NotEnoughFreeSpaceException"/>
+    </message>
+    <message name="disapprove">
+        <part name="parameters" element="tns:disapprove"/>
+    </message>
+    <message name="disapproveResponse">
+        <part name="parameters" element="tns:disapproveResponse"/>
+    </message>
+    <message name="FileNotFoundException">
+        <part name="fault" element="tns:FileNotFoundException"/>
+    </message>
+    <message name="approve">
+        <part name="parameters" element="tns:approve"/>
+    </message>
+    <message name="approveResponse">
+        <part name="parameters" element="tns:approveResponse"/>
+    </message>
+
+    <portType name="SoapWebservice">
+
+        <operation name="uploadFile">
+            <input message="tns:uploadFile"/>
+            <output message="tns:uploadFileResponse"/>
+            <fault message="tns:UploadFailedException"
+                   name="UploadFailedException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+        </operation>
+
+        <operation name="disapprove">
+            <input message="tns:disapprove"/>
+            <output message="tns:disapproveResponse"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:FileNotFoundException"
+                   name="FileNotFoundException"/>
+        </operation>
+
+        <operation name="approve">
+            <input message="tns:approve"/>
+            <output message="tns:approveResponse"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:FileNotFoundException"
+                   name="FileNotFoundException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+        </operation>
+    </portType>
+
+    <binding name="SoapWebservicePortBinding" type="tns:SoapWebservice">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                      style="document"/>
+        <operation name="uploadFile">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+
+            <fault name="UploadFailedException">
+                <soap:fault name="UploadFailedException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="disapprove">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+
+            </output>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="FileNotFoundException">
+                <soap:fault name="FileNotFoundException" use="literal"/>
+            </fault>
+        </operation>
+
+        <operation name="approve">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="CommunicationException">
+
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="FileNotFoundException">
+                <soap:fault name="FileNotFoundException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+        </operation>
+
+    </binding>
+
+    <service name="SoapWebserviceService">
+        <port name="SoapWebservicePort" binding="tns:SoapWebservicePortBinding">
+            <soap:address
+                    location="http://localhost:7910/lowlevelbitstorage/services/Bitstorage"/>
+        </port>
+    </service>
+</definitions>

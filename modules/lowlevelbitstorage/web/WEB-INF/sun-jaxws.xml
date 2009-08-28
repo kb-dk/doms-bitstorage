@@ -4,6 +4,9 @@
 
     <endpoint
             name='Bitstorage'
-            implementation='dk.statsbiblioteket.doms.bitstorage.lowlevel.SoapWebservice'
-            url-pattern='/services/Bitstorage'/>
+            implementation='hjsdf.lowlevel.SoapWebservice'
+            url-pattern='/services/Bitstorage'
+            
+
+            />
 </endpoints>

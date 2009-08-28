@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel;
+package hjsdf.lowlevel;
 
 import dk.statsbiblioteket.util.qa.QAInfo;
 
