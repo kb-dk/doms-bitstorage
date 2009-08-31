@@ -1,9 +1,9 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions;
+package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
 /**
  * TODO abr forgot to document this class
  */
-public class ChecksumFailedException extends UploadFailedException{
+public class ChecksumFailedException extends BitstorageException{
     public ChecksumFailedException() {
     }
 

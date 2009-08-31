@@ -5,7 +5,7 @@ import dk.statsbiblioteket.util.qa.QAInfo;
 /** Utillity class for working with bytes, bytearrays, and strings. */
 @QAInfo(level = QAInfo.Level.NORMAL,
         state = QAInfo.State.QA_OK,
-        author = "unknown",
+        author = "kfc",
         reviewers = {"abr"})
 public class ByteString {
     /** The number of bits in a nibble (used for shifting). */
@@ -27,10 +27,10 @@ public class ByteString {
         char[] hexdigit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
                 'a', 'b', 'c', 'd', 'e', 'f'};
 
-        StringBuffer sb = new StringBuffer("");
-        int ba_len = ba.length;
+        int baLen = ba.length;
+        StringBuffer sb = new StringBuffer(baLen * 2);
 
-        for (int i = 0; i < ba_len; i++) {
+        for (int i = 0; i < baLen; i++) {
             sb.append(hexdigit[(ba[i] >> BITS_IN_NIBBLE) & BITMASK_FOR_NIBBLE]);
             sb.append(hexdigit[ba[i] & BITMASK_FOR_NIBBLE]);
         }

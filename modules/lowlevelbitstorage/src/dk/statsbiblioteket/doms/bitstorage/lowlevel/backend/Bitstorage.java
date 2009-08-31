@@ -1,10 +1,10 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel;
+package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.ChecksumFailedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileAlreadyApprovedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileNotFoundException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.NotEnoughFreeSpaceException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileAlreadyApprovedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileNotFoundException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.NotEnoughFreeSpaceException;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;

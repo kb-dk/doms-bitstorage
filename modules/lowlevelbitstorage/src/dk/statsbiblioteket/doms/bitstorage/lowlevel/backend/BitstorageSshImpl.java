@@ -1,10 +1,10 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel;
+package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.ChecksumFailedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileAlreadyApprovedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileNotFoundException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.NotEnoughFreeSpaceException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileAlreadyApprovedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileNotFoundException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.NotEnoughFreeSpaceException;
 import dk.statsbiblioteket.util.console.ProcessRunner;
 
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * TODO abr forgot to document this class
  */
-public class BitstorageSshImpl implements Bitstorage{
+public class BitstorageSshImpl implements Bitstorage {
 
 
     private String SSH = "ssh";

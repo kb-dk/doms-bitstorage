@@ -1,9 +1,10 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel;
 
 import dk.statsbiblioteket.util.Checksums;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.FileAlreadyApprovedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.exceptions.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileAlreadyApprovedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageSshImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

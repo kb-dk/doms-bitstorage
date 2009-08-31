@@ -2,7 +2,7 @@
 
     <!-- Global- and module specific libs -->
     <fileset id="module.libs" dir="${basedir}/lib">
-        <include name="**/jars/**/*.jar"/>
+        <include name="**/jars/*.jar"/>
     </fileset>
 
     <property name="global.dir" value="${basedir}/../../"/>
@@ -14,20 +14,35 @@
     <fileset id="module.dependencies" dir="${global.dir}/modules">
     </fileset>
 
-        <property name="warfilename" value="lowlevelbitstorage.war"/>
+    <property name="warfilename" value="lowlevelbitstorage.war"/>
 
 
     <path id="build.classpath">
+        <pathelement location="${java.home}/../lib/tools.jar"/>
         <fileset refid="module.libs"/>
         <fileset refid="project.libs"/>
         <fileset refid="module.dependencies"/>
     </path>
 
+
+
+    <!--    <property name="build.home" value="${basedir}/build"/>-->
+    <property name="build.war.home" value="dist"/>
+
+
+
+    <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+        <classpath refid="build.classpath"/>
+        <classpath path="${java.class.path}"/>
+    </taskdef>
+
+
+
     <target  name="depends">
         <!--        <ant dir="${modules.dir}/repository" target="jar"/>-->
     </target>
 
-    <target name="compile" depends="depends"
+    <target name="compile" depends="depends,build-server-wsdl"
             description="Compile all production classes, and copy properties to class dir">
 
         <mkdir dir="classes"/>
@@ -38,13 +53,23 @@
             <classpath refid="build.classpath"/>
         </javac>
         <copy todir="classes">
-          <fileset dir="src">
-            <include name="**/*.xml"/>
-          </fileset>
+            <fileset dir="src">
+                <include name="**/*.xml"/>
+            </fileset>
         </copy>
-
     </target>
 
+
+    <target name="build-server-wsdl">
+        <wsimport
+                debug="true"
+                verbose="true"
+                keep="true"
+                destdir="classes"
+                package="dk.statsbiblioteket.doms.bitstorage.lowlevel"
+                wsdl="${basedir}/web/WEB-INF/wsdl/lowlevel.wsdl">
+        </wsimport>
+    </target>
 
     <target name="clean">
         <delete dir="classes"/>
@@ -77,7 +102,5 @@
         <delete dir="libtemp"/>
 
     </target>
-
-    
 
 </project>

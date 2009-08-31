@@ -49,7 +49,6 @@
     </path>
 
     <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
-
         <classpath refid="jaxws.classpath"/>
     </taskdef>
 
