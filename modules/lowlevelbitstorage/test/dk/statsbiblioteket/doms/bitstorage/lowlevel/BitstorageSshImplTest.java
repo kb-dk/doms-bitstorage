@@ -1,10 +1,10 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel;
 
-import dk.statsbiblioteket.util.Checksums;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileAlreadyApprovedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.ChecksumFailedException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageSshImpl;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileAlreadyApprovedException;
+import dk.statsbiblioteket.util.Checksums;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import java.net.URL;
 public class BitstorageSshImplTest {
 
     BitstorageSshImpl ssh;
-    File testdata = new File("modules/lowlevelbistorage/test/data/testfile");
+    File testdata = new File("modules/lowlevelbitstorage/test/data/testfile");
 
 
     @Before

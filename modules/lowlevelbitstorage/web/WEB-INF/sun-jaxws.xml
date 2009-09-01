@@ -4,10 +4,11 @@
 
     <endpoint
             name='Bitstorage'
-            implementation='dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebserviceImpl'
-            wsdl="WEB-INF/wsdl/lowlevel.wsdl"
+            interface='dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice'
+            implementation='dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend.BitstorageSoapWebserviceImpl'
+            wsdl='WEB-INF/wsdl/lowlevel.wsdl'
+            service="{http://lowlevel.bitstorage.doms.statsbiblioteket.dk/}BitstorageSoapWebserviceService"
+            port="{http://lowlevel.bitstorage.doms.statsbiblioteket.dk/}BitstorageSoapWebservicePort"
             url-pattern='/lowlevel/'
-            
-
             />
 </endpoints>

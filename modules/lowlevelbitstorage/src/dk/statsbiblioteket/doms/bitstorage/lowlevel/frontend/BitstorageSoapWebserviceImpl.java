@@ -1,14 +1,20 @@
-package dk.statsbiblioteket.doms.bitstorage.lowlevel;
+package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
 
-import com.sun.xml.ws.developer.StreamingDataHandler;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
 
 import javax.activation.DataHandler;
+import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.jws.WebMethod;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.MTOM;
 import java.io.IOException;
@@ -20,9 +26,9 @@ import java.net.URL;
  */
 
 @MTOM
-@WebService()
+@WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice")
 public class BitstorageSoapWebserviceImpl
-        implements BitstorageSoapWebservice {
+         {
 
     Bitstorage bs;
 
@@ -41,9 +47,9 @@ public class BitstorageSoapWebserviceImpl
             throws ChecksumFailedException, CommunicationException,
                    FileAlreadyApprovedException, InvalidFilenameException,
                    NotEnoughFreeSpaceException {
-        StreamingDataHandler dh = (StreamingDataHandler) filedata;
+/*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
         try {
-            return bs.upload(filename, dh.readOnce(), md5String).toString();
+            return bs.upload(filename, filedata.getInputStream(), md5String).toString();
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (BitstorageException e) {

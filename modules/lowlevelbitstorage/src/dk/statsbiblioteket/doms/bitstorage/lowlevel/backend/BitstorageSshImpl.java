@@ -47,6 +47,7 @@ public class BitstorageSshImpl implements Bitstorage {
                                                                      FileAlreadyApprovedException {
 
         String output = runcommand(data, UPLOAD_COMMAND, filename);
+        output = output.trim();
 
         if (output.contains(ALREADY_STORED_REPLY)){
             throw new FileAlreadyApprovedException("File '"+filename+"' have already been approved");
@@ -154,6 +155,7 @@ public class BitstorageSshImpl implements Bitstorage {
 
         ProcessRunner nr = new ProcessRunner(arrayList);
 
+        nr.setInputStream(input);
         nr.run();
         if (nr.isTimedOut()){
             throw new CommunicationException("Communication with Bitstorage timed out");

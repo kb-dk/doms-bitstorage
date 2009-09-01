@@ -12,28 +12,26 @@
     </fileset>
 
     <fileset id="module.dependencies" dir="${global.dir}/modules">
+        <exclude name="**"/>
     </fileset>
 
     <property name="warfilename" value="lowlevelbitstorage.war"/>
 
 
     <path id="build.classpath">
-        <pathelement location="${java.home}/../lib/tools.jar"/>
+<!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
         <fileset refid="module.libs"/>
         <fileset refid="project.libs"/>
         <fileset refid="module.dependencies"/>
     </path>
 
 
-
-    <!--    <property name="build.home" value="${basedir}/build"/>-->
-    <property name="build.war.home" value="dist"/>
-
-
+    <property name="interfacejar" value="webservice.jar"/>
+        <property name="interfacesrcpack.zip" value="webservicesrc.zip"/>
 
     <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
         <classpath refid="build.classpath"/>
-        <classpath path="${java.class.path}"/>
+<!--        <classpath path="${java.class.path}"/>-->
     </taskdef>
 
 
@@ -42,7 +40,7 @@
         <!--        <ant dir="${modules.dir}/repository" target="jar"/>-->
     </target>
 
-    <target name="compile" depends="depends,build-server-wsdl"
+    <target name="compile" depends="depends"
             description="Compile all production classes, and copy properties to class dir">
 
         <mkdir dir="classes"/>
@@ -60,19 +58,64 @@
     </target>
 
 
-    <target name="build-server-wsdl">
+    <target name="init">
+        <mkdir dir="classes"/>
+                <mkdir dir="tempsrc"/>
+    </target>
+    <target name="interface.generate" depends="init">
+<!--
+        <property name="classpath" refid="build.classpath"/>
+        <echo message="${classpath}"/>
+-->
+
         <wsimport
-                debug="true"
                 verbose="true"
-                keep="true"
+                debug="on"
+                sourcedestdir="tempsrc"
                 destdir="classes"
                 package="dk.statsbiblioteket.doms.bitstorage.lowlevel"
                 wsdl="${basedir}/web/WEB-INF/wsdl/lowlevel.wsdl">
         </wsimport>
     </target>
 
+    <target name="interface.compile" depends="interface.generate">
+        <javac source="1.6" destdir="classes" debug="on"
+               encoding="UTF-8">
+            <src path="tempsrc"/>
+            <classpath refid="build.classpath"/>
+        </javac>
+    </target>
+
+
+    <target name="interface.jar" depends="interface.compile">
+
+            <mkdir dir="dist"/>
+
+            <jar destfile="dist/${interfacejar}"
+                 basedir="classes" />
+
+    </target>
+
+
+    <target name="interface.sourcezip" depends="interface.generate">
+        <mkdir dir="dist"/>
+
+        <zip destfile="dist/${interfacesrcpack.zip}">
+            <zipfileset  dir="tempsrc">
+                <include name="**/*.java"/>
+            </zipfileset>
+        </zip>
+    </target>
+
+    <target name="interface.addtolib" depends="clean,interface.jar,interface.sourcezip">
+        <copy file="dist/${interfacejar}" todir="lib/interface/jars" overwrite="true"/>
+        <copy file="dist/${interfacesrcpack.zip}" todir="lib/interface/src" overwrite="true"/>
+    </target>
+
+
     <target name="clean">
         <delete dir="classes"/>
+        <delete dir="tempsrc"/>
     </target>
 
     <target name="distclean" depends="clean">
@@ -96,7 +139,9 @@
             <classes dir="classes"/>
             <lib dir="libtemp"/>
             <webinf dir="web/WEB-INF" excludes="web.xml"/>
-            <fileset dir="web"/>
+            <fileset dir="web">
+                <exclude name="WEB-INF/**"/>
+            </fileset>
         </war>
 
         <delete dir="libtemp"/>
