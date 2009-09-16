@@ -1,0 +1,7 @@
+<project name="bitstorage" basedir=".">
+
+    <target name="dist">
+
+    </target>
+
+</project>
