@@ -2,7 +2,14 @@
 
     <target name="dist">
         <mkdir dir="dist"/>
-        
+        <subant target="war">
+            <fileset dir="modules/lowlevelbitstorage/" includes="build.xml"/>
+        </subant>
+        <copy todir="dist">
+            <fileset dir="modules/lowlevelbitstorage/dist/">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
     </target>
 
 </project>

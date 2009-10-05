@@ -1,0 +1,6 @@
+<ns:test xmlns:ns="http://statsbiblioteket.dk/testCdata"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://statsbiblioteket.dk/testCdata cdata.xsd">
+
+
+</ns:test>
