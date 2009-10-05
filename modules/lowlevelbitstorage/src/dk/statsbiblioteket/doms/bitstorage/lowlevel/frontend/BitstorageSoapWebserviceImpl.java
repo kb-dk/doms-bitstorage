@@ -1,6 +1,7 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
 
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException;
@@ -27,8 +28,8 @@ import java.net.URL;
 
 @MTOM
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice")
-public class BitstorageSoapWebserviceImpl
-         {
+public class BitstorageSoapWebserviceImpl implements BitstorageSoapWebservice
+{
 
     Bitstorage bs;
 
@@ -105,7 +106,7 @@ public class BitstorageSoapWebserviceImpl
     @WebMethod
     public long getMaxFileSize() throws CommunicationException {
         try {
-            return bs.spaceleft();
+            return bs.getMaxFileSize();
         } catch (BitstorageException e) {
             throw ExceptionMapper.convert(e);
         }
@@ -137,4 +138,6 @@ public class BitstorageSoapWebserviceImpl
             throw ExceptionMapper.convertToFileNotFound(e);
         }
     }
+
+
 }

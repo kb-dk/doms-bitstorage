@@ -1,0 +1,8 @@
+<bitstorageSshImpl>
+  <!--Optional:-->
+  <script>bin/server.sh</script>
+  <!--Optional:-->
+  <server>domstest@halley</server>
+  <!--Optional:-->
+  <bitfinder>http://bitfinder.statsbiblioteket.dk/</bitfinder>
+</bitstorageSshImpl>

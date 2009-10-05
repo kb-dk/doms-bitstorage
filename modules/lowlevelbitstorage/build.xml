@@ -3,6 +3,11 @@
     <!-- Global- and module specific libs -->
     <fileset id="module.libs" dir="${basedir}/lib">
         <include name="**/jars/*.jar"/>
+        <exclude name="servlet-api-2.5/jars/servlet-api.jar"/>
+    </fileset>
+
+    <fileset id="module.build.libs" dir="${basedir}/lib">
+        <include name="servlet-api-2.5/jars/servlet-api.jar"/>
     </fileset>
 
     <property name="global.dir" value="${basedir}/../../"/>
@@ -21,6 +26,7 @@
     <path id="build.classpath">
 <!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
         <fileset refid="module.libs"/>
+        <fileset refid="module.build.libs"/>
         <fileset refid="project.libs"/>
         <fileset refid="module.dependencies"/>
     </path>
@@ -138,7 +144,9 @@
              webxml="web/WEB-INF/web.xml">
             <classes dir="classes"/>
             <lib dir="libtemp"/>
-            <webinf dir="web/WEB-INF" excludes="web.xml"/>
+            <webinf dir="web/WEB-INF">
+                <exclude name="web.xml"/>
+            </webinf>
             <fileset dir="web">
                 <exclude name="WEB-INF/**"/>
             </fileset>

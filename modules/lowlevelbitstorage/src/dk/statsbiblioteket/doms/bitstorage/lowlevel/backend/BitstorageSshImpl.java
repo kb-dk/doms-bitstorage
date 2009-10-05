@@ -7,6 +7,7 @@ import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileNotFo
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.NotEnoughFreeSpaceException;
 import dk.statsbiblioteket.util.console.ProcessRunner;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,20 +18,21 @@ import java.util.List;
 /**
  * TODO abr forgot to document this class
  */
+@XmlRootElement
 public class BitstorageSshImpl implements Bitstorage {
 
 
-    private String SSH = "ssh";
-    private String SERVER = "domstest@halley";
-    private String SCRIPT = "bin/server.sh";
-    
-    private String UPLOAD_COMMAND = "save-md5";
-    private String APPROVE_COMMAND = "approve";
-    private String DISAPPROVE_COMMAND = "delete";
-    private String SPACELEFT_COMMAND = "space-left";
-    private String GETMD5_COMMAND = "get-md5";
+    private static final String SSH = "ssh";
 
-    public String BITFINDER = "http://bitfinder.statsbiblioteket.dk/";
+    private static final String UPLOAD_COMMAND = "save-md5";
+    private static final String APPROVE_COMMAND = "approve";
+    private static final String DISAPPROVE_COMMAND = "delete";
+    private static final String SPACELEFT_COMMAND = "space-left";
+    private static final String GETMD5_COMMAND = "get-md5";
+
+    public String bitfinder = "http://bitfinder.statsbiblioteket.dk/";
+    public String server = "domstest@halley";
+    public String script = "bin/server.sh";
 
 
     private static final String ALREADY_STORED_REPLY = "was stored!";
@@ -38,6 +40,7 @@ public class BitstorageSshImpl implements Bitstorage {
     private static final String NO_SPACE_LEFT_REPLY = "No space left for file";
     private static final String FREE_SPACE_REPLY = "Free space: ";
     private static final String MAX_FILE_SIZE_REPLY = "Max file size: ";
+
 
 
     public URL upload(String filename, InputStream data, String md5) throws
@@ -91,11 +94,11 @@ public class BitstorageSshImpl implements Bitstorage {
     }
 
     private String getFileNameFromURL(URL file) {
-        return file.toString().substring(BITFINDER.length());
+        return file.toString().substring(bitfinder.length());
     }
 
     private URL createURL(String filename) throws MalformedURLException {
-        return new URL(BITFINDER +filename);
+        return new URL(bitfinder +filename);
     }
 
 
@@ -147,9 +150,9 @@ public class BitstorageSshImpl implements Bitstorage {
         List<String> arrayList = new ArrayList<String>(10);
 
         arrayList.add(SSH);
-        arrayList.add(SERVER);
-        if (!SCRIPT.trim().isEmpty()){
-            arrayList.add(SCRIPT);
+        arrayList.add(server);
+        if (!script.trim().isEmpty()){
+            arrayList.add(script);
         }
         arrayList.addAll(Arrays.asList(command));
 

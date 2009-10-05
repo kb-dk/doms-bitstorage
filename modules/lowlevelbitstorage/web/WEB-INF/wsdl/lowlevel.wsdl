@@ -9,7 +9,7 @@
         <xsd:schema>
             <xsd:import
                     namespace="http://lowlevel.bitstorage.doms.statsbiblioteket.dk/"
-                    schemaLocation="lowlevel-reduced.xsd"/>
+                    schemaLocation="lowlevel.xsd"/>
         </xsd:schema>
     </types>
     <message name="uploadFile">
