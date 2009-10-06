@@ -3,7 +3,8 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 /**
  * TODO abr forgot to document this class
  */
-public abstract class BitstorageException extends Exception{
+public abstract class BitstorageException
+        extends Exception {
 
     public BitstorageException() {
     }

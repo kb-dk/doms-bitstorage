@@ -1,12 +1,12 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.ChecksumFailedException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileAlreadyApprovedException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileNotFoundException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.InvalidFilenameException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.NotEnoughFreeSpaceException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
 
 import javax.xml.ws.WebServiceException;
 import java.net.MalformedURLException;

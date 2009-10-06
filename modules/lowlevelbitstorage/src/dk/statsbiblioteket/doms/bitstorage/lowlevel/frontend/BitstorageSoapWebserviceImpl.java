@@ -22,14 +22,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * TODO abr forgot to document this class
- */
-
 @MTOM
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice")
-public class BitstorageSoapWebserviceImpl implements BitstorageSoapWebservice
-{
+public class BitstorageSoapWebserviceImpl
+        implements BitstorageSoapWebservice {
 
     Bitstorage bs;
 
@@ -50,7 +46,9 @@ public class BitstorageSoapWebserviceImpl implements BitstorageSoapWebservice
                    NotEnoughFreeSpaceException {
 /*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
         try {
-            return bs.upload(filename, filedata.getInputStream(), md5String).toString();
+            return bs.upload(filename,
+                             filedata.getInputStream(),
+                             md5String).toString();
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (BitstorageException e) {

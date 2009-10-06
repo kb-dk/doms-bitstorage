@@ -1,31 +1,35 @@
 <project name="lowlevelbitstorage" basedir=".">
 
-        <property name="global.dir" value="${basedir}/../.."/>
+    <property name="global.dir" value="${basedir}/../.."/>
+    <property name="warfilename" value="lowlevelbitstorage.war"/>
+    <!--Contain the normal build tasks, including war-->
+    <import file="${global.dir}/build-includes.xml"/>
 
-            <property name="properties.package" value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
+
+
+    <property name="properties.package"
+              value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
     <property name="config.xsd" value="web/WEB-INF/bitstorageSsh.xsd"/>
-        <import  file="${global.dir}/build-common.xml"/>
-        <import file="${global.dir}/build-webservices.xml"/>
-    <import  file="${global.dir}/build-properties.xml"/>
-    <!-- Global- and module specific libs -->
+    <!--Contain the targets to build the config classes from the config.xsd
+        add it as a module lib
+    -->
+    <import file="${global.dir}/build-jaxb-properties.xml"/>
 
 
+
+    <property name="wsdl.package"
+              value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
+    <property name="wsdl.location"
+                  value="${basedir}/web/WEB-INF/wsdl/lowlevel.wsdl"/>
+    <!--Contain the targets to build the webservice interface from the
+        wsdl.location and add it as a module lib
+    -->
+    <import file="${global.dir}/build-soap-webservices.xml"/>
+
+    <!--Project libs used by this module-->
     <fileset id="project.libs" dir="${global.dir}/lib">
         <include name="sbutils-0.4.6/jars/**/*.jar"/>
         <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
-
-    <property name="warfilename" value="lowlevelbitstorage.war"/>
-
-    <path id="build.classpath">
-        <fileset refid="module.libs"/>
-        <fileset refid="project.libs"/>
-        <fileset refid="module.dependencies"/>
-    </path>
-    
-
-
-
-
 
 </project>

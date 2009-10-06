@@ -1,23 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="bitstorageSsh" type="bitstorageSshConfig"/>
-  <xs:complexType name="bitstorageSshConfig">
-    <xs:sequence>
-      <xs:element type="xs:string" name="script">
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb = "http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0"
+        >
+    <xs:element name="bitstorageSsh" type="bitstorageSshConfig"/>
+    <xs:complexType name="bitstorageSshConfig">
         <xs:annotation>
-          <xs:documentation>Optional:</xs:documentation>
+            <xs:documentation>The config file for the bitstorage ssh connector</xs:documentation>
         </xs:annotation>
-      </xs:element>
-      <xs:element type="xs:string" name="server">
-        <xs:annotation>
-          <xs:documentation>Optional:</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element type="xs:string" name="bitfinder">
-        <xs:annotation>
-          <xs:documentation>Optional:</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
+        <xs:sequence>
+            <xs:element type="xs:string" name="script">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>The script to invoke on the server. Default bin/server.sh
+                                On the production system, this field should be empty</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="xs:string" name="server">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>The server to connect to, including the username.
+                        Default domstest@halley</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+            <xs:element type="xs:string" name="bitfinder">
+                <xs:annotation>
+                    <xs:appinfo>
+                        <jaxb:property>
+                            <jaxb:javadoc>The URL to prefix the filenames for construction file urls</jaxb:javadoc>
+                        </jaxb:property>
+                    </xs:appinfo>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 </xs:schema>

@@ -14,15 +14,14 @@
     </fileset>
 
     <path id="build.classpath">
-<!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
+        <!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
         <fileset refid="module.libs"/>
         <fileset refid="project.libs"/>
         <fileset refid="module.dependencies"/>
     </path>
 
 
-
-    <target  name="depends">
+    <target name="depends">
         <!--        <ant dir="${modules.dir}/repository" target="jar"/>-->
     </target>
 
@@ -42,8 +41,6 @@
             </fileset>
         </copy>
     </target>
-
-
 
 
     <target name="clean">
@@ -83,5 +80,6 @@
 
     </target>
 
+    <target name="dist" depends="war"/>
 
 </project>

@@ -13,8 +13,7 @@ import java.io.InputStream;
 public class BitstorageFactory {
 
 
-
-    public static Bitstorage getInstance(){
+    public static Bitstorage getInstance() {
 
         try {
             JAXBContext context = JAXBContext.newInstance(BitstorageSshConfig.class);
@@ -33,7 +32,7 @@ public class BitstorageFactory {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             return new BitstorageSshImpl();
         }
-        
+
     }
 
 }
