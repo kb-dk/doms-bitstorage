@@ -1,17 +1,18 @@
 <project name="lowlevelbitstorage" basedir=".">
 
-        <property name="global.dir" value="${basedir}/../../"/>
+        <property name="global.dir" value="${basedir}/../.."/>
 
             <property name="properties.package" value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
     <property name="config.xsd" value="web/WEB-INF/bitstorageSsh.xsd"/>
-        <import  file="build-common.xml"/>
-        <import file="build-webservices.xml"/>
-    <import  file="build-properties.xml"/>
+        <import  file="${global.dir}/build-common.xml"/>
+        <import file="${global.dir}/build-webservices.xml"/>
+    <import  file="${global.dir}/build-properties.xml"/>
     <!-- Global- and module specific libs -->
 
 
     <fileset id="project.libs" dir="${global.dir}/lib">
         <include name="sbutils-0.4.6/jars/**/*.jar"/>
+        <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
 
     <property name="warfilename" value="lowlevelbitstorage.war"/>

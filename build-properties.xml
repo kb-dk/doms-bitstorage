@@ -1,7 +1,15 @@
 <project name="properties">
 
+    <path id="jaxws.classpath">
+        <fileset dir="${global.dir}/lib/jaxws-ri-2.1.7/jars">
+            <include  name="*.jar"/>
+        </fileset>
+    </path>
+
+
+
     <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask">
-        <classpath refid="build.classpath"/>
+        <classpath refid="jaxws.classpath"/>
     </taskdef>
 
     <property name="propertiesjar" value="properties.jar"/>
