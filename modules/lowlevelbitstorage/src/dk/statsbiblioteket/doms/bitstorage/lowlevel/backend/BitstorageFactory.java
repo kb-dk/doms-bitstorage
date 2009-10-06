@@ -1,5 +1,7 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend;
 
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSshConfig;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -15,11 +17,17 @@ public class BitstorageFactory {
     public static Bitstorage getInstance(){
 
         try {
-            JAXBContext context = JAXBContext.newInstance(BitstorageSshImpl.class);
+            JAXBContext context = JAXBContext.newInstance(BitstorageSshConfig.class);
             Unmarshaller unmarshaller = context.createUnmarshaller();
             InputStream config = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                    "bitstorageSshImpl.xml");
-            return (Bitstorage) unmarshaller.unmarshal(config);
+                    "bitstorageSsh.xml");
+
+            BitstorageSshConfig bitstorageConfig = (BitstorageSshConfig) unmarshaller.unmarshal(
+                    config);
+
+            return new BitstorageSshImpl(bitstorageConfig.getServer(),
+                                         bitstorageConfig.getScript(),
+                                         bitstorageConfig.getBitfinder());
 
         } catch (JAXBException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

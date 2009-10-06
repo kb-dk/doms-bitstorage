@@ -87,6 +87,17 @@
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="properties">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/properties/jars/properties.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/properties/src/propertiessrc.zip!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 

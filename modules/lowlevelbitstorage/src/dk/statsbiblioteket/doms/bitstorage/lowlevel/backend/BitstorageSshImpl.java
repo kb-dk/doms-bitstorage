@@ -7,7 +7,6 @@ import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.FileNotFo
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.NotEnoughFreeSpaceException;
 import dk.statsbiblioteket.util.console.ProcessRunner;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * TODO abr forgot to document this class
  */
-@XmlRootElement
+
 public class BitstorageSshImpl implements Bitstorage {
 
 
@@ -30,9 +29,9 @@ public class BitstorageSshImpl implements Bitstorage {
     private static final String SPACELEFT_COMMAND = "space-left";
     private static final String GETMD5_COMMAND = "get-md5";
 
-    public String bitfinder = "http://bitfinder.statsbiblioteket.dk/";
-    public String server = "domstest@halley";
-    public String script = "bin/server.sh";
+    private String bitfinder;
+    private String server;
+    private String script;
 
 
     private static final String ALREADY_STORED_REPLY = "was stored!";
@@ -41,7 +40,20 @@ public class BitstorageSshImpl implements Bitstorage {
     private static final String FREE_SPACE_REPLY = "Free space: ";
     private static final String MAX_FILE_SIZE_REPLY = "Max file size: ";
 
+    public BitstorageSshImpl(String server, String script, String bitfinder) {
 
+        this.bitfinder = bitfinder;
+
+        this.server = server;
+
+        this.script = script;
+    }
+
+    public BitstorageSshImpl() {
+        this.bitfinder = "http://bitfinder.statsbiblioteket.dk/";
+        this.server = "domstest@halley";
+        this.script = "bin/server.sh";
+    }
 
     public URL upload(String filename, InputStream data, String md5) throws
                                                                      MalformedURLException,

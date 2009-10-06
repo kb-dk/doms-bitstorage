@@ -1,0 +1,73 @@
+<project name="webservice">
+
+    <property name="interfacejar" value="webservice.jar"/>
+        <property name="interfacesrcpack.zip" value="webservicesrc.zip"/>
+
+    <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+        <classpath refid="build.classpath"/>
+<!--        <classpath path="${java.class.path}"/>-->
+    </taskdef>
+
+    <target name="init">
+        <mkdir dir="classes"/>
+                <mkdir dir="tempsrc"/>
+    </target>
+
+    <target name="clean">
+        <delete dir="classes"/>
+        <delete dir="tempsrc"/>
+    </target>
+    
+
+<target name="interface.generate" depends="init">
+<!--
+    <property name="classpath" refid="build.classpath"/>
+    <echo message="${classpath}"/>
+-->
+
+    <wsimport
+            verbose="true"
+            debug="on"
+            sourcedestdir="tempsrc"
+            destdir="classes"
+            package="dk.statsbiblioteket.doms.bitstorage.lowlevel"
+            wsdl="${basedir}/web/WEB-INF/wsdl/lowlevel.wsdl">
+    </wsimport>
+</target>
+
+<target name="interface.compile" depends="interface.generate">
+    <javac source="1.6" destdir="classes" debug="on"
+           encoding="UTF-8">
+        <src path="tempsrc"/>
+        <classpath refid="build.classpath"/>
+    </javac>
+</target>
+
+
+<target name="interface.jar" depends="interface.compile">
+
+        <mkdir dir="dist"/>
+
+        <jar destfile="dist/${interfacejar}"
+             basedir="classes" />
+
+</target>
+
+
+<target name="interface.sourcezip" depends="interface.generate">
+    <mkdir dir="dist"/>
+
+    <zip destfile="dist/${interfacesrcpack.zip}">
+        <zipfileset  dir="tempsrc">
+            <include name="**/*.java"/>
+        </zipfileset>
+    </zip>
+</target>
+
+<target name="interface.addtolib" depends="clean,interface.jar,interface.sourcezip">
+    <copy file="dist/${interfacejar}" todir="lib/interface/jars" overwrite="true"/>
+    <copy file="dist/${interfacesrcpack.zip}" todir="lib/interface/src" overwrite="true"/>
+</target>
+
+
+</project>
