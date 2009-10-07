@@ -51,7 +51,7 @@
 
     <xs:complexType name="isApproved">
         <xs:sequence>
-            <xs:element name="fileurl" type="xs:anyURI" minOccurs="0"/>
+            <xs:element name="fileurl" type="xs:anyURI" />
         </xs:sequence>
     </xs:complexType>
 
@@ -84,8 +84,8 @@
     <xs:complexType name="approve">
 
         <xs:sequence>
-            <xs:element name="fileurl" type="xs:anyURI" minOccurs="0"/>
-            <xs:element name="md5string" type="xs:string" minOccurs="0"/>
+            <xs:element name="fileurl" type="xs:anyURI"/>
+            <xs:element name="md5string" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -96,18 +96,19 @@
 
     <xs:complexType name="uploadFile">
         <xs:sequence>
-            <xs:element name="filename" type="xs:string" minOccurs="0"/>
+            <xs:element name="filename" type="xs:string"/>
             <xs:element xmlns:ns1="http://www.w3.org/2005/05/xmlmime"
                         name="filedata"
                         ns1:expectedContentTypes="application/octet-stream"
-                        type="xs:base64Binary" minOccurs="0"/>
-            <xs:element name="md5string" type="xs:string" minOccurs="0"/>
+                        type="xs:base64Binary"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="uploadFileResponse">
         <xs:sequence>
-            <xs:element name="return" type="xs:anyURI" minOccurs="0"/>
+            <xs:element name="return" type="xs:anyURI"/>
         </xs:sequence>
 
     </xs:complexType>
@@ -115,21 +116,21 @@
 
     <xs:complexType name="getMd5">
         <xs:sequence>
-            <xs:element name="fileurl" type="xs:anyURI" minOccurs="0"/>
+            <xs:element name="fileurl" type="xs:anyURI"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="getMd5Response">
         <xs:sequence>
-            <xs:element name="return" type="xs:string" minOccurs="0"/>
+            <xs:element name="return" type="xs:string" />
 
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="disapprove">
         <xs:sequence>
-            <xs:element name="fileurl" type="xs:anyURI" minOccurs="0"/>
-            <xs:element name="md5string" type="xs:string" minOccurs="0"/>
+            <xs:element name="fileurl" type="xs:anyURI" />
+            <xs:element name="md5string" type="xs:string" />
         </xs:sequence>
     </xs:complexType>
 

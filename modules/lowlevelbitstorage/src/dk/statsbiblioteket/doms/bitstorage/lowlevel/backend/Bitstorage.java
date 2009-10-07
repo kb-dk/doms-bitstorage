@@ -39,7 +39,7 @@ public interface Bitstorage {
      * @throws java.net.MalformedURLException if the filename cannot be made
      *                                        into an url
      */
-    public URL upload(String filename, InputStream data, String md5)
+    public URL upload(String filename, InputStream data, String md5, long filelength)
             throws MalformedURLException, CommunicationException,
                    NotEnoughFreeSpaceException, ChecksumFailedException,
                    FileAlreadyApprovedException;

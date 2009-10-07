@@ -34,27 +34,29 @@ public class BitstorageSoapWebserviceImpl
         bs = BitstorageFactory.getInstance();
     }
 
-    @WebMethod
     public String uploadFile(@WebParam(name = "filename",
                                        targetNamespace = "") String filename,
                              @WebParam(name = "filedata",
                                        targetNamespace = "") DataHandler filedata,
                              @WebParam(name = "md5string",
-                                       targetNamespace = "") String md5String)
+                                       targetNamespace = "") String md5String,
+                             @WebParam(name = "filelength",
+                                       targetNamespace = "") long filelength)
             throws ChecksumFailedException, CommunicationException,
                    FileAlreadyApprovedException, InvalidFilenameException,
                    NotEnoughFreeSpaceException {
 /*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
         try {
+
             return bs.upload(filename,
                              filedata.getInputStream(),
-                             md5String).toString();
+                             md5String,
+                             filelength).toString();
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (BitstorageException e) {
             throw ExceptionMapper.convert(e);
         }
-
     }
 
     @WebMethod
