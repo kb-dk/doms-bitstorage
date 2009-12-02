@@ -10,7 +10,23 @@
       <maximumStackSize value="32" />
       <properties />
     </buildFile>
-    <buildFile url="file://$PROJECT_DIR$/modules/lowlevelbitstorage/build.xml">
+    <buildFile url="file://$PROJECT_DIR$/modules/lowlevel/impl/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <maximumStackSize value="32" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/modules/highlevelbitstorage/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <maximumStackSize value="32" />
+      <properties />
+    </buildFile>
+    <buildFile url="file://$PROJECT_DIR$/modules/characteriser/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
       <customJdkName value="" />
@@ -66,6 +82,7 @@
         <modules>
           <module name="lowlevelbitstorage">
             <files>
+              <file url="file://$PROJECT_DIR$/modules/lowlevelbitstorage/web/WEB-INF/web.xml" />
               <file url="file://$PROJECT_DIR$/modules/web/WEB-INF/web.xml" />
             </files>
           </module>
@@ -250,8 +267,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$//bitstorage.iml" filepath="$PROJECT_DIR$//bitstorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/bitstorage_webservice/bitstorage_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/bitstorage_webservice/bitstorage_webservice.iml" group="oldwebservices" />
+      <module fileurl="file://$PROJECT_DIR$/modules/characteriser/characteriser.iml" filepath="$PROJECT_DIR$/modules/characteriser/characteriser.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/filecharacterizer_webservice/filecharacterizer_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/filecharacterizer_webservice/filecharacterizer_webservice.iml" group="oldwebservices" />
-      <module fileurl="file://$PROJECT_DIR$/modules/lowlevelbitstorage/lowlevelbitstorage.iml" filepath="$PROJECT_DIR$/modules/lowlevelbitstorage/lowlevelbitstorage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/modules/highlevelbitstorage/highlevelbitstorage.iml" filepath="$PROJECT_DIR$/modules/highlevelbitstorage/highlevelbitstorage.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/oldwebservices/objectmanipulation_webservice/objectmanipulation_webservice.iml" filepath="$PROJECT_DIR$/modules/oldwebservices/objectmanipulation_webservice/objectmanipulation_webservice.iml" group="oldwebservices" />
     </modules>
   </component>

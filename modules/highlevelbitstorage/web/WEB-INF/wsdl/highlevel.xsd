@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:tns="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+           targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/">
+
+    <xs:element name="ChecksumFailedException"
+                type="xs:string"/>
+
+    <xs:element name="CommunicationException"
+                type="xs:string"/>
+
+    <xs:element name="FileNotFoundException" type="xs:string"/>
+
+    <xs:element name="NotEnoughFreeSpaceException"
+                type="xs:string"/>
+
+    <xs:element name="UploadFailedException" type="xs:string"/>
+
+    <xs:element name="FileAlreadyApprovedException" type="xs:string"/>
+
+    <xs:element name="InvalidFilenameException" type="xs:string"/>
+
+    <xs:element name="publish" type="tns:publish"/>
+
+    <xs:element name="publishResponse" type="tns:publishResponse"/>
+
+    <xs:element name="delete" type="tns:delete"/>
+
+    <xs:element name="deleteResponse" type="tns:deleteResponse"/>
+
+    <xs:element name="uploadFileToObject" type="tns:uploadFileToObject"/>
+
+    <xs:element name="uploadFileToObjectResponse" type="tns:uploadFileToObjectResponse"/>
+
+
+    <xs:complexType name="publish">
+
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="publishResponse">
+        <xs:sequence/>
+    </xs:complexType>
+
+
+    <xs:complexType name="uploadFileToObject">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element xmlns:ns1="http://www.w3.org/2005/05/xmlmime"
+                        name="filedata"
+                        ns1:expectedContentTypes="application/octet-stream"
+                        type="xs:base64Binary"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="uploadFileToObjectResponse">
+        <xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="delete">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="deleteResponse">
+        <xs:sequence/>
+    </xs:complexType>
+
+    <xs:simpleType name="fedoraPid">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+</xs:schema>

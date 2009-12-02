@@ -36,7 +36,8 @@
                 sourcedestdir="tempsrc"
                 destdir="classes"
                 package="${wsdl.package}"
-                wsdl="${wsdl.location}">
+                wsdl="${wsdl.location}"
+                >
         </wsimport>
     </target>
 

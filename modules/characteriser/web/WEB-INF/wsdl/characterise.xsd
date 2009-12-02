@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema xmlns:tns="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+           targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/">
+
+
+    <xs:element name="CommunicationException"
+                type="xs:string"/>
+
+    <xs:element name="FileNotAvailableException" type="xs:string"/>
+
+    <xs:element name="characteriseResponse" type="tns:characterisation"/>
+    <xs:element name="pid" type="tns:fedoraPid"/>
+
+    <!--
+        <xs:element name="characterizationOutput" nillable="true" type="xs:base64Binary"/>
+    -->
+
+    <xs:complexType name="characterisation">
+        <xs:sequence>
+            <xs:element name="md5CheckSum" type="xs:string"/>
+            <xs:element name="pronomID"  type="xs:string"/>
+            <xs:element name="validationStatus"  type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:simpleType name="fedoraPid">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+</xs:schema>

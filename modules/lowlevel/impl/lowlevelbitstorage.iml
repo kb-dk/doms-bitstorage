@@ -49,7 +49,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library name="webserviceinterface">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/interface/jars/webservice.jar!/" />

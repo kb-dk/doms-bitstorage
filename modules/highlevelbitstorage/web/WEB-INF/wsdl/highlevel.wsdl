@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+             name="BitstorageSoapWebserviceService">
+    <types>
+        <xsd:schema>
+            <xsd:import
+                    namespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+                    schemaLocation="highlevel.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="uploadFileToObject">
+        <part name="parameters" element="tns:uploadFileToObject"/>
+    </message>
+    <message name="uploadFileToObjectResponse">
+        <part name="parameters" element="tns:uploadFileToObjectResponse"/>
+    </message>
+    <message name="ChecksumFailedException">
+        <part name="fault" element="tns:ChecksumFailedException"/>
+    </message>
+    <message name="FileAlreadyApprovedException">
+        <part name="fault" element="tns:FileAlreadyApprovedException"/>
+    </message>
+    <message name="InvalidFilenameException">
+        <part name="fault" element="tns:InvalidFilenameException"/>
+    </message>
+    <message name="CommunicationException">
+        <part name="fault" element="tns:CommunicationException"/>
+    </message>
+    <message name="NotEnoughFreeSpaceException">
+        <part name="fault" element="tns:NotEnoughFreeSpaceException"/>
+    </message>
+    <message name="delete">
+        <part name="parameters" element="tns:delete"/>
+    </message>
+    <message name="deleteResponse">
+        <part name="parameters" element="tns:deleteResponse"/>
+    </message>
+    <message name="FileNotFoundException">
+        <part name="fault" element="tns:FileNotFoundException"/>
+    </message>
+    <message name="publish">
+        <part name="parameters" element="tns:publish"/>
+    </message>
+    <message name="publishResponse">
+        <part name="parameters" element="tns:publishResponse"/>
+    </message>
+
+    <portType name="BitstorageSoapWebservice">
+        <documentation>Java interface the bitstorage system.
+        </documentation>
+        <operation name="uploadFileToObject">
+            <documentation>Upload the provided file to the temporary area of
+                bitstorage, giving it the provided file name. Return the MD5
+                checksum of the file. The file is only uploaded to a temporary
+                approve-area of the bitstorage, and needs to be approved by
+                calling approveFile before it is actually moved to the permanent
+                bitstorage.
+            </documentation>
+            <input message="tns:uploadFileToObject"/>
+            <output message="tns:uploadFileToObjectResponse"/>
+            <fault message="tns:InvalidFilenameException"
+                   name="InvalidFilenameException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+            <fault message="tns:ChecksumFailedException"
+                   name="ChecksumFailedException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+        </operation>
+        <operation name="delete">
+            <documentation>Delete the named file from bitstorage. Only works for
+                files that have not yet been publish.
+            </documentation>
+            <input message="tns:delete"/>
+            <output message="tns:deleteResponse"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:FileNotFoundException"
+                   name="FileNotFoundException"/>
+        </operation>
+        <operation name="publish">
+            <documentation>Check the earlier uploaded file against the provided
+                checksum, and if this succeeds, and possibly other criteria are
+                met, move the file from the temporary area of bitstorage to the
+                permanent bitstorage.
+
+                If you call this method on an already approved file, with the correct
+                checksum, nothing happens. If the checksum is wrong, you get an
+                exception.
+            </documentation>
+            <input message="tns:publish"/>
+            <output message="tns:publishResponse"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:FileNotFoundException"
+                   name="FileNotFoundException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+            <fault message="tns:ChecksumFailedException"
+                   name="ChecksumFailedException"/>
+        </operation>
+    </portType>
+    <binding name="BitstorageSoapWebservicePortBinding"
+             type="tns:BitstorageSoapWebservice">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                      style="document"/>
+        <operation name="uploadFileToObject">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            <fault name="ChecksumFailedException">
+                <soap:fault name="ChecksumFailedException" use="literal"/>
+            </fault>
+            <fault name="InvalidFilenameException">
+                <soap:fault name="InvalidFilenameException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="delete">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="FileNotFoundException">
+                <soap:fault name="FileNotFoundException" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="publish">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+
+            </fault>
+            <fault name="FileNotFoundException">
+                <soap:fault name="FileNotFoundException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+            <fault name="ChecksumFailedException">
+                <soap:fault name="ChecksumFailedException" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="BitstorageSoapWebserviceService">
+        <port name="BitstorageSoapWebservicePort"
+              binding="tns:BitstorageSoapWebservicePortBinding">
+
+            <soap:address
+                    location="http://localhost:7910/highlevelbitstorage/highlevel/"/>
+        </port>
+    </service>
+</definitions>
