@@ -1,0 +1,27 @@
+<project name="highlevel_impl" basedir=".">
+
+    <property name="global.dir" value="${basedir}/../../.."/>
+    <property name="warfilename" value="highlevelbitstorage.war"/>
+    <!--Contain the normal build tasks, including war-->
+    <import file="${global.dir}/build-soap-webservice.xml"/>
+
+    <!--Project libs used by this module-->
+    <fileset id="project.libs" dir="${global.dir}/lib">
+        <include name="sbutils-0.4.6/jars/**/*.jar"/>
+        <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
+    </fileset>
+
+    <fileset id="module.dependencies" dir="${global.dir}/modules">
+<include name="highlevel/highlevel_interface/dist/*.jar"/>
+        <include name="lowlevel/lowlevel_interface/dist/*.jar"/>
+        <include name="characteriser/characteriser_interface/dist/*.jar"/>
+    </fileset>
+
+    <target name="depends">
+        <ant dir="${global.dir}/modules/highlevel/highlevel_interface" target="interface.dist"/>
+        <ant dir="${global.dir}/modules/lowlevel/lowlevel_interface" target="interface.dist"/>
+        <ant dir="${global.dir}/modules/characteriser/characteriser_interface" target="interface.dist"/>
+    </target>
+
+
+</project>

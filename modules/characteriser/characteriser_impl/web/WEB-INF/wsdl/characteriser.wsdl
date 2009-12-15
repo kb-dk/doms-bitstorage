@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+             name="CharacteriseSoapWebserviceService">
+    <types>
+        <xsd:schema>
+            <xsd:import
+                    namespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+                    schemaLocation="characteriser.xsd"/>
+        </xsd:schema>
+    </types>
+
+    <message name="FileNotAvailableException">
+        <part name="fault" element="tns:FileNotAvailableException"/>
+    </message>
+    <message name="CommunicationException">
+        <part name="fault" element="tns:CommunicationException"/>
+    </message>
+    <message name="characteriseRequest">
+        <part name="pid" element="tns:pid"/>
+    </message>
+    <message name="characteriseResponse">
+        <part name="characteriseReturn" element="tns:characteriseResponse"/>
+    </message>
+
+    <portType name="CharacteriseSoapWebservice">
+        <documentation>Java interface the bitstorage system.
+        </documentation>
+        <operation name="characterise">
+            <documentation>Upload the provided file to the temporary area of
+                bitstorage, giving it the provided file name. Return the MD5
+                checksum of the file. The file is only uploaded to a temporary
+                approve-area of the bitstorage, and needs to be approved by
+                calling approveFile before it is actually moved to the permanent
+                bitstorage.
+            </documentation>
+            <input message="tns:characteriseRequest"/>
+            <output message="tns:characteriseResponse"/>
+            <fault message="tns:FileNotAvailableException"
+                   name="FileNotAvailableException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+        </operation>
+    </portType>
+    <binding name="CharacteriseSoapWebservicePortBinding"
+             type="tns:CharacteriseSoapWebservice">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                      style="document"/>
+        <operation name="characterise">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileNotAvailableException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="CharacteriseSoapWebserviceService">
+        <port name="CharacteriseSoapWebservicePort"
+              binding="tns:CharacteriseSoapWebservicePortBinding">
+
+            <soap:address
+                    location="http://localhost:7910/highlevelbitstorage/highlevel/"/>
+        </port>
+    </service>
+</definitions>

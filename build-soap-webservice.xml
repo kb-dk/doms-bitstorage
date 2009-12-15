@@ -1,0 +1,35 @@
+<project name="soap-webservice">
+
+    <import file="build-includes.xml"/>
+
+    <target name="war" depends="distclean,compile"
+            description="Pack the webdirectory into a warfile ready for deployment">
+        <mkdir dir="dist"/>
+
+
+        <copy todir="libtemp" flatten="true">
+            <fileset refid="module.libs"/>
+            <fileset refid="project.libs"/>
+            <fileset refid="module.dependencies"/>
+        </copy>
+
+        <war destfile="dist/${warfilename}"
+             webxml="web/WEB-INF/web.xml">
+            <classes dir="classes"/>
+            <lib dir="libtemp"/>
+            <webinf dir="web/WEB-INF">
+                <exclude name="web.xml"/>
+            </webinf>
+            <fileset dir="web">
+                <exclude name="WEB-INF/**"/>
+            </fileset>
+        </war>
+
+        <delete dir="libtemp"/>
+
+    </target>
+
+    <target name="dist" depends="war"/>
+
+
+</project>

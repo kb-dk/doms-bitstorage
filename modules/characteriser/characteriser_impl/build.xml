@@ -1,22 +1,18 @@
-<project name="lowlevel_impl" basedir=".">
+<project name="characteriser_impl" basedir=".">
 
     <property name="global.dir" value="${basedir}/../../.."/>
-    <property name="warfilename" value="lowlevelbitstorage.war"/>
+    <property name="warfilename" value="characteriser.war"/>
     <!--Contain the normal build tasks, including war-->
     <import file="${global.dir}/build-soap-webservice.xml"/>
 
 
 
-    <property name="properties.package"
-              value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
-    <property name="config.xsd" value="web/WEB-INF/bitstorageSsh.xsd"/>
     <!--Contain the targets to build the config classes from the config.xsd
         add it as a module lib
     -->
-    <import file="${global.dir}/build-jaxb-properties.xml"/>
 
     <fileset id="module.dependencies" dir="${global.dir}/modules">
-<include name="lowlevel/lowlevel_interface/dist/*.jar"/>
+<include name="characteriser/characteriser_interface/dist/*.jar"/>
     </fileset>
 
 
@@ -28,7 +24,7 @@
     </fileset>
 
     <target name="depends">
-        <ant dir="${global.dir}/modules/lowlevel/lowlevel_interface" target="interface.dist"/>
+        <ant dir="${global.dir}/modules/characteriser/characteriser_interface" target="interface.dist"/>
     </target>
 
 </project>

@@ -53,33 +53,20 @@
 
     </target>
 
-
-    <target name="war" depends="distclean,compile"
-            description="Pack the webdirectory into a warfile ready for deployment">
+    <target name="jar" depends="compile">
         <mkdir dir="dist"/>
 
-
-        <copy todir="libtemp" flatten="true">
-            <fileset refid="module.libs"/>
-            <fileset refid="project.libs"/>
-        </copy>
-
-        <war destfile="dist/${warfilename}"
-             webxml="web/WEB-INF/web.xml">
-            <classes dir="classes"/>
-            <lib dir="libtemp"/>
-            <webinf dir="web/WEB-INF">
-                <exclude name="web.xml"/>
-            </webinf>
-            <fileset dir="web">
-                <exclude name="WEB-INF/**"/>
-            </fileset>
-        </war>
-
-        <delete dir="libtemp"/>
+        <jar destfile="dist/${project}.jar"
+             basedir="classes"/>
 
     </target>
 
-    <target name="dist" depends="war"/>
+    <target  name="dist" depends="jar">
+        <copy todir="dist" flatten="true">
+            <fileset refid="module.libs"/>
+            <fileset refid="project.libs"/>
+            <fileset refid="module.dependencies"/>
+        </copy>
+    </target>
 
 </project>
