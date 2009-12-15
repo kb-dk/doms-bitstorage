@@ -71,12 +71,15 @@
     </target>
 
     <target name="interface.addtolib"
-            depends="clean,interface.jar,interface.sourcezip">
+            depends="interface.dist">
         <copy file="dist/${interfacejar}" todir="lib/interface/jars"
               overwrite="true"/>
         <copy file="dist/${interfacesrcpack.zip}" todir="lib/interface/src"
               overwrite="true"/>
     </target>
 
+    <target name="interface.dist"
+            depends="clean,interface.jar,interface.sourcezip">
+    </target>
 
 </project>

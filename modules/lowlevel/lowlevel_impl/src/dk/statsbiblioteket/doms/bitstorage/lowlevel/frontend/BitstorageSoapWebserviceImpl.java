@@ -1,13 +1,7 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.*;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
