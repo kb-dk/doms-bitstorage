@@ -8,11 +8,11 @@
     <orderEntry type="module-library" exported="">
       <library name="interface">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/interface/jars/webservice.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/interface/jars/characteriser_interface.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/interface/src/webservicesrc.zip!/" />
+          <root url="jar://$MODULE_DIR$/lib/interface/src/characteriser_interface_src.zip!/" />
         </SOURCES>
       </library>
     </orderEntry>
