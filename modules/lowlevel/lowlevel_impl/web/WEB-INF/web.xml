@@ -10,12 +10,24 @@
             com.sun.xml.ws.transport.http.servlet.WSServletContextListener
         </listener-class>
     </listener>
+    <context-param>
+        <param-name>script</param-name>
+        <param-value>bin/server.sh</param-value>
+    </context-param>
+    <context-param>
+        <param-name>server</param-name>
+        <param-value>domstest@halley</param-value>
+    </context-param>
+    <context-param>
+        <param-name>bitfinder</param-name>
+        <param-value>http://bitfinder.statsbiblioteket.dk/</param-value>
+    </context-param>
+
     <servlet>
         <description>JAX-WS endpoint</description>
         <display-name>WSServlet</display-name>
         <servlet-name>WSServlet</servlet-name>
-        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet
-        </servlet-class>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>

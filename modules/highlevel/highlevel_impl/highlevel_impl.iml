@@ -12,6 +12,7 @@
     <orderEntry type="module" module-name="highlevel_interface" />
     <orderEntry type="module" module-name="lowlevel_interface" />
     <orderEntry type="module" module-name="characteriser_interface" />
+    <orderEntry type="library" name="Generic" level="application_server_libraries" />
   </component>
 </module>
 

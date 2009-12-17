@@ -6,19 +6,16 @@
     <import file="${global.dir}/build-soap-webservice.xml"/>
 
 
-
     <property name="properties.package"
               value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
     <property name="config.xsd" value="web/WEB-INF/bitstorageSsh.xsd"/>
     <!--Contain the targets to build the config classes from the config.xsd
         add it as a module lib
     -->
-    <import file="${global.dir}/build-jaxb-properties.xml"/>
 
     <fileset id="module.dependencies" dir="${global.dir}/modules">
-<include name="lowlevel/lowlevel_interface/dist/*.jar"/>
+        <include name="lowlevel/lowlevel_interface/dist/*.jar"/>
     </fileset>
-
 
 
     <!--Project libs used by this module-->
@@ -27,8 +24,13 @@
         <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
 
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="servlet/jars/**/*.jar"/>
+    </fileset>
+
     <target name="depends">
-        <ant dir="${global.dir}/modules/lowlevel/lowlevel_interface" target="interface.dist"/>
+        <ant dir="${global.dir}/modules/lowlevel/lowlevel_interface"
+             target="interface.dist"/>
     </target>
 
 </project>

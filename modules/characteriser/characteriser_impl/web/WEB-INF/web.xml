@@ -10,6 +10,11 @@
             com.sun.xml.ws.transport.http.servlet.WSServletContextListener
         </listener-class>
     </listener>
+
+    <context-param>
+        <param-name>testParam</param-name>
+        <param-value>testValue</param-value>
+    </context-param>
     <servlet>
         <description>JAX-WS endpoint</description>
         <display-name>WSServlet</display-name>

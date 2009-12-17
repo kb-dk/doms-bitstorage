@@ -13,11 +13,17 @@
         <exclude name="**"/>
     </fileset>
 
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <exclude name="**"/>
+    </fileset>
+
+
     <path id="build.classpath">
         <!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
         <fileset refid="module.libs"/>
         <fileset refid="project.libs"/>
         <fileset refid="module.dependencies"/>
+        <fileset refid="build.project.libs"/>
     </path>
 
 

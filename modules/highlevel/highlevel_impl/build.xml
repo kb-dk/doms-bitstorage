@@ -11,6 +11,11 @@
         <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
 
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="servlet/jars/**/*.jar"/>
+    </fileset>
+    
+
     <fileset id="module.dependencies" dir="${global.dir}/modules">
 <include name="highlevel/highlevel_interface/dist/*.jar"/>
         <include name="lowlevel/lowlevel_interface/dist/*.jar"/>

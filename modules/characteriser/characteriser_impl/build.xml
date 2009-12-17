@@ -23,6 +23,11 @@
         <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
 
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="servlet/jars/**/*.jar"/>
+    </fileset>
+    
+
     <target name="depends">
         <ant dir="${global.dir}/modules/characteriser/characteriser_interface" target="interface.dist"/>
     </target>
