@@ -28,12 +28,12 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance;
 import dk.statsbiblioteket.doms.surveillance.status.Status;
 import dk.statsbiblioteket.doms.surveillance.status.Surveyable;
 
-/*
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-*/
+
 
 /** Class that exposes real time system info as surveyable messages over REST.*/
 @Path("/")      // TODO fix this? to avoid clashes?

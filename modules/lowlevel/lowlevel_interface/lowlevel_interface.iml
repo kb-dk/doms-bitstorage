@@ -8,11 +8,11 @@
     <orderEntry type="module-library" exported="">
       <library name="interface">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/dist/webservice.jar!/" />
+          <root url="jar://$MODULE_DIR$/dist/lowlevel_interface.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/dist/webservicesrc.zip!/" />
+          <root url="jar://$MODULE_DIR$/dist/lowlevel_interface_src.zip!/" />
         </SOURCES>
       </library>
     </orderEntry>

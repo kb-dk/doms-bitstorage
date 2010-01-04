@@ -61,7 +61,11 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
-    <orderEntry type="module" module-name="interface" />
+    <orderEntry type="library" name="jersey-1.1.4" level="project" />
+    <orderEntry type="library" name="doms-surveillance-status-0.0.1" level="project" />
+    <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
+    <orderEntry type="module" module-name="lowlevel_interface" />
+    <orderEntry type="library" name="Servlet Engine" level="project" />
   </component>
 </module>
 

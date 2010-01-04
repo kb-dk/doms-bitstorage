@@ -293,7 +293,9 @@
       <module fileurl="file://$PROJECT_DIR$/modules/characteriser/characteriser_interface/characteriser_interface.iml" filepath="$PROJECT_DIR$/modules/characteriser/characteriser_interface/characteriser_interface.iml" group="characteriser" />
       <module fileurl="file://$PROJECT_DIR$/modules/highlevel/highlevel_impl/highlevel_impl.iml" filepath="$PROJECT_DIR$/modules/highlevel/highlevel_impl/highlevel_impl.iml" group="highlevel" />
       <module fileurl="file://$PROJECT_DIR$/highlevelInterface/highlevel_interface.iml" filepath="$PROJECT_DIR$/highlevelInterface/highlevel_interface.iml" group="highlevel" />
+      <module fileurl="file://$PROJECT_DIR$/modules/lowlevel/lowlevel_impl/lowlevel_impl.iml" filepath="$PROJECT_DIR$/modules/lowlevel/lowlevel_impl/lowlevel_impl.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/lowlevel/impl/lowlevel_impl.iml" filepath="$PROJECT_DIR$/modules/lowlevel/impl/lowlevel_impl.iml" group="lowlevel" />
+      <module fileurl="file://$PROJECT_DIR$/modules/lowlevel/lowlevel_interface/lowlevel_interface.iml" filepath="$PROJECT_DIR$/modules/lowlevel/lowlevel_interface/lowlevel_interface.iml" />
       <module fileurl="file://$PROJECT_DIR$/modules/lowlevel/interface/lowlevel_interface.iml" filepath="$PROJECT_DIR$/modules/lowlevel/interface/lowlevel_interface.iml" group="lowlevel" />
     </modules>
   </component>
@@ -374,6 +376,44 @@
         <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/streambuffer.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jsr250-api.jar!/" />
       </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="jersey-1.1.4">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/asm-3.1.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-client-1.1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-core-1.1.4.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-server-1.1.4.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib/jersey-1.1.4/jars" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/apidocs/jersey-client-1.1.4-javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/apidocs/jersey-core-1.1.4-javadoc.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/apidocs/jersey-server-1.1.4-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/src/jersey-client-1.1.4-sources.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/src/jersey-core-1.1.4-sources.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/src/jersey-server-1.1.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="doms-surveillance-status-0.0.1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/doms-surveillance-status-0.0.1/jars/doms-surveillance-status-0.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="doms-surveillance-rest-0.0.1">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/lib/doms-surveillance-rest-0.0.1/jars/doms-surveillance-rest-0.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Servlet Engine">
+      <CLASSES />
       <JAVADOC />
       <SOURCES />
     </library>
