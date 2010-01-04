@@ -392,7 +392,6 @@
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-client-1.1.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-core-1.1.4.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-server-1.1.4.jar!/" />
-        <root url="file://$PROJECT_DIR$/lib/jersey-1.1.4/jars" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/apidocs/jersey-client-1.1.4-javadoc.jar!/" />
