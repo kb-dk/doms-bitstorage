@@ -1,5 +1,0 @@
-<bitstorageSsh>
-    <script>bin/server.sh</script>
-    <server>domstest@halley</server>
-    <bitfinder>http://bitfinder.statsbiblioteket.dk/</bitfinder>
-</bitstorageSsh>

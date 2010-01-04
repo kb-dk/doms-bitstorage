@@ -49,17 +49,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="properties">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/properties/jars/properties.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/properties/src/propertiessrc.zip!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
     <orderEntry type="library" name="jersey-1.1.4" level="project" />
     <orderEntry type="library" name="doms-surveillance-status-0.0.1" level="project" />
