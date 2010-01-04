@@ -300,6 +300,7 @@
       <module fileurl="file://$PROJECT_DIR$/modules/characteriser/characteriser_impl/characteriser_impl.iml" filepath="$PROJECT_DIR$/modules/characteriser/characteriser_impl/characteriser_impl.iml" group="characteriser" />
       <module fileurl="file://$PROJECT_DIR$/modules/characteriser/characteriser_interface/characteriser_interface.iml" filepath="$PROJECT_DIR$/modules/characteriser/characteriser_interface/characteriser_interface.iml" group="characteriser" />
       <module fileurl="file://$PROJECT_DIR$/modules/highlevel/highlevel_impl/highlevel_impl.iml" filepath="$PROJECT_DIR$/modules/highlevel/highlevel_impl/highlevel_impl.iml" group="highlevel" />
+      <module fileurl="file://$PROJECT_DIR$/modules/highlevel/highlevel_interface/highlevel_interface.iml" filepath="$PROJECT_DIR$/modules/highlevel/highlevel_interface/highlevel_interface.iml" group="highlevel" />
       <module fileurl="file://$PROJECT_DIR$/highlevelInterface/highlevel_interface.iml" filepath="$PROJECT_DIR$/highlevelInterface/highlevel_interface.iml" group="highlevel" />
       <module fileurl="file://$PROJECT_DIR$/modules/lowlevel/lowlevel_impl/lowlevel_impl.iml" filepath="$PROJECT_DIR$/modules/lowlevel/lowlevel_impl/lowlevel_impl.iml" group="lowlevel" />
       <module fileurl="file://$PROJECT_DIR$/modules/lowlevel/lowlevel_interface/lowlevel_interface.iml" filepath="$PROJECT_DIR$/modules/lowlevel/lowlevel_interface/lowlevel_interface.iml" group="lowlevel" />
