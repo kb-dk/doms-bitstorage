@@ -31,8 +31,8 @@ public class BitstorageSoapWebserviceImpl
     @Resource
     private WebServiceContext webServiceContext;
 
-    private void initialise(){
-        if (bs != null){
+    private void initialise() {
+        if (bs != null) {
             return;
         }
         ServletContext servletContext =
