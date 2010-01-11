@@ -9,7 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="characteriser_interface" />
     <orderEntry type="library" name="Generic" level="application_server_libraries" />
-    <orderEntry type="library" name="Servlet Engine" level="project" />
+    <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
   </component>
 </module>
 

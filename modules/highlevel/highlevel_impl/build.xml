@@ -12,7 +12,7 @@
     </fileset>
 
     <fileset id="build.project.libs" dir="${global.dir}/lib">
-        <include name="servlet/jars/**/*.jar"/>
+        <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
     </fileset>
     
 
