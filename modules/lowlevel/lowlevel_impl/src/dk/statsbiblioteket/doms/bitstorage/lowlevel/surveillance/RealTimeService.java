@@ -32,6 +32,7 @@ import dk.statsbiblioteket.doms.surveillance.rest.log4jappender.LogSurveyFactory
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebserviceService;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
+import dk.statsbiblioteket.util.qa.QAInfo;
 
 
 import javax.ws.rs.GET;
@@ -48,21 +49,41 @@ import java.util.ArrayList;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import org.apache.log4j.Logger;
 
-/** Class that exposes real time system info as surveyable messages over REST.*/
+
+/** Class that exposes real time system info as surveyable messages over REST.
+ */
+@QAInfo(level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_NEEDED,
+        author = "jrg",
+        reviewers = {""})
 @Path("/RealTimeService/")      // Part of the url to this webservice, inserted
                                 // at * in the relevant url-pattern in web.xml
 public class RealTimeService implements Surveyable {
+    private static Logger log = Logger.getLogger(RealTimeService.class);
 
     @Context
     private ServletConfig servletConfig;
 
     private String location;
+    private int preferredSpaceInBitstorage; // In bytes
+    private int requiredSpaceInBitstorage;  // In bytes
 
     private void initialize() {
         if (servletConfig != null) {
-            location = servletConfig.getInitParameter("dk.statsbiblioteket.doms"
-                    + ".bitstorage.lowlevel.location");
+            String preferredBytesLeft;
+            String requiredBytesLeft;
+            location = servletConfig.getInitParameter(
+                    "dk.statsbiblioteket.doms.bitstorage.lowlevel.location");
+            preferredBytesLeft = servletConfig.getInitParameter(
+                    "dk.statsbiblioteket.doms.bitstorage.lowlevel"
+                            + ".preferredBytesLeft");
+            requiredBytesLeft = servletConfig.getInitParameter(
+                    "dk.statsbiblioteket.doms.bitstorage.lowlevel"
+                            + ".requiredBytesLeft");
+            preferredSpaceInBitstorage = Integer.parseInt(preferredBytesLeft);
+            requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
         } else {
         }
     }
@@ -88,22 +109,26 @@ public class RealTimeService implements Surveyable {
      * @return A status containing list of log messages.
      */
     public Status getStatus() {
+        log.debug("Entered method getStatus");
         // This service accessible from
         // localhost:8080/lowlevelbitstorage/
         //   lowlevelbitstoragerealtimesurveillanceservice/RealTimeService/
         //   getStatus
+        //
+        // Or, in one line, for testing convenience:
+        // http://localhost:8080/lowlevelbitstorage/lowlevelbitstoragerealtimesurveillanceservice/RealTimeService/getStatus
+
         
         String surveyeeName = "Low-level bitstorage";
-        BitstorageSoapWebserviceService bitstorageWebserviceFactory;
+        BitstorageSoapWebserviceService bitstorageWebserviceFactory;              
         URL wsdlLocation = null;
         BitstorageSoapWebservice bitstorageService;
-        int requiredSpaceInBitstorage = 100000; // In bytes.TODO set this by parameter in web.xml
-        int preferredSpaceInBitstorage = 1000000; // In bytes.TODO set this by parameter in web.xml
         Long spaceLeftInBitstorage;              // In bytes.
         ArrayList<StatusMessage> messageList = new ArrayList<StatusMessage>();
         StatusMessage message;
 
         try {
+            log.debug("Making URL from location: '" + location + "'");
             wsdlLocation = new URL(location);
         } catch (MalformedURLException e) {
             throw new Error(e);
