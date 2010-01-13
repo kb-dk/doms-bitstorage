@@ -22,4 +22,6 @@ public interface FedoraSpeaker {
     public void storeCharacterization(String pid, Characterisation characterisation);
 
     public boolean datastreamExists(String pid, String datastream);
+
+    public boolean datastreamHasContent(String pid, String datastream);
 }

@@ -32,6 +32,56 @@
 
     <xs:element name="uploadFileToObjectResponse" type="tns:uploadFileToObjectResponse"/>
 
+    <xs:element name="status" type="tns:status"/>
+
+    <xs:element name="statusResponse" type="tns:statusResponse"/>
+
+    <xs:complexType name="status">
+        <xs:sequence/>
+    </xs:complexType>
+
+    <xs:complexType name="statusResponse">
+        <xs:sequence>
+            <xs:element name="status" type="tns:statusInformation"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="statusInformation">
+        <xs:sequence>
+            <xs:element name="freeSpace" type="xs:long"/>
+            <xs:element name="operations" type="tns:operation" minOccurs="0" maxOccurs="unbounded"/>
+
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="operation">
+
+        <xs:sequence>
+            <xs:element name="ID" type="xs:string"/>
+            <xs:element name="fedoraPid" type="xs:string"/>
+            <xs:element name="fedoraDatastream" type="xs:string"/>
+
+            <xs:element name="highlevelMethod">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="upload"/>
+                        <xs:enumeration value="approve"/>
+                        <xs:enumeration value="delete"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="history" type="tns:event" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+
+    </xs:complexType>
+
+    <xs:complexType name="event">
+        <xs:sequence>
+            <xs:element name="what" type="xs:string"/>
+            <xs:element name="when" type="xs:dateTime"/>
+        </xs:sequence>
+    </xs:complexType>
+
 
     <xs:complexType name="publish">
 
@@ -77,5 +127,6 @@
     <xs:simpleType name="fedoraPid">
         <xs:restriction base="xs:string"/>
     </xs:simpleType>
+
 
 </xs:schema>

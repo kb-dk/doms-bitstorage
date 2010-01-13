@@ -79,11 +79,12 @@
         </documentation>
         <operation name="uploadFile">
             <documentation>Upload the provided file to the temporary area of
-                bitstorage, giving it the provided file name. Return the MD5
-                checksum of the file. The file is only uploaded to a temporary
+                bitstorage, giving it the provided file name. The file is only uploaded to a temporary
                 approve-area of the bitstorage, and needs to be approved by
                 calling approveFile before it is actually moved to the permanent
                 bitstorage.
+
+                Returns the URL to the file. This URL will not change when approved.
             </documentation>
             <input message="tns:uploadFile"/>
             <output message="tns:uploadFileResponse"/>

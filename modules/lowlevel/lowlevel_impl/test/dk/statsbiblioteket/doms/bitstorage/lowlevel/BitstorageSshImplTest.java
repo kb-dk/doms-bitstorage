@@ -43,7 +43,7 @@ public class BitstorageSshImplTest {
         String md5 = ByteString.toHex(md5bytes);
         URL url = ssh.upload("data/testfile",
                              new FileInputStream(testdata),
-                             md5);
+                             md5,testdata.length());
 
         System.out.println(url);
 
