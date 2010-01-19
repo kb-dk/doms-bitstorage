@@ -1,4 +1,4 @@
-package dk.statsbiblioteket.doms.bitstorage.highlevel.frontend;
+package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
 /**
  * Created by IntelliJ IDEA.

@@ -3,6 +3,8 @@
            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
            targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/">
 
+
+    <!--Exceptions-->
     <xs:element name="ChecksumFailedException"
                 type="xs:string"/>
 
@@ -18,8 +20,23 @@
 
     <xs:element name="FileAlreadyApprovedException" type="xs:string"/>
 
+    <xs:element name="FileObjectAlreadyInUseException" type="xs:string"/>
+
     <xs:element name="InvalidFilenameException" type="xs:string"/>
 
+    <xs:element name="CharacterisationFailedException" type="xs:string"/>
+
+    <xs:element name="ObjectNotFoundException" type="xs:string"/>
+
+    <!--<xs:complexType name="characterisation">
+        <xs:sequence>
+            <xs:element name="problem" type="xs:anyType"/>
+--><!--            <xs:any minOccurs="0"/>--><!--
+        </xs:sequence>
+    </xs:complexType>
+-->
+
+    <!--Parameters and returns-->
     <xs:element name="publish" type="tns:publish"/>
 
     <xs:element name="publishResponse" type="tns:publishResponse"/>
@@ -36,6 +53,8 @@
 
     <xs:element name="statusResponse" type="tns:statusResponse"/>
 
+
+    <!--Type defs-->
     <xs:complexType name="status">
         <xs:sequence/>
     </xs:complexType>
@@ -60,7 +79,7 @@
             <xs:element name="ID" type="xs:string"/>
             <xs:element name="fedoraPid" type="xs:string"/>
             <xs:element name="fedoraDatastream" type="xs:string"/>
-
+            <xs:element name="fileSize" type="xs:long" minOccurs="0"/>
             <xs:element name="highlevelMethod">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">

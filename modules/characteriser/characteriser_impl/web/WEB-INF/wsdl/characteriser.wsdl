@@ -58,7 +58,7 @@
                 <soap:body use="literal"/>
             </output>
             <fault name="FileNotAvailableException">
-                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+                <soap:fault name="FileNotAvailableException" use="literal"/>
             </fault>
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>

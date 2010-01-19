@@ -35,6 +35,11 @@
         <url-pattern>/lowlevel/*</url-pattern>
     </servlet-mapping>
 
+
+
+
+    <!--Below here is the surveilance-->
+
     <servlet>
         <servlet-name>Lowlevel Bitstorage Log Surveillance</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer

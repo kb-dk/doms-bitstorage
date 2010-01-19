@@ -52,12 +52,11 @@ public interface Bitstorage {
      * If the file is not in temporary bitstorage nothing happens.
      *
      * @param file The url to the file (in bitstorage)
-     * @param md5  The md5sum of the file
      * @throws CommunicationException on problems communicating with bitstorage
      * @throws FileNotFoundException  if the file was not found in the temporary
      *                                storage
      */
-    public void disapprove(URL file, String md5)
+    public void disapprove(URL file)
             throws FileNotFoundException, CommunicationException;
 
 

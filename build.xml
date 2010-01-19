@@ -1,15 +1,7 @@
 <project name="bitstorage" basedir=".">
 
-    <target name="dist">
-        <mkdir dir="dist"/>
-        <subant target="war">
-            <fileset dir="modules/lowlevelbitstorageBackend/" includes="build.xml"/>
-        </subant>
-        <copy todir="dist">
-            <fileset dir="modules/lowlevelbitstorageBackend/dist/">
-                <include name="*.war"/>
-            </fileset>
-        </copy>
-    </target>
+    
+
+
 
 </project>

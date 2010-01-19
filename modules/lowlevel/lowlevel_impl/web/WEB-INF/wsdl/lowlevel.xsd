@@ -130,7 +130,7 @@
     <xs:complexType name="disapprove">
         <xs:sequence>
             <xs:element name="fileurl" type="xs:anyURI" />
-            <xs:element name="md5string" type="xs:string" />
+<!--            <xs:element name="md5string" type="xs:string" />-->
         </xs:sequence>
     </xs:complexType>
 

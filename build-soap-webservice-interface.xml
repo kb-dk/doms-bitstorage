@@ -3,6 +3,35 @@
     <property name="interfacejar" value="${ant.project.name}.jar"/>
     <property name="interfacesrcpack.zip" value="${ant.project.name}_src.zip"/>
 
+
+    <!-- Global- and module specific libs -->
+    <fileset id="module.libs" dir="${basedir}/lib">
+        <include name="**/jars/*.jar"/>
+    </fileset>
+
+    <fileset id="project.libs" dir="${global.dir}/lib">
+        <exclude name="**"/>
+    </fileset>
+
+    <fileset id="module.dependencies" dir="${global.dir}/modules">
+        <exclude name="**"/>
+    </fileset>
+
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <exclude name="**"/>
+    </fileset>
+
+
+    <path id="build.classpath">
+        <!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
+        <fileset refid="module.libs"/>
+        <fileset refid="project.libs"/>
+        <fileset refid="module.dependencies"/>
+        <fileset refid="build.project.libs"/>
+    </path>
+
+
+
     <path id="jaxws.classpath">
         <fileset dir="${global.dir}/lib/jaxws-ri-2.1.7/jars">
             <include name="*.jar"/>
@@ -13,9 +42,10 @@
         <classpath refid="jaxws.classpath"/>
     </taskdef>
 
-    <target name="init">
+    <target name="init" depends="interface.changed">
         <mkdir dir="classes"/>
         <mkdir dir="tempsrc"/>
+
     </target>
 
     <target name="clean">
@@ -23,25 +53,40 @@
         <delete dir="tempsrc"/>
     </target>
 
+    <target  name="interface.changed">
+        <uptodate property="interfaceNotChanged">
+            
+                <srcfiles dir="${wsdl.dir}">
+                    <include name="**/*"/>
+                </srcfiles>
 
-    <target name="interface.generate" depends="init">
+            <compositemapper>
+              <mergemapper to="${basedir}/lib/interface/jars/${interfacejar}"/>
+              <mergemapper to="${basedir}/lib/interface/src/${interfacesrcpack.zip}"/>
+            </compositemapper>
+         </uptodate>
+    </target>
+
+    <target name="interface.generate" depends="init" unless="interfaceNotChanged">
         <!--
             <property name="classpath" refid="build.classpath"/>
             <echo message="${classpath}"/>
         -->
-
         <wsimport
                 verbose="true"
-                debug="on"
+                debug="true"
                 sourcedestdir="tempsrc"
                 destdir="classes"
                 package="${wsdl.package}"
                 wsdl="${wsdl.location}"
+                xnocompile="true"
+               
                 >
         </wsimport>
     </target>
 
-    <target name="interface.compile" depends="interface.generate">
+
+    <target name="interface.compile" depends="interface.generate" unless="interfaceNotChanged">
         <javac source="1.6" destdir="classes" debug="on"
                encoding="UTF-8">
             <src path="tempsrc"/>
@@ -50,7 +95,7 @@
     </target>
 
 
-    <target name="interface.jar" depends="interface.compile">
+    <target name="interface.jar" depends="interface.compile" unless="interfaceNotChanged">
 
         <mkdir dir="dist"/>
 
@@ -60,7 +105,7 @@
     </target>
 
 
-    <target name="interface.sourcezip" depends="interface.generate">
+    <target name="interface.sourcezip" depends="interface.generate" unless="interfaceNotChanged">
         <mkdir dir="dist"/>
 
         <zip destfile="dist/${interfacesrcpack.zip}">
@@ -71,7 +116,7 @@
     </target>
 
     <target name="interface.addtolib"
-            depends="interface.dist">
+            depends="interface.dist" unless="interfaceNotChanged">
         <copy file="dist/${interfacejar}" todir="lib/interface/jars"
               overwrite="true"/>
         <copy file="dist/${interfacesrcpack.zip}" todir="lib/interface/src"
@@ -79,7 +124,7 @@
     </target>
 
     <target name="interface.dist"
-            depends="clean,interface.jar,interface.sourcezip">
+            depends="clean,interface.jar,interface.sourcezip" unless="interfaceNotChanged">
     </target>
 
 </project>

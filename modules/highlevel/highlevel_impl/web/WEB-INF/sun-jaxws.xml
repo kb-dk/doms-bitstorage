@@ -3,12 +3,12 @@
 <endpoints xmlns='http://java.sun.com/xml/ns/jax-ws/ri/runtime' version='2.0'>
 
     <endpoint
-            name='Bitstorage'
-            interface='dk.statsbiblioteket.doms.bitstorage.highlevel.BitstorageSoapWebservice'
-            implementation='dk.statsbiblioteket.doms.bitstorage.highlevel.frontend.BitstorageSoapWebserviceImpl'
+            name='HighlevelBitstorage'
+            interface='dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice'
+            implementation='dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebserviceImpl'
             wsdl='WEB-INF/wsdl/highlevel.wsdl'
-            service="{http://highlevel.bitstorage.doms.statsbiblioteket.dk/}BitstorageSoapWebserviceService"
-            port="{http://highlevel.bitstorage.doms.statsbiblioteket.dk/}BitstorageSoapWebservicePort"
+            service="{http://highlevel.bitstorage.doms.statsbiblioteket.dk/}HighlevelBitstorageSoapWebserviceService"
+            port="{http://highlevel.bitstorage.doms.statsbiblioteket.dk/}HighlevelBitstorageSoapWebservicePort"
             url-pattern='/highlevel/'
             />
 </endpoints>

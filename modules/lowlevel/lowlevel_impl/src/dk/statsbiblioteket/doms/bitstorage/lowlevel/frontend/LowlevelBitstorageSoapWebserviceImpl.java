@@ -22,8 +22,8 @@ import java.net.URL;
 
 @MTOM
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice")
-public class BitstorageSoapWebserviceImpl
-        implements BitstorageSoapWebservice {
+public class LowlevelBitstorageSoapWebserviceImpl
+        implements LowlevelBitstorageSoapWebservice {
 
     Bitstorage bs;
 
@@ -80,13 +80,11 @@ public class BitstorageSoapWebserviceImpl
 
     @WebMethod
     public void disapprove(@WebParam(name = "fileurl",
-                                     targetNamespace = "") String fileurl,
-                           @WebParam(name = "md5string",
-                                     targetNamespace = "") String md5String)
+                                     targetNamespace = "") String fileurl)
             throws CommunicationException, FileNotFoundException {
         initialise();
         try {
-            bs.disapprove(new URL(fileurl), md5String);
+            bs.disapprove(new URL(fileurl));
         } catch (BitstorageException e) {
             throw ExceptionMapper.convert(e);
         } catch (MalformedURLException e) {

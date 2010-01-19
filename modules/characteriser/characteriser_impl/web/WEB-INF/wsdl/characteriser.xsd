@@ -19,7 +19,7 @@
     <xs:complexType name="characterisation">
         <xs:sequence>
             <xs:element name="md5CheckSum" type="xs:string"/>
-            <xs:element name="pronomID"  type="xs:string" maxOccurs="unbounded" />
+            <xs:element name="pronomID"  type="xs:anyURI" maxOccurs="unbounded" />
             <xs:element name="validationStatus"  type="xs:string"/>
         </xs:sequence>
     </xs:complexType>

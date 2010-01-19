@@ -8,11 +8,12 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/dist/highlevel_interface.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/interface/jars/highlevel_interface.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
           <root url="jar://$MODULE_DIR$/dist/highlevel_interface_src.zip!/" />
+          <root url="jar://$MODULE_DIR$/lib/interface/src/highlevel_interface_src.zip!/" />
         </SOURCES>
       </library>
     </orderEntry>

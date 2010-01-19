@@ -5,8 +5,11 @@
 
     <property name="wsdl.package"
               value="dk.statsbiblioteket.doms.bitstorage.characteriser"/>
-    <property name="wsdl.location"
-                  value="${global.dir}/modules/characteriser/characteriser_impl/web/WEB-INF/wsdl/characteriser.wsdl"/>
+
+    <property name="wsdl.dir"
+                  value="${global.dir}/modules/characteriser/characteriser_impl/web/WEB-INF/wsdl/"/>
+    <property name="wsdl.file"
+                  value="${wsdl.dir}/characteriser.wsdl"/>
     <!--Contain the targets to build the webservice interface from the
         wsdl.location and add it as a module lib
     -->

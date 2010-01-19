@@ -13,18 +13,12 @@
           <root url="file://$MODULE_DIR$/src" />
         </sourceRoots>
         <building>
-          <setting name="EXPLODED_URL" value="file://$MODULE_DIR$/../../out/exploded/lowlevelbistorageWeb" />
-          <setting name="EXPLODED_ENABLED" value="true" />
+          <setting name="EXPLODED_URL" value="file://" />
+          <setting name="EXPLODED_ENABLED" value="false" />
           <setting name="JAR_URL" value="file://" />
           <setting name="JAR_ENABLED" value="false" />
           <setting name="EXCLUDE_EXPLODED_DIRECTORY" value="true" />
         </building>
-        <packaging>
-          <containerElement type="module" name="impl">
-            <attribute name="method" value="1" />
-            <attribute name="URI" value="/WEB-INF/classes" />
-          </containerElement>
-        </packaging>
       </configuration>
       <facet type="webservices" name="WebServices">
         <configuration ws.engine="Glassfish / JAX-WS 2.X RI / Metro 1.X / JWSDP 2.0" />
@@ -40,6 +34,22 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbutils-0.4.6" level="project" />
+    <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
+    <orderEntry type="library" name="jersey-1.1.4" level="project" />
+    <orderEntry type="library" name="doms-surveillance-status-0.0.1" level="project" />
+    <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
+    <orderEntry type="module" module-name="lowlevel_interface" />
+    <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="jsr311" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -49,12 +59,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
-    <orderEntry type="library" name="jersey-1.1.4" level="project" />
-    <orderEntry type="library" name="doms-surveillance-status-0.0.1" level="project" />
-    <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
-    <orderEntry type="module" module-name="lowlevel_interface" />
-    <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
   </component>
 </module>
 

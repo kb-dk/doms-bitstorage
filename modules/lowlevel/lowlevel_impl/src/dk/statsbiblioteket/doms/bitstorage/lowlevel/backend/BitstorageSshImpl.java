@@ -87,7 +87,7 @@ public class BitstorageSshImpl
     }
 
 
-    public void disapprove(URL file, String md5)
+    public void disapprove(URL file)
             throws CommunicationException, FileNotFoundException {
 
         String datafile = getFileNameFromURL(file);

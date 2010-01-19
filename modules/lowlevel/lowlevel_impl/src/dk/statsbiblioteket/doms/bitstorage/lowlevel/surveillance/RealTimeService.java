@@ -25,31 +25,23 @@
  */
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance;
 
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.*;
 import dk.statsbiblioteket.doms.surveillance.status.Status;
-import dk.statsbiblioteket.doms.surveillance.status.Surveyable;
 import dk.statsbiblioteket.doms.surveillance.status.StatusMessage;
-import dk.statsbiblioteket.doms.surveillance.rest.log4jappender.LogSurveyFactory;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebserviceService;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.BitstorageSoapWebservice;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
+import dk.statsbiblioteket.doms.surveillance.status.Surveyable;
 import dk.statsbiblioteket.util.qa.QAInfo;
+import org.apache.log4j.Logger;
 
-
+import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.annotation.Resource;
-import javax.xml.ws.WebServiceContext;
 import javax.xml.namespace.QName;
-import javax.servlet.ServletConfig;
-
-import java.util.ArrayList;
-import java.net.URL;
 import java.net.MalformedURLException;
-
-import org.apache.log4j.Logger;
+import java.net.URL;
+import java.util.ArrayList;
 
 
 /** Class that exposes real time system info as surveyable messages over REST.
@@ -120,9 +112,9 @@ public class RealTimeService implements Surveyable {
 
         
         String surveyeeName = "Low-level bitstorage";
-        BitstorageSoapWebserviceService bitstorageWebserviceFactory;              
+        LowlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
         URL wsdlLocation = null;
-        BitstorageSoapWebservice bitstorageService;
+        LowlevelBitstorageSoapWebservice bitstorageService;
         Long spaceLeftInBitstorage;              // In bytes.
         ArrayList<StatusMessage> messageList = new ArrayList<StatusMessage>();
         StatusMessage message;
@@ -138,13 +130,13 @@ public class RealTimeService implements Surveyable {
 
         try {
             bitstorageWebserviceFactory
-                    = new BitstorageSoapWebserviceService(wsdlLocation,
+                    = new LowlevelBitstorageSoapWebserviceService(wsdlLocation,
                     new QName("http://"
                             + "lowlevel.bitstorage.doms.statsbiblioteket.dk/",
-                            "BitstorageSoapWebserviceService"));
+                            "LowlevelBitstorageSoapWebserviceService"));
 
             bitstorageService
-                    = bitstorageWebserviceFactory.getBitstorageSoapWebservicePort();
+                    = bitstorageWebserviceFactory.getLowlevelBitstorageSoapWebservicePort();
         } catch (Exception e) {
             // Report lowlevel bitstorage webservice is unreachable
             message = new StatusMessage("Lowlevel bitstorage webservice"

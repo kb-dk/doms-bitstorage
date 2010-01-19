@@ -4,7 +4,7 @@
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              xmlns="http://schemas.xmlsoap.org/wsdl/"
              targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
-             name="BitstorageSoapWebserviceService">
+             name="HighlevelBitstorageSoapWebserviceService">
     <types>
         <xsd:schema>
             <xsd:import
@@ -33,6 +33,17 @@
     <message name="NotEnoughFreeSpaceException">
         <part name="fault" element="tns:NotEnoughFreeSpaceException"/>
     </message>
+    <message name="FileObjectAlreadyInUseException">
+        <part name="fault" element="tns:FileObjectAlreadyInUseException"/>
+    </message>
+    <message name="CharacterisationFailedException">
+        <part name="fault" element="tns:CharacterisationFailedException"/>
+    </message>
+    <message name="ObjectNotFoundException">
+        <part name="fault" element="tns:ObjectNotFoundException"/>
+    </message>
+
+
     <message name="delete">
         <part name="parameters" element="tns:delete"/>
     </message>
@@ -57,7 +68,7 @@
 
 
 
-    <portType name="BitstorageSoapWebservice">
+    <portType name="HighlevelBitstorageSoapWebservice">
         <documentation>Java interface the bitstorage system.
         </documentation>
         <operation name="uploadFileToObject">
@@ -80,6 +91,13 @@
                    name="CommunicationException"/>
             <fault message="tns:NotEnoughFreeSpaceException"
                    name="NotEnoughFreeSpaceException"/>
+            <fault message="tns:FileObjectAlreadyInUseException"
+                        name="FileObjectAlreadyInUseException"/>
+            <fault message="tns:CharacterisationFailedException"
+                        name="CharacterisationFailedException"/>
+            <fault message="tns:ObjectNotFoundException"
+                        name="ObjectNotFoundException"/>
+
         </operation>
         <operation name="delete">
             <documentation>Delete the named file from bitstorage. Only works for
@@ -91,6 +109,11 @@
                    name="CommunicationException"/>
             <fault message="tns:FileNotFoundException"
                    name="FileNotFoundException"/>
+            <fault message="tns:ObjectNotFoundException"
+                        name="ObjectNotFoundException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+
         </operation>
         <operation name="publish">
             <documentation>Check the earlier uploaded file against the provided
@@ -112,6 +135,11 @@
                    name="NotEnoughFreeSpaceException"/>
             <fault message="tns:ChecksumFailedException"
                    name="ChecksumFailedException"/>
+            <fault message="tns:ObjectNotFoundException"
+                        name="ObjectNotFoundException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+
         </operation>
         <operation name="status">
             <documentation>Gives the status of the bitstorage, including
@@ -124,8 +152,8 @@
         </operation>
 
     </portType>
-    <binding name="BitstorageSoapWebservicePortBinding"
-             type="tns:BitstorageSoapWebservice">
+    <binding name="HighlevelBitstorageSoapWebservicePortBinding"
+             type="tns:HighlevelBitstorageSoapWebservice">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
                       style="document"/>
         <operation name="uploadFileToObject">
@@ -151,6 +179,16 @@
             <fault name="NotEnoughFreeSpaceException">
                 <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
             </fault>
+            <fault name="FileObjectAlreadyInUseException">
+                <soap:fault name="FileObjectAlreadyInUseException" use="literal"/>
+            </fault>
+            <fault name="CharacterisationFailedException">
+                <soap:fault name="CharacterisationFailedException" use="literal"/>
+            </fault>
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+
         </operation>
         <operation name="delete">
             <soap:operation soapAction=""/>
@@ -167,6 +205,14 @@
             <fault name="FileNotFoundException">
                 <soap:fault name="FileNotFoundException" use="literal"/>
             </fault>
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+
+
         </operation>
         <operation name="publish">
             <soap:operation soapAction=""/>
@@ -189,6 +235,13 @@
             <fault name="ChecksumFailedException">
                 <soap:fault name="ChecksumFailedException" use="literal"/>
             </fault>
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            
         </operation>
         <operation name="status">
             <soap:operation soapAction=""/>
@@ -204,9 +257,9 @@
         </operation>
 
     </binding>
-    <service name="BitstorageSoapWebserviceService">
-        <port name="BitstorageSoapWebservicePort"
-              binding="tns:BitstorageSoapWebservicePortBinding">
+    <service name="HighlevelBitstorageSoapWebserviceService">
+        <port name="HighlevelBitstorageSoapWebservicePort"
+              binding="tns:HighlevelBitstorageSoapWebservicePortBinding">
 
             <soap:address
                     location="http://localhost:7910/highlevelbitstorage/highlevel/"/>

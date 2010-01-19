@@ -4,7 +4,7 @@
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              xmlns="http://schemas.xmlsoap.org/wsdl/"
              targetNamespace="http://lowlevel.bitstorage.doms.statsbiblioteket.dk/"
-             name="BitstorageSoapWebserviceService">
+             name="LowlevelBitstorageSoapWebserviceService">
     <types>
         <xsd:schema>
             <xsd:import
@@ -74,7 +74,7 @@
     <message name="isApprovedResponse">
         <part name="parameters" element="tns:isApprovedResponse"/>
     </message>
-    <portType name="BitstorageSoapWebservice">
+    <portType name="LowlevelBitstorageSoapWebservice">
         <documentation>Java interface the bitstorage system.
         </documentation>
         <operation name="uploadFile">
@@ -109,6 +109,9 @@
                    name="CommunicationException"/>
             <fault message="tns:FileNotFoundException"
                    name="FileNotFoundException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+
         </operation>
         <operation name="approve">
             <documentation>Check the earlier uploaded file against the provided
@@ -130,6 +133,9 @@
                    name="NotEnoughFreeSpaceException"/>
             <fault message="tns:ChecksumFailedException"
                    name="ChecksumFailedException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+
         </operation>
 
         <operation name="spaceleft">
@@ -164,9 +170,9 @@
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
         </operation>
-    </portType>
-    <binding name="BitstorageSoapWebservicePortBinding"
-             type="tns:BitstorageSoapWebservice">
+    </portType>   
+    <binding name="LowlevelBitstorageSoapWebservicePortBinding"
+             type="tns:LowlevelBitstorageSoapWebservice">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
                       style="document"/>
         <operation name="uploadFile">
@@ -208,6 +214,10 @@
             <fault name="FileNotFoundException">
                 <soap:fault name="FileNotFoundException" use="literal"/>
             </fault>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+
         </operation>
         <operation name="approve">
             <soap:operation soapAction=""/>
@@ -230,6 +240,10 @@
             <fault name="ChecksumFailedException">
                 <soap:fault name="ChecksumFailedException" use="literal"/>
             </fault>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            
         </operation>
         <operation name="spaceleft">
             <soap:operation soapAction=""/>
@@ -289,9 +303,9 @@
             </fault>
         </operation>
     </binding>
-    <service name="BitstorageSoapWebserviceService">
-        <port name="BitstorageSoapWebservicePort"
-              binding="tns:BitstorageSoapWebservicePortBinding">
+    <service name="LowlevelBitstorageSoapWebserviceService">
+        <port name="LowlevelBitstorageSoapWebservicePort"
+              binding="tns:LowlevelBitstorageSoapWebservicePortBinding">
 
             <soap:address
                     location="http://localhost:7910/lowlevelbitstorage/lowlevel/"/>
