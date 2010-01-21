@@ -1,4 +1,9 @@
 <project name="bitstorage" basedir=".">
+    <target name="clean">
+        <subant target="clean">
+            <fileset dir="modules" includes="**/build.xml" excludes="oldwebservices/**"/>
+        </subant>
+    </target>
 
     <target name="dist">
         <mkdir dir="dist"/>
