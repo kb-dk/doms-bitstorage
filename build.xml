@@ -1,7 +1,31 @@
 <project name="bitstorage" basedir=".">
 
-    
-
-
+    <target name="dist">
+        <mkdir dir="dist"/>
+        <subant target="war">
+            <fileset dir="modules/lowlevel/lowlevel_impl" includes="build.xml"/>
+        </subant>
+        <copy todir="dist">
+            <fileset dir="modules/lowlevel/lowlevel_impl/dist/">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
+        <subant target="war">
+            <fileset dir="modules/highlevel/highlevel_impl" includes="build.xml"/>
+        </subant>
+        <copy todir="dist">
+            <fileset dir="modules/highlevel/highlevel_impl/dist/">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
+        <subant target="war">
+            <fileset dir="modules/characteriser/characteriser_impl" includes="build.xml"/>
+        </subant>
+        <copy todir="dist">
+            <fileset dir="modules/characteriser/characteriser_impl/dist/">
+                <include name="*.war"/>
+            </fileset>
+        </copy>
+    </target>
 
 </project>
