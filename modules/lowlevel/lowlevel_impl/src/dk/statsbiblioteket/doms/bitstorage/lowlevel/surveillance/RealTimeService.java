@@ -1,10 +1,11 @@
-/* $Id: RealTimeService.java $
- * $Revision: $
- * $Date: 2009-12-15 3:23:09 PM $
- * $Author: jrgatsb $
+/*
+ * $Id$
+ * $Revision$
+ * $Date$
+ * $Author$
  *
  * The DOMS project.
- * Copyright (C) 2007-2009  The State and University Library
+ * Copyright (C) 2007-2010  The State and University Library
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -14,7 +15,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -23,13 +24,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.*;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebserviceService;
 import dk.statsbiblioteket.doms.surveillance.status.Status;
 import dk.statsbiblioteket.doms.surveillance.status.StatusMessage;
 import dk.statsbiblioteket.doms.surveillance.status.Surveyable;
 import dk.statsbiblioteket.util.qa.QAInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
@@ -37,14 +43,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.xml.ws.soap.SOAPFaultException;
 import javax.xml.namespace.QName;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 /** Class that exposes real time system info for low-level bitstorage as
@@ -55,7 +57,7 @@ import org.apache.commons.logging.LogFactory;
         author = "jrg",
         reviewers = {"kfc"})
 @Path("/RealTimeService/")      // Part of the url to this webservice, inserted
-                                // at * in the relevant url-pattern in web.xml
+// at * in the relevant url-pattern in web.xml
 public class RealTimeService implements Surveyable {
     private Log log = LogFactory.getLog(getClass());
 
@@ -79,6 +81,13 @@ public class RealTimeService implements Surveyable {
      * amount is left, surveillance will report it with a red stop-light
      * severity.*/
     private int requiredSpaceInBitstorage;
+    private final QName serviceName;
+
+    public RealTimeService() {
+        serviceName = new QName("http://"
+                  + "lowlevel.bitstorage.doms.statsbiblioteket.dk/",
+                  "LowlevelBitstorageSoapWebserviceService");
+    }
 
 
     private void initialize() {
@@ -86,15 +95,17 @@ public class RealTimeService implements Surveyable {
         if (servletConfig != null) {
             String preferredBytesLeft;
             String requiredBytesLeft;
+            String packagename = "dk.statsbiblioteket.doms.bitstorage.lowlevel";
 
             location = servletConfig.getInitParameter(
-                    "dk.statsbiblioteket.doms.bitstorage.lowlevel.location");
+                    packagename +".location");
+
             preferredBytesLeft = servletConfig.getInitParameter(
-                    "dk.statsbiblioteket.doms.bitstorage.lowlevel"
-                            + ".preferredBytesLeft");
+                    packagename
+                    + ".preferredBytesLeft");
             requiredBytesLeft = servletConfig.getInitParameter(
-                    "dk.statsbiblioteket.doms.bitstorage.lowlevel"
-                            + ".requiredBytesLeft");
+                    packagename
+                    + ".requiredBytesLeft");
             preferredSpaceInBitstorage = Integer.parseInt(preferredBytesLeft);
             requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
         } else {
@@ -134,7 +145,7 @@ public class RealTimeService implements Surveyable {
         // Or, in one line, for testing-convenience:
         // http://localhost:8080/lowlevelbitstorage/lowlevelbitstoragerealtimesurveillanceservice/RealTimeService/getStatus
 
-        
+
         LowlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
         URL wsdlLocation = null;
         LowlevelBitstorageSoapWebservice bitstorageService;
@@ -152,92 +163,78 @@ public class RealTimeService implements Surveyable {
         try {
             bitstorageWebserviceFactory
                     = new LowlevelBitstorageSoapWebserviceService(wsdlLocation,
-                    new QName("http://"
-                            + "lowlevel.bitstorage.doms.statsbiblioteket.dk/",
-                            "LowlevelBitstorageSoapWebserviceService"));
+                                                                  serviceName);
 
             bitstorageService = bitstorageWebserviceFactory
                     .getLowlevelBitstorageSoapWebservicePort();
         } catch (Exception e) {
             // Report lowlevel bitstorage webservice is unreachable
             return makeStatus(StatusMessage.Severity.RED,
-                    "Lowlevel bitstorage webservice is unreachable."
-                            + " Exception thrown with name: '"
-                            + e.getClass().getName()
-                            + "' and message: ["
-                            + e.getMessage()
-                            +"]"
+                              "Lowlevel bitstorage webservice is unreachable."
+                              + " Exception thrown with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              +"]"
             );
         }
 
         try {
             spaceLeftInBitstorage = bitstorageService.spaceleft();
-        } catch (SOAPFaultException e) {
+        } catch (CommunicationException e) {
+/*
             // Development note: Have tried to find out how to get the
             // exception which is wrapped in the SOAPFaultException, to no
             // avail. A googling found several people asking about the same
             // problem, but no useful answer.
             if (e.getMessage().startsWith("dk.statsbiblioteket.doms.bitstorage"
                     + ".lowlevel.backend.exceptions.CommunicationException:")) {
-                // Report no comms with backend ssh-server
-                return makeStatus(StatusMessage.Severity.RED,
-                        "Lowlevel bitstorage webservice"
-                                + " was called but it couldn't communicate with"
-                                + " backend ssh-server."
-                                + " Exception thrown with name: '"
-                                + e.getClass().getName()
-                                + "' and message: ["
-                                + e.getMessage()
-                                +"]"
-                );
-            } else {
-                // Report something unknown went wrong
-                return makeStatus(StatusMessage.Severity.RED,
-                        "Something went wrong calling"
-                                + " the lowlevel bitstorage webservice."
-                                + " Exception thrown with name: '"
-                                + e.getClass().getName()
-                                + "' and message: ["
-                                + e.getMessage()
-                                +"]"
-                );
-            }
-        } catch (Exception e) {
-            // Report something unknown went wrong
-
-            // Also, compiler demands a CommunicationException to be handled,
-            // though the actual exception received is a SOAPFaultException
-            // wrapping the CommunicationException.
-
+*/
+            // Report no comms with backend ssh-server
             return makeStatus(StatusMessage.Severity.RED,
-                    "Something went wrong calling"
-                            + " the lowlevel bitstorage webservice."
-                            + " Exception thrown with name: '"
-                            + e.getClass().getName()
-                            + "' and message: ["
-                            + e.getMessage()
-                            +"]"
+                              "Lowlevel bitstorage webservice"
+                              + " was called but it couldn't communicate with"
+                              + " backend ssh-server."
+                              + " Exception thrown with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              +"]"
+            );
+        } catch (Exception e) {
+
+            // Report something unknown went wrong
+            return makeStatus(StatusMessage.Severity.RED,
+                              "Something went wrong calling"
+                              + " the lowlevel bitstorage webservice."
+                              + " Exception thrown with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              +"]"
             );
         }
+
+
 
         if (spaceLeftInBitstorage < requiredSpaceInBitstorage) {
             // Report too little space
             return makeStatus(StatusMessage.Severity.RED,
-                    "Not enough space" +
-                    "in bitstorage. Remaining size must be atleast "
-                    + requiredSpaceInBitstorage + " bytes.");
+                              "Not enough space" +
+                              "in bitstorage. Remaining size must be atleast "
+                              + requiredSpaceInBitstorage + " bytes.");
         } else if (spaceLeftInBitstorage < preferredSpaceInBitstorage) {
             // Report close to too little space
             return makeStatus(StatusMessage.Severity.YELLOW,
-                    "Space left in bitstorage is getting"
-                    + " dangerously close to the lower limit in bitstorage."
-                    + " Remaining size should be atleast "
-                    + preferredSpaceInBitstorage + " bytes.");
+                              "Space left in bitstorage is getting"
+                              + " dangerously close to the lower limit in bitstorage."
+                              + " Remaining size should be atleast "
+                              + preferredSpaceInBitstorage + " bytes.");
         } else {
             // Report everything ok
             return makeStatus(StatusMessage.Severity.GREEN,
-                    "Lowlevel bitstorage is up, and there is enough space."
-                    + " Currently " + spaceLeftInBitstorage + " bytes left.");
+                              "Lowlevel bitstorage is up, and there is enough space."
+                              + " Currently " + spaceLeftInBitstorage + " bytes left.");
         }
     }
 
@@ -255,12 +252,12 @@ public class RealTimeService implements Surveyable {
                     severity,
             String message) {
         log.trace("Entered method makeStatus('" + severity + "', '" + message
-                + "')");
+                  + "')");
         ArrayList<StatusMessage> messageList = new ArrayList<StatusMessage>();
         StatusMessage statusMessage;
 
         statusMessage = new StatusMessage(message, severity,
-                System.currentTimeMillis(), false);
+                                          System.currentTimeMillis(), false);
         messageList.add(statusMessage);
         return new Status(SURVEYEE_NAME, messageList);
     }

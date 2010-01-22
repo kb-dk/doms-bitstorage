@@ -40,24 +40,7 @@
     <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
     <orderEntry type="module" module-name="lowlevel_interface" />
     <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.7.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.5.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="module" module-name="exceptionmapper" />
     <orderEntry type="library" name="jsr311-api-1.0" level="project" />
   </component>
 </module>

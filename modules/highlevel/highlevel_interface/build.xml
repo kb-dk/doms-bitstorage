@@ -1,3 +1,30 @@
+<!--
+  ~ $Id$
+  ~ $Revision$
+  ~ $Date$
+  ~ $Author$
+  ~
+  ~ The DOMS project.
+  ~ Copyright (C) 2007-2010  The State and University Library
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <project name="highlevel_interface" basedir=".">
 
     <property name="global.dir" value="${basedir}/../../.."/>
@@ -6,9 +33,12 @@
     <property name="wsdl.package"
               value="dk.statsbiblioteket.doms.bitstorage.highlevel"/>
     <property name="wsdl.dir"
-                  value="${global.dir}/modules/highlevel/highlevel_impl/web/WEB-INF/wsdl/"/>
+                  value="data/wsdl"/>
     <property name="wsdl.file"
                   value="${wsdl.dir}/highlevel.wsdl"/>
+    <property name="generalSuperExceptionName"
+                  value="dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException"/>
+
 
     <!--Contain the targets to build the webservice interface from the
         wsdl.location and add it as a module lib
@@ -23,4 +53,13 @@
         <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
 
+    <fileset id="module.dependencies" dir="${global.dir}/modules">
+        <include name="exceptionmapper/lib/exceptionmapper/jars/*.jar"/>
+    </fileset>
+
+    <target name="depends">
+        <ant dir="${global.dir}/modules/exceptionmapper" target="addtolib"/>
+    </target>
+
+        
 </project>

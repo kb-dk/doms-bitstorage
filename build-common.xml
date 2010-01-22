@@ -1,0 +1,99 @@
+<!--
+  ~ $Id$
+  ~ $Revision$
+  ~ $Date$
+  ~ $Author$
+  ~
+  ~ The DOMS project.
+  ~ Copyright (C) 2007-2010  The State and University Library
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project name="common">
+
+    <property name="jarfile" value="${ant.project.name}.jar"/>
+    <property name="srcpack.zip" value="${ant.project.name}-src.zip"/> 
+
+    <import file="build-dependencies.xml"/>
+
+    <target name="compile" depends="depends"
+            description="Compile all production classes, and copy properties to class dir">
+
+        <mkdir dir="classes"/>
+
+        <javac source="1.6" destdir="classes" debug="on"
+               encoding="UTF-8">
+            <src path="src"/>
+            <classpath refid="build.classpath"/>
+        </javac>
+        <copy todir="classes">
+            <fileset dir="src">
+                <include name="**/*.xml"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <target name="clean">
+        <delete dir="classes"/>
+        <delete dir="tempsrc"/>
+    </target>
+
+    <target name="distclean" depends="clean">
+        <delete dir="dist"/>
+
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="dist"/>
+
+        <jar destfile="dist/${jarfile}"
+             basedir="classes"/>
+
+    </target>
+
+    <target  name="dist" depends="jar">
+        <mkdir dir="dist"/>
+        <copy todir="dist" flatten="true">
+            <fileset refid="module.libs"/>
+            <fileset refid="project.libs"/>
+            <fileset refid="module.dependencies"/>
+        </copy>
+    </target>
+
+    <target name="sourcezip">
+        <mkdir dir="dist"/>
+
+        <zip destfile="dist/${srcpack.zip}">
+            <zipfileset dir="src">
+                <include name="**/*.java"/>
+            </zipfileset>
+        </zip>
+    </target>
+
+    <target name="addtolib"
+            depends="dist,sourcezip" >
+        <copy file="dist/${jarfile}" todir="lib/${ant.project.name}/jars"
+              overwrite="true"/>
+        <copy file="dist/${srcpack.zip}" todir="lib/${ant.project.name}/src"
+              overwrite="true"/>
+    </target>
+
+
+</project>

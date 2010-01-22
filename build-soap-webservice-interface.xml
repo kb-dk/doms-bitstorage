@@ -1,35 +1,36 @@
+<!--
+  ~ $Id$
+  ~ $Revision$
+  ~ $Date$
+  ~ $Author$
+  ~
+  ~ The DOMS project.
+  ~ Copyright (C) 2007-2010  The State and University Library
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
 <project name="soap-webservice-interface">
 
     <property name="interfacejar" value="${ant.project.name}.jar"/>
     <property name="interfacesrcpack.zip" value="${ant.project.name}_src.zip"/>
 
-
-    <!-- Global- and module specific libs -->
-    <fileset id="module.libs" dir="${basedir}/lib">
-        <include name="**/jars/*.jar"/>
-    </fileset>
-
-    <fileset id="project.libs" dir="${global.dir}/lib">
-        <exclude name="**"/>
-    </fileset>
-
-    <fileset id="module.dependencies" dir="${global.dir}/modules">
-        <exclude name="**"/>
-    </fileset>
-
-    <fileset id="build.project.libs" dir="${global.dir}/lib">
-        <exclude name="**"/>
-    </fileset>
-
-
-    <path id="build.classpath">
-        <!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
-        <fileset refid="module.libs"/>
-        <fileset refid="project.libs"/>
-        <fileset refid="module.dependencies"/>
-        <fileset refid="build.project.libs"/>
-    </path>
-
+    <import file="build-dependencies.xml"/>
 
 
     <path id="jaxws.classpath">
@@ -42,6 +43,7 @@
         <classpath refid="jaxws.classpath"/>
     </taskdef>
 
+
     <target name="init" depends="interface.changed">
         <mkdir dir="classes"/>
         <mkdir dir="tempsrc"/>
@@ -53,21 +55,30 @@
         <delete dir="tempsrc"/>
     </target>
 
-    <target  name="interface.changed">
-        <uptodate property="interfaceNotChanged">
-            
-                <srcfiles dir="${wsdl.dir}">
-                    <include name="**/*"/>
-                </srcfiles>
-
-            <compositemapper>
-              <mergemapper to="${basedir}/lib/interface/jars/${interfacejar}"/>
-              <mergemapper to="${basedir}/lib/interface/src/${interfacesrcpack.zip}"/>
-            </compositemapper>
-         </uptodate>
+    <target name="interface.forceRebuild" >
+        <!--TODO so that new revisions are not created-->
+        <touch file="${wsdl.file}"/>
+        <antcall target="interface.addtolib"/>
     </target>
 
-    <target name="interface.generate" depends="init" unless="interfaceNotChanged">
+    <target name="interface.changed">
+        <uptodate property="interfaceNotChanged">
+
+            <srcfiles dir="${wsdl.dir}">
+                <include name="**/*"/>
+            </srcfiles>
+
+            <compositemapper>
+                <mergemapper
+                        to="${basedir}/lib/interface/jars/${interfacejar}"/>
+                <mergemapper
+                        to="${basedir}/lib/interface/src/${interfacesrcpack.zip}"/>
+            </compositemapper>
+        </uptodate>
+    </target>
+
+    <target name="interface.generate" depends="init"
+            unless="interfaceNotChanged">
         <!--
             <property name="classpath" refid="build.classpath"/>
             <echo message="${classpath}"/>
@@ -80,22 +91,42 @@
                 package="${wsdl.package}"
                 wsdl="${wsdl.file}"
                 xnocompile="true"
-               
+
                 >
         </wsimport>
+        <antcall target="interface.generalSuperException"/>
+    </target>
+
+    <target name="interface.generalSuperException" if="generalSuperExceptionName"
+            unless="interfaceNotChanged">
+        <replace dir="tempsrc" token="extends Exception"
+                 value="extends ${generalSuperExceptionName}">
+            <include name="**/*.java"/>
+        </replace>
+        <replaceregexp
+                flags="mg"
+                match="(^\s*throws\s*.*)\n\s*;"
+                 replace="\1, ${generalSuperExceptionName};">
+            <fileset dir="tempsrc">
+            <include name="**/*.java"/>
+                </fileset>
+        </replaceregexp>
     </target>
 
 
-    <target name="interface.compile" depends="interface.generate" unless="interfaceNotChanged">
+    <target name="interface.compile" depends="interface.generate,depends"
+            unless="interfaceNotChanged">
         <javac source="1.6" destdir="classes" debug="on"
                encoding="UTF-8">
             <src path="tempsrc"/>
+            <src path="src"/>
             <classpath refid="build.classpath"/>
         </javac>
     </target>
 
 
-    <target name="interface.jar" depends="interface.compile" unless="interfaceNotChanged">
+    <target name="interface.jar" depends="interface.compile"
+            unless="interfaceNotChanged">
 
         <mkdir dir="dist"/>
 
@@ -105,11 +136,15 @@
     </target>
 
 
-    <target name="interface.sourcezip" depends="interface.generate" unless="interfaceNotChanged">
+    <target name="interface.sourcezip" depends="interface.generate"
+            unless="interfaceNotChanged">
         <mkdir dir="dist"/>
 
         <zip destfile="dist/${interfacesrcpack.zip}">
             <zipfileset dir="tempsrc">
+                <include name="**/*.java"/>
+            </zipfileset>
+            <zipfileset dir="src">
                 <include name="**/*.java"/>
             </zipfileset>
         </zip>
@@ -117,14 +152,25 @@
 
     <target name="interface.addtolib"
             depends="interface.dist" unless="interfaceNotChanged">
-        <copy file="dist/${interfacejar}" todir="lib/interface/jars"
-              overwrite="true"/>
+<!--
+        <copy todir="dist" flatten="true">
+            <fileset refid="module.dependencies"/>
+        </copy>
+-->
+
+        <copy todir="lib/interface/jars"
+              overwrite="true">
+            <fileset dir="dist">
+            <include name="*.jar"/>
+            </fileset>
+        </copy>
         <copy file="dist/${interfacesrcpack.zip}" todir="lib/interface/src"
               overwrite="true"/>
     </target>
 
     <target name="interface.dist"
-            depends="clean,interface.jar,interface.sourcezip" unless="interfaceNotChanged">
+            depends="clean,interface.jar,interface.sourcezip"
+            unless="interfaceNotChanged">
     </target>
 
 </project>
