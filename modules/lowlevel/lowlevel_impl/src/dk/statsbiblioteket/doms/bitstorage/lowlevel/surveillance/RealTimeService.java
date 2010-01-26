@@ -107,16 +107,29 @@ public class RealTimeService implements Surveyable {
      * severity.*/
     private int requiredSpaceInBitstorage;
 
-    /* TODO ABR added this, and forgot to JavaDoc it.. */
+    /**
+     * The fully qualified name of the service to monitor
+     * @see #SERVICE_NAME
+     * @see #SERVICE_NAMESPACE_URI
+     */
     private final QName serviceName;
+    /**
+     * The namespace of the service
+     */
+    private static final String SERVICE_NAMESPACE_URI = "http://"
+                + "lowlevel.bitstorage.doms.statsbiblioteket.dk/";
+    /**
+     * The name of the service
+     */
+    private static final String SERVICE_NAME =
+            "LowlevelBitstorageSoapWebserviceService";
 
 
     public RealTimeService() {
         log.trace("Entered constructor RealTimeService()");
-        serviceName = new QName("http://"
-                + "lowlevel.bitstorage.doms.statsbiblioteket.dk/",
-                "LowlevelBitstorageSoapWebserviceService");
-        // TODO ABR, please put the above url in a properly named constant
+        serviceName = new QName(SERVICE_NAMESPACE_URI,
+                                SERVICE_NAME);
+
     }
 
 
