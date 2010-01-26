@@ -113,11 +113,13 @@ public class RealTimeService implements Surveyable {
      * @see #SERVICE_NAMESPACE_URI
      */
     private final QName serviceName;
+
     /**
      * The namespace of the service
      */
     private static final String SERVICE_NAMESPACE_URI = "http://"
                 + "lowlevel.bitstorage.doms.statsbiblioteket.dk/";
+
     /**
      * The name of the service
      */
@@ -127,8 +129,7 @@ public class RealTimeService implements Surveyable {
 
     public RealTimeService() {
         log.trace("Entered constructor RealTimeService()");
-        serviceName = new QName(SERVICE_NAMESPACE_URI,
-                                SERVICE_NAME);
+        serviceName = new QName(SERVICE_NAMESPACE_URI, SERVICE_NAME);
 
     }
 
