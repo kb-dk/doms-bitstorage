@@ -53,7 +53,7 @@ if (includes != null){
 
 if (excludes != null){
     for (var i=0;i<excludes.length;i++){
-        fileset.setExcludes(excludes[i]+"/dist/**/*.jar");
+        fileset.setExcludes(excludes[i]);
     }
 }
 
