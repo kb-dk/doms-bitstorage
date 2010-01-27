@@ -55,4 +55,46 @@
         <servlet-name>WSServlet</servlet-name>
         <url-pattern>/highlevel/*</url-pattern>
     </servlet-mapping>
+
+
+
+
+    <!--Below here is the surveilance-->
+
+    <servlet>
+        <servlet-name>Highlevel Bitstorage Log Surveillance</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>dk.statsbiblioteket.doms.surveillance.rest
+            </param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Highlevel Bitstorage Log Surveillance</servlet-name>
+        <url-pattern>/highlevelbitstoragelogsurveillanceservice/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>Highlevel Bitstorage Real Time Surveillance</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.location
+            </param-name>
+            <param-value>http://localhost:8080/highlevelbitstorage/highlevel/?wsdl
+            </param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Highlevel Bitstorage Real Time Surveillance</servlet-name>
+        <url-pattern>/highlevelbitstoragerealtimesurveillanceservice/*</url-pattern>
+    </servlet-mapping>
+    
 </web-app>

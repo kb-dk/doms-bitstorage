@@ -36,6 +36,10 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="exceptionmapper" />
+    <orderEntry type="library" name="doms-surveillance-status-0.0.1" level="project" />
+    <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
+    <orderEntry type="library" name="jersey-1.1.4" level="project" />
+    <orderEntry type="library" name="jsr311-api-1.0" level="project" />
   </component>
 </module>
 
