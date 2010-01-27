@@ -492,6 +492,21 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/lib/jsr311-api-1.0/jars" recursive="false" />
     </library>
+    <library name="rhino">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/jars/js-14.jar!/" />
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/jars/js.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/src/rhino1_7R2.zip!/rhino1_7R2/javadoc" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/src/rhino1_7R2.zip!/rhino1_7R2/xmlimplsrc" />
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/src/rhino1_7R2.zip!/rhino1_7R2/toolsrc" />
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/src/rhino1_7R2.zip!/rhino1_7R2/src" />
+        <root url="jar://$PROJECT_DIR$/build-libs/rhino/src/rhino1_7R2.zip!/rhino1_7R2/testsrc" />
+      </SOURCES>
+    </library>
   </component>
 </project>
 

@@ -34,7 +34,7 @@
               value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
 
     <property name="wsdl.dir"
-                  value="data/wsdl"/>
+                  value="${global.dir}/modules/lowlevel/lowlevel_interface/data/wsdl"/>
     <property name="wsdl.file"
                   value="${wsdl.dir}/lowlevel.wsdl"/>
     <property name="generalSuperExceptionName"
@@ -53,13 +53,5 @@
         <include name="sbutils-0.4.6/jars/**/*.jar"/>
         <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
     </fileset>
-
-    <fileset id="module.dependencies" dir="${global.dir}/modules">
-        <include name="exceptionmapper/lib/exceptionmapper/jars/*.jar"/>
-    </fileset>
-
-    <target name="depends">
-        <ant dir="${global.dir}/modules/exceptionmapper" target="addtolib"/>
-    </target>
 
 </project>

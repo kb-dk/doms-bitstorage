@@ -7,17 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library name="exceptionmapper">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/exceptionmapper/jars/exceptionmapper.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/exceptionmapper/src/exceptionmapper-src.zip!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>
 

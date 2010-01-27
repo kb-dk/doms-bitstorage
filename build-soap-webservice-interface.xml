@@ -27,10 +27,7 @@
 
 <project name="soap-webservice-interface">
 
-    <property name="interfacejar" value="${ant.project.name}.jar"/>
-    <property name="interfacesrcpack.zip" value="${ant.project.name}_src.zip"/>
-
-    <import file="build-dependencies.xml"/>
+    <import file="build-common.xml"/>
 
 
     <path id="jaxws.classpath">
@@ -50,15 +47,14 @@
 
     </target>
 
-    <target name="clean">
-        <delete dir="classes"/>
+    <target name="_postclean">
         <delete dir="tempsrc"/>
     </target>
 
     <target name="interface.forceRebuild" >
         <!--TODO so that new revisions are not created-->
-        <touch file="${wsdl.file}"/>
-        <antcall target="interface.addtolib"/>
+        <touch file="${wsdl.file}" />
+        <antcall target="dist"/>
     </target>
 
     <target name="interface.changed">
@@ -70,11 +66,15 @@
 
             <compositemapper>
                 <mergemapper
-                        to="${basedir}/lib/interface/jars/${interfacejar}"/>
+                        to="${basedir}/dist/${jarfile}"/>
                 <mergemapper
-                        to="${basedir}/lib/interface/src/${interfacesrcpack.zip}"/>
+                        to="${basedir}/dist/${srcpack.zip}"/>
             </compositemapper>
         </uptodate>
+    </target>
+
+    <target  name="_precompile">
+        <antcall target="interface.generate"/>
     </target>
 
     <target name="interface.generate" depends="init"
@@ -114,63 +114,5 @@
     </target>
 
 
-    <target name="interface.compile" depends="interface.generate,depends"
-            unless="interfaceNotChanged">
-        <javac source="1.6" destdir="classes" debug="on"
-               encoding="UTF-8">
-            <src path="tempsrc"/>
-            <src path="src"/>
-            <classpath refid="build.classpath"/>
-        </javac>
-    </target>
-
-
-    <target name="interface.jar" depends="interface.compile"
-            unless="interfaceNotChanged">
-
-        <mkdir dir="dist"/>
-
-        <jar destfile="dist/${interfacejar}"
-             basedir="classes"/>
-
-    </target>
-
-
-    <target name="interface.sourcezip" depends="interface.generate"
-            unless="interfaceNotChanged">
-        <mkdir dir="dist"/>
-
-        <zip destfile="dist/${interfacesrcpack.zip}">
-            <zipfileset dir="tempsrc">
-                <include name="**/*.java"/>
-            </zipfileset>
-            <zipfileset dir="src">
-                <include name="**/*.java"/>
-            </zipfileset>
-        </zip>
-    </target>
-
-    <target name="interface.addtolib"
-            depends="interface.dist" unless="interfaceNotChanged">
-<!--
-        <copy todir="dist" flatten="true">
-            <fileset refid="module.dependencies"/>
-        </copy>
--->
-
-        <copy todir="lib/interface/jars"
-              overwrite="true">
-            <fileset dir="dist">
-            <include name="*.jar"/>
-            </fileset>
-        </copy>
-        <copy file="dist/${interfacesrcpack.zip}" todir="lib/interface/src"
-              overwrite="true"/>
-    </target>
-
-    <target name="interface.dist"
-            depends="clean,interface.jar,interface.sourcezip"
-            unless="interfaceNotChanged">
-    </target>
 
 </project>

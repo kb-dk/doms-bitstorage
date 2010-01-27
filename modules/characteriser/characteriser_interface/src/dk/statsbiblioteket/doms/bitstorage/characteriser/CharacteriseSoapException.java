@@ -27,8 +27,6 @@
 
 package dk.statsbiblioteket.doms.bitstorage.characteriser;
 
-import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
-
 /**
  * Created by IntelliJ IDEA.
  * User: abr
@@ -36,7 +34,7 @@ import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
  * Time: 5:47:13 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CharacteriseSoapException extends ConvertableCheckedException{
+public class CharacteriseSoapException extends Exception{
     public CharacteriseSoapException() {
     }
 

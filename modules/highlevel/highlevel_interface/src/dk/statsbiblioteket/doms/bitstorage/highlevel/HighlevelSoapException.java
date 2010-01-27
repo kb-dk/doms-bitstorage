@@ -27,7 +27,7 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
-import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +36,7 @@ import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
  * Time: 4:18:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HighlevelSoapException extends ConvertableCheckedException {
+public class HighlevelSoapException extends Exception {
     public HighlevelSoapException() {
     }
 

@@ -27,7 +27,7 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions;
 
-import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
+
 
 
 /**
@@ -37,7 +37,7 @@ import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
  * Time: 2:09:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class HighlevelException extends ConvertableCheckedException {
+public abstract class HighlevelException extends Exception {
 
     protected HighlevelException() {
     }

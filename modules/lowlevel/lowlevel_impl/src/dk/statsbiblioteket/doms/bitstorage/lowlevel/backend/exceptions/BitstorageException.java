@@ -31,7 +31,7 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
  * TODO abr forgot to document this class
  */
 public abstract class BitstorageException
-        extends dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException {
+        extends Exception {
 
     public BitstorageException() {
     }

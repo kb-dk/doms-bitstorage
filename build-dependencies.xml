@@ -27,6 +27,9 @@
 
 <!-- Global- and module specific libs -->
 <project name="dependencies">
+
+    <property name="global.dir" value="${basedir}"/>
+
     <fileset id="module.libs" dir="${basedir}/lib">
         <include name="**/jars/*.jar"/>
     </fileset>
@@ -35,26 +38,37 @@
         <exclude name="**"/>
     </fileset>
 
-    <fileset id="module.dependencies" dir="${global.dir}/modules">
+
+    <dirset id="module.dependencies" dir="${global.dir}/modules">
         <exclude name="**"/>
-    </fileset>
+    </dirset>
+
 
     <fileset id="build.project.libs" dir="${global.dir}/lib">
         <exclude name="**"/>
     </fileset>
 
 
-    <path id="build.classpath">
-        <!--        <pathelement location="${java.home}/../lib/tools.jar"/>-->
-        <fileset refid="module.libs"/>
-        <fileset refid="project.libs"/>
-        <fileset refid="module.dependencies"/>
-        <fileset refid="build.project.libs"/>
+
+
+
+
+
+
+    <path id="rhino.classpath">
+        <fileset dir="${global.dir}/build-libs/rhino/jars">
+            <include name="*.jar"/>
+        </fileset>
     </path>
 
-
-    <target name="depends">
-        <!--        <ant dir="${modules.dir}/repository" target="jar"/>-->
+    <target name="depends" depends="_predepends">
+        <script language="javascript" classpathref="rhino.classpath" src="${global.dir}/dependsforloop.js"/>
+        <antcall target="_postdepends"/>
     </target>
+
+    <target  name="_postdepends"/>
+    <target name="_predepends"/>
+
+
 
 </project>

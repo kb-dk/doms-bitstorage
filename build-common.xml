@@ -27,37 +27,81 @@
 
 <project name="common">
 
+
+    <property name="global.dir" value="${basedir}"/>
     <property name="jarfile" value="${ant.project.name}.jar"/>
-    <property name="srcpack.zip" value="${ant.project.name}-src.zip"/> 
+    <property name="srcpack.zip" value="${ant.project.name}-src.zip"/>
 
     <import file="build-dependencies.xml"/>
 
-    <target name="compile" depends="depends"
+    <target  name="_preclean"/>
+    <target  name="_postclean"/>
+    <target  name="_postcompile"/>
+    <target name="_precompile"/>
+    <target name="_predist"/>
+    <target  name="_postdist"/>
+
+    <dirset id="module.dependencies" dir="${global.dir}/modules">
+        <exclude name="**"/>
+    </dirset>
+
+    <fileset id="module.dependencies.jars" dir="${global.dir}/modules">
+        <exclude name="**"/>
+    </fileset>
+
+
+    <path id="build.classpath">
+        <fileset refid="module.libs"/>
+        <fileset refid="project.libs"/>
+        <fileset  refid="module.dependencies.jars"/>
+        <fileset refid="build.project.libs"/>
+    </path>
+
+
+    <target name="clean" depends="_preclean"
+            description="Cleans the package of all build artifacts.">
+        <delete dir="classes"/>
+        <delete dir="tempsrc"/>
+        <delete dir="dist"/>
+        <antcall target="_postclean"/>
+    </target>
+
+
+
+    <target  name="init"/>
+
+    <target name="compile" depends="init,depends,_precompile"
             description="Compile all production classes, and copy properties to class dir">
 
-        <mkdir dir="classes"/>
+        <pathconvert property="module.dependencies.pathconvert" refid="module.dependencies">
+            <mapper type="regexp" from="^(.)*" to="\0/dist/\*.jar"/>
+        </pathconvert>
 
+        <script language="javascript" classpathref="rhino.classpath" src="${global.dir}/convertPath.js"/>
+<!--
+        <property name="build.classpath.echo" refid="build.classpath"/>
+        <echo message="classpath = ${build.classpath.echo}"/>
+-->
+        <mkdir dir="classes"/>
+        <mkdir  dir="tempsrc"/>
         <javac source="1.6" destdir="classes" debug="on"
                encoding="UTF-8">
-            <src path="src"/>
+            <src>
+                <pathelement path="src"/>
+                <pathelement path="tempsrc"/>
+            </src>
             <classpath refid="build.classpath"/>
         </javac>
         <copy todir="classes">
             <fileset dir="src">
                 <include name="**/*.xml"/>
             </fileset>
+            <fileset dir="tempsrc">
+                <include name="**/*.xml"/>
+            </fileset>
+
         </copy>
-    </target>
-
-
-    <target name="clean">
-        <delete dir="classes"/>
-        <delete dir="tempsrc"/>
-    </target>
-
-    <target name="distclean" depends="clean">
-        <delete dir="dist"/>
-
+        <antcall target="_postcompile"/>
     </target>
 
     <target name="jar" depends="compile">
@@ -68,13 +112,14 @@
 
     </target>
 
-    <target  name="dist" depends="jar">
+    <target  name="dist" depends="jar,sourcezip,_predist"
+            description="Build the distributable package">
         <mkdir dir="dist"/>
+
         <copy todir="dist" flatten="true">
             <fileset refid="module.libs"/>
-            <fileset refid="project.libs"/>
-            <fileset refid="module.dependencies"/>
         </copy>
+        <antcall target="_postdist"/>
     </target>
 
     <target name="sourcezip">
@@ -82,18 +127,15 @@
 
         <zip destfile="dist/${srcpack.zip}">
             <zipfileset dir="src">
-                <include name="**/*.java"/>
+                <include name="**/*"/>
+            </zipfileset>
+            <zipfileset dir="tempsrc">
+                <include name="**/*"/>
             </zipfileset>
         </zip>
     </target>
 
-    <target name="addtolib"
-            depends="dist,sourcezip" >
-        <copy file="dist/${jarfile}" todir="lib/${ant.project.name}/jars"
-              overwrite="true"/>
-        <copy file="dist/${srcpack.zip}" todir="lib/${ant.project.name}/src"
-              overwrite="true"/>
-    </target>
+
 
 
 </project>

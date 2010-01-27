@@ -27,7 +27,6 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel;
 
-import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +35,7 @@ import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
  * Time: 5:51:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LowlevelSoapException extends ConvertableCheckedException{
+public class LowlevelSoapException extends Exception{
     public LowlevelSoapException() {
     }
 

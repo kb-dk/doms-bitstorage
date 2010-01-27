@@ -42,11 +42,6 @@
         add it as a module lib
     -->
 
-    <fileset id="module.dependencies" dir="${global.dir}/modules">
-<include name="characteriser/characteriser_interface/dist/*.jar"/>
-        <include name="exceptionmapper/lib/exceptionmapper/jars/*.jar"/>
-    </fileset>
-
 
 
     <!--Project libs used by this module-->
@@ -58,13 +53,11 @@
     <fileset id="build.project.libs" dir="${global.dir}/lib">
         <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
     </fileset>
-    
 
-    <target name="depends">
-
-        <ant dir="${global.dir}/modules/characteriser/characteriser_interface" target="interface.dist"/>
-        <ant dir="${global.dir}/modules/exceptionmapper" target="addtolib"/>
-    </target>
+    <dirset  id="module.dependencies" dir="${global.dir}/modules/">
+        <include name="exceptionmapper"/>
+        <include name="characteriser/characteriser_interface"/>
+    </dirset>
 
 
 </project>

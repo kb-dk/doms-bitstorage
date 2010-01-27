@@ -27,7 +27,7 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
 
-import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,7 +36,7 @@ import dk.statsbiblioteket.doms.exceptions.ConvertableCheckedException;
  * Time: 6:01:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FedoraException extends ConvertableCheckedException{
+public class FedoraException extends Exception{
 
     public FedoraException() {
     }

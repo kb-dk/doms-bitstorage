@@ -105,7 +105,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
         } catch (IOException e) {
             throw new WebServiceException(e);
         } catch (BitstorageException e) {
-            throw e.convert(bitstorageMapper);
+            throw bitstorageMapper.convertMostApplicable(e);
         }
         catch (Exception e){
             log.error(e);
@@ -122,7 +122,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
         try {
             bs.disapprove(new URL(fileurl));
         } catch (BitstorageException e) {
-            throw e.convert(bitstorageMapper);
+            throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
                     e.getMessage(),
@@ -147,7 +147,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
         try {
             bs.approve(new URL(fileurl), md5String);
         } catch (BitstorageException e) {
-            throw e.convert(bitstorageMapper);
+            throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
                     e.getMessage(),
@@ -171,8 +171,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
 //            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException("My test exception");
             return bs.spaceleft();
         } catch (BitstorageException e){
-            LowlevelSoapException f = e.convert(bitstorageMapper);
-            throw f;
+            throw bitstorageMapper.convertMostApplicable(e);
         } catch (Exception e){
             log.error(e);
             throw new WebServiceException(e);
@@ -188,7 +187,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
         try {
             return bs.getMaxFileSize();
         } catch (BitstorageException e) {
-            throw e.convert(bitstorageMapper);
+            throw bitstorageMapper.convertMostApplicable(e);
         } catch (Exception e){
             log.error(e);
             throw new WebServiceException(e);
@@ -204,7 +203,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
         try {
             return bs.getMd5(new URL(fileurl));
         } catch (BitstorageException e) {
-            throw e.convert(bitstorageMapper);
+            throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
                     e.getMessage(),
@@ -227,7 +226,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
         try {
             return bs.isApproved(new URL(fileurl));
         } catch (BitstorageException e) {
-            throw e.convert(bitstorageMapper);
+            throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
                     e.getMessage(),

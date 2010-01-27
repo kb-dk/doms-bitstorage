@@ -45,20 +45,15 @@
     <fileset id="build.project.libs" dir="${global.dir}/lib">
         <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
     </fileset>
-    
 
-    <fileset id="module.dependencies" dir="${global.dir}/modules">
-        <include name="highlevel/highlevel_interface/lib/interface/jars/*.jar"/>
-        <include name="lowlevel/lowlevel_interface/lib/interface/jars/*.jar"/>
-        <include name="characteriser/characteriser_interface/lib/interface/jars/*.jar"/>
-        <include name="exceptionmapper/lib/exceptionmapper/jars/*.jar"/>
-    </fileset>
+    <dirset  id="module.dependencies" dir="${global.dir}/modules/">
+        <include name="exceptionmapper"/>
+        <include name="lowlevel/lowlevel_interface"/>
+                <include name="characteriser/characteriser_interface"/>
+                <include name="highlevel/highlevel_interface"/>
 
-    <target name="depends">
-                <ant dir="${global.dir}/modules/exceptionmapper" target="addtolib" inheritall="false"/>
-        <ant dir="${global.dir}/modules/highlevel/highlevel_interface" target="interface.addtolib" inheritall="false"/>
-        <ant dir="${global.dir}/modules/lowlevel/lowlevel_interface" target="interface.addtolib" inheritall="false"/>
-        <ant dir="${global.dir}/modules/characteriser/characteriser_interface" target="interface.addtolib" inheritall="false"/>
-    </target>
+    </dirset>
 
+
+   
 </project>

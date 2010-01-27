@@ -40,12 +40,12 @@ import java.util.Map;
  * Time: 2:10:15 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class  ExceptionMapper <E1 extends Exception,E2 extends ConvertableException>{
+public abstract class  ExceptionMapper <E1 extends Exception,E2 extends Exception>{
 
     public abstract E1 convert(E2 ce);
 
-    public final E1 convertMostApplicable(ConvertableException ce){
-        Class<? extends ConvertableException> ceclass = ce.getClass();
+    public final E1 convertMostApplicable(E2 ce){
+        Class<? extends Exception> ceclass = ce.getClass();
         List<Class<?>> typearguments =
                 getTypeArguments(ExceptionMapper.class, getClass());
         Class<?> e1Class = typearguments.get(0);

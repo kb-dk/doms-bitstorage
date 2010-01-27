@@ -208,7 +208,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
                 log.debug(message);
                 event(op,message);
             } catch (HighlevelException he){
-                throw he.convert(highlevelMapper);
+                throw highlevelMapper.convertMostApplicable(he);
             } catch (RuntimeException re){//unexpected error
                 throw new WebServiceException(re);
             }
@@ -220,7 +220,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
                 log.debug("Second checkpoint reached. File is in lowlevel and the datastream is in fedora");
             } catch (HighlevelException he){
                 rollbackUploadToLowlevel(pid,uploadedURL);
-                throw he.convert(highlevelMapper);
+                throw highlevelMapper.convertMostApplicable(he);
             } catch (RuntimeException re){//unexpected error
                 rollbackUploadToLowlevel(pid,uploadedURL);
                 throw new WebServiceException(re);
@@ -242,7 +242,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
                                          formatURIs);
             } catch (HighlevelException he){
                 rollbackObjectContentsUpdated(pid,uploadedURL);
-                throw he.convert(highlevelMapper);
+                throw highlevelMapper.convertMostApplicable(he);
             } catch (RuntimeException re){//unexpected error
                 rollbackObjectContentsUpdated(pid,uploadedURL);
                 throw new WebServiceException(re);
@@ -290,7 +290,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             try {
                 fedora.storeCharacterization(pid,characterisation);
             } catch (FedoraException e) {
-                throw e.convert(fedoraMapper);
+                throw fedoraMapper.convertMostApplicable(e);
             }
         }
     }
@@ -303,7 +303,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
         try {
             formatURIs = fedora.getFormatURI(pid, CONTENTS);
         } catch (FedoraException e) {
-            throw e.convert(fedoraMapper);
+            throw fedoraMapper.convertMostApplicable(e);
         }
         log.debug(formatURIs);
         return formatURIs;
@@ -316,7 +316,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             characterisation = charac.characterise(pid);
             log.debug("File characterised");
         } catch (CharacteriseSoapException e) {
-            throw e.convert(characMapper);
+            throw characMapper.convertMostApplicable(e);
         }
         return characterisation;
     }
@@ -343,7 +343,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
                 fedora.createContentDatastream(pid,uploadedURL,md5String);
             }
         } catch (FedoraException e){
-            throw e.convert(fedoraMapper);
+            throw fedoraMapper.convertMostApplicable(e);
         }
     }
 
@@ -367,7 +367,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             log.trace(message);
             event(op,message);
         } catch (LowlevelSoapException e) {
-            throw e.convert(lowlevelMapper);
+            throw lowlevelMapper.convertMostApplicable(e);
         }
         return uploadedURL;
     }
@@ -410,13 +410,15 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
                 throw new dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.FileAlreadyApprovedException(message);
             }
         } catch (FedoraException e){
-            throw e.convert(fedoraMapper).convert(highlevelMapper);
+            throw highlevelMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(e));
+
         } catch (LowlevelSoapException e){
-            throw e.convert(lowlevelMapper).convert(highlevelMapper);
+            throw highlevelMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(e));
+
         } catch (RuntimeException e){
             throw new WebServiceException(e);
         } catch (HighlevelException e){
-            throw e.convert(highlevelMapper);
+            throw highlevelMapper.convertMostApplicable(e);
         }
         finally {
             endOperation(op);
@@ -459,10 +461,13 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             }
 
         } catch (FedoraException e) {
-            throw e.convert(fedoraMapper).convert(highlevelMapper);
+
+                throw highlevelMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(e));
+
         } catch (LowlevelSoapException e){
-            throw e.convert(lowlevelMapper).convert(highlevelMapper);
-        } catch (RuntimeException e){
+            throw highlevelMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(e));
+        }
+        catch (RuntimeException e){
             throw new WebServiceException(e);
         }
         finally {
@@ -487,7 +492,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
 
             return status;
         } catch (LowlevelSoapException e){
-            throw e.convert(lowlevelMapper).convert(highlevelMapper);
+            throw highlevelMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(e));
         } catch (RuntimeException e){
             throw new WebServiceException(e);
         }

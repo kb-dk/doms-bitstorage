@@ -29,7 +29,7 @@
 
     <import file="build-common.xml"/>
 
-    <target name="war" depends="distclean,compile"
+    <target name="war"
             description="Pack the webdirectory into a warfile ready for deployment">
         <mkdir dir="dist"/>
 
@@ -37,7 +37,7 @@
         <copy todir="libtemp" flatten="true">
             <fileset refid="module.libs"/>
             <fileset refid="project.libs"/>
-            <fileset refid="module.dependencies"/>
+            <path path="module.dependencies.jars"/>
         </copy>
 
         <war destfile="dist/${warfilename}"
@@ -57,7 +57,8 @@
 
     </target>
 
-    <target name="dist" depends="war"/>
+    <target  name="_postdist" depends="war"/>
+
 
 
 </project>

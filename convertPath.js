@@ -25,36 +25,36 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.exceptions;
+importClass(java.io.File);
+importPackage(Packages.org.apache.tools.ant);
+importPackage(Packages.org.apache.tools.ant.types);
 
-/**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 20, 2010
- * Time: 2:59:12 PM
- * To change this template use File | Settings | File Templates.
- */
-public class ConvertableCheckedException extends Exception implements ConvertableException {
+importPackage(Packages.org.apache.tools.ant.taskdefs);
 
 
-    public ConvertableCheckedException() {
-    }
+// Obtain a reference to a fileset in the enclosing project
+dirSet = project.getReference("module.dependencies");
 
-    public ConvertableCheckedException(String message) {
-        super(message);
-    }
+//This requires ant 1.7+ //TODO find another way that is more backwards
+includes = dirSet.mergeIncludes(project);
 
-    public ConvertableCheckedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+//This requires ant 1.7+
+excludes = dirSet.mergeExcludes(project);
 
-    public ConvertableCheckedException(Throwable cause) {
-        super(cause);
-    }
+var fileset = project.createDataType("fileset");
 
-    public final <E1 extends Exception, E2 extends ConvertableException> E1 convert(
+fileset.setDir(dirSet.getDir());
 
-            ExceptionMapper<E1, E2> mapper) {
-        return mapper.convertMostApplicable(this);
+if (includes != null){
+    for (var i=0;i<includes.length;i++){
+        fileset.setIncludes(includes[i]+"/dist/**/*.jar");
     }
 }
+
+if (excludes != null){
+    for (var i=0;i<excludes.length;i++){
+        fileset.setExcludes(excludes[i]+"/dist/**/*.jar");
+    }
+}
+
+project.addReference("module.dependencies.jars",fileset);
