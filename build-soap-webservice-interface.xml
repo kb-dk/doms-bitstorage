@@ -41,7 +41,7 @@
     </taskdef>
 
 
-    <target name="init" depends="interface.changed">
+    <target name="_preinit" depends="interface.changed">
         <mkdir dir="classes"/>
         <mkdir dir="tempsrc"/>
 

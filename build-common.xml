@@ -36,6 +36,9 @@
 
     <target name="_preclean"/>
     <target name="_postclean"/>
+    <target name="_preinit"/>
+    <target name="_postinit"/>
+
     <target name="_postcompile"/>
     <target name="_precompile"/>
     <target name="_predist"/>
