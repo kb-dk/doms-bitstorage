@@ -91,6 +91,18 @@
             <param-value>http://localhost:8080/highlevelbitstorage/highlevel/?wsdl
             </param-value>
         </init-param>
+        <init-param>
+            <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.preferredBytesLeft
+            </param-name>
+            <param-value>1000000
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.requiredBytesLeft
+            </param-name>
+            <param-value>100000
+            </param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>Highlevel Bitstorage Real Time Surveillance</servlet-name>
