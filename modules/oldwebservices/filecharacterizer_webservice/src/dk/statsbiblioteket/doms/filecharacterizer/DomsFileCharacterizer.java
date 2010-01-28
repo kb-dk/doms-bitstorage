@@ -1,7 +1,7 @@
-/* $Id: DomsFileCharacterizer.java 816 2008-12-11 16:08:36Z jrg $
- * $Revision: 816 $
- * $Date: 2008-12-11 17:08:36 +0100 (Thu, 11 Dec 2008) $
- * $Author: jrg $
+/* $Id$
+ * $Revision$
+ * $Date$
+ * $Author$
  *
  * The DOMS project.
  * Copyright (C) 2007  The State and University Library

@@ -1,7 +1,7 @@
-/* $Id: DomsFileCharacterizerTest.java 503 2008-09-12 14:18:32Z tsh $
- * $Revision: 503 $
- * $Date: 2008-09-12 16:18:32 +0200 (Fri, 12 Sep 2008) $
- * $Author: tsh $
+/* $Id$
+ * $Revision$
+ * $Date$
+ * $Author$
  *
  * The DOMS project.
  * Copyright (C) 2007  The State and University Library

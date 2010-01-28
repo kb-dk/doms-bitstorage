@@ -1,4 +1,4 @@
-/* $Id: BitstorageUtil.java 678 2008-11-18 16:09:34Z tsh $
+/* $Id$
 
 The State and University DOMS project.
 Copyright (C) 2006  The State and University Library

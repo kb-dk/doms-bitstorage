@@ -1,7 +1,7 @@
-/* $Id: FileInformation.java 678 2008-11-18 16:09:34Z tsh $
- * $Revision: 678 $
- * $Date: 2008-11-18 17:09:34 +0100 (Tue, 18 Nov 2008) $
- * $Author: tsh $
+/* $Id$
+ * $Revision$
+ * $Date$
+ * $Author$
  *
  * The DOMS project.
  * Copyright (C) 2007  The State and University Library
