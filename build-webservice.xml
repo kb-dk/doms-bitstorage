@@ -27,7 +27,7 @@
 
 <project name="webservice">
 
-    <property name="warfilename" value="THIS_SHOULD_BE_OVERRIDDEN"/>
+    <property name="warfilename" value="${ant.project.name}.war"/>
 
     <import file="build-common.xml"/>
 

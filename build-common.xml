@@ -35,7 +35,7 @@
     <import file="build-dependencies.xml"/>
 
     <selector id="common.jars">
-                <filename name="sbutils-0.4.6/jars/**/*.jar"/>
+        <filename name="sbutils-0.4.6/jars/**/*.jar"/>
     </selector>
     <selector id="soap.jars">
         <not>
@@ -51,9 +51,9 @@
     <selector id="all.jars">
         <or>
             <selector refid="common.jars"/>
-                <selector refid="soap.jars"/>
-                <selector refid="rest.jars"/>
-            </or>
+            <selector refid="soap.jars"/>
+            <selector refid="rest.jars"/>
+        </or>
     </selector>
 
 
@@ -99,7 +99,6 @@
     <target name="init"/>
 
 
-
     <target name="compile" depends="init,depends,_precompile"
             description="Compile all production classes, and copy properties to class dir">
 
@@ -110,7 +109,7 @@
 
         <script language="javascript" classpathref="rhino.classpath"
                 src="${global.dir}/convertPath.js"/>
-        
+
         <!-- get the source compile classpath in a printable form -->
         <pathconvert pathsep="${line.separator}|   |-- "
                      property="echo.path.compile"
