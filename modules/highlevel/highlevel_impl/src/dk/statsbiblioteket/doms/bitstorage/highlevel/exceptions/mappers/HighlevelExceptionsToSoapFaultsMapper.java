@@ -30,7 +30,7 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
 import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
-import dk.statsbiblioteket.doms.exceptions.ExceptionMapper;
+import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 
 import javax.xml.ws.WebServiceException;
 

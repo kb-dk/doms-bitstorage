@@ -39,13 +39,13 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.Highleve
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.LowlevelToHighlevelExceptionMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.*;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
+import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import org.apache.log4j.Logger;
 
 import javax.activation.DataHandler;
-import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -54,9 +54,7 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceException;
-import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOM;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -74,8 +72,6 @@ import java.util.*;
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.highlevel.BitstorageSoapWebservice")
 public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorageSoapWebservice {
 
-    @Resource
-    private WebServiceContext webServiceContext;
 
 
     private boolean initialised = false;
@@ -103,7 +99,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
     private List<Operation> threads;
     private DatatypeFactory dataTypeFactory;
 
-
+    @PostConstruct
     private synchronized void initialise() throws ConfigException {
 
         if (initialised) {
@@ -137,11 +133,8 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
 
     private void initialiseLowLevelConnector() throws ConfigException {
 
-        //TODO
-        ServletContext servletContext =
-                (ServletContext) webServiceContext.getMessageContext().get(
-                        MessageContext.SERVLET_CONTEXT);
-        String wsdlloc = servletContext.getInitParameter(
+
+        String wsdlloc = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.lowlevel.location");
         try {
             lowlevel = new dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebserviceService(
@@ -159,11 +152,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
 
     private void initialiseCharacteriserConnector() throws ConfigException {
 
-        //TODO
-        ServletContext servletContext =
-                (ServletContext) webServiceContext.getMessageContext().get(
-                        MessageContext.SERVLET_CONTEXT);
-        String wsdlloc = servletContext.getInitParameter(
+        String wsdlloc = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.characteriser.location");
         try {
             charac = new CharacteriseSoapWebserviceService(
@@ -190,7 +179,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             @WebParam(name = "filelength", targetNamespace = "")
             long filelength) throws
                              HighlevelSoapException  {
-        initialise();
+
         Operation op = initOperation("Upload");
         try {
             String uploadedURL;
@@ -377,7 +366,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             throws HighlevelSoapException
 
     {
-        initialise();
+
         //This method is invoked as a result of deleting a file object. As such, it should not set the file object to deleted.
         Operation op = initOperation("Delete");
         try {
@@ -440,7 +429,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
         */
 
 
-        initialise();
+
         Operation op = initOperation("Publish");
         try {
             op.setFedoraPid(pid);
@@ -462,7 +451,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
 
         } catch (FedoraException e) {
 
-                throw highlevelMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(e));
+            throw highlevelMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(e));
 
         } catch (LowlevelSoapException e){
             throw highlevelMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(e));
@@ -478,7 +467,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
 
 
     public StatusInformation status() throws HighlevelSoapException {
-        initialise();
+
         Operation op = initOperation("Status");
         try {
             String message = "Invoking status()";

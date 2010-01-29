@@ -25,22 +25,34 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
+package dk.statsbiblioteket.doms.webservices;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
-import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
+import java.util.Properties;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 20, 2010
- * Time: 2:52:42 PM
- * To change this template use File | Settings | File Templates.
+ * This is the static class that is meant to hold the configuration from the
+ * various sources.
  */
-public class LowlevelToHighlevelExceptionMapper extends ExceptionMapper<HighlevelException,LowlevelSoapException> {
+public class ConfigCollection {
 
-   public HighlevelException convert(LowlevelSoapException ce) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+    private static Properties contextConfig;
+
+    static {
+        contextConfig = new Properties();
+    }
+
+    /**
+     * This method returns a join of the various property sources, so that the
+     * values override each other correctly.
+     * @return the combined Properties
+     */
+    public static synchronized Properties getProperties(){
+        //TODO do intelligent join of several Properties blocks
+        return contextConfig;
+    }
+
+   static synchronized void setContextConfig(Properties contextConfig) {
+        ConfigCollection.contextConfig = contextConfig;
     }
 }

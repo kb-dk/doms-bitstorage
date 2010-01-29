@@ -29,15 +29,14 @@
 
     <import file="build-common.xml"/>
 
+    <property name="wsdl.file" value="THIS_SHOULD_BE_OVERRIDDEN"/>
+    <property name="wsdl.dir" value="THIS_SHOULD_BE_OVERRIDDEN"/>
+    <property name="wsdl.package" value="THIS_SHOULD_BE_OVERRIDDEN"/>
 
-    <path id="jaxws.classpath">
-        <fileset dir="${global.dir}/lib/jaxws-ri-2.1.7/jars">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-
+    <import file="build-soap-webservice.xml"/>
+    
     <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
-        <classpath refid="jaxws.classpath"/>
+        <classpath refid="build.classpath"/>
     </taskdef>
 
 
@@ -79,15 +78,17 @@
 
     <target name="interface.generate" depends="init"
             unless="interfaceNotChanged">
+        <mkdir  dir="tempsrc"/>
         <!--
             <property name="classpath" refid="build.classpath"/>
             <echo message="${classpath}"/>
         -->
         <wsimport
+
                 verbose="true"
                 debug="true"
                 sourcedestdir="tempsrc"
-                destdir="classes"
+                
                 package="${wsdl.package}"
                 wsdl="${wsdl.file}"
                 xnocompile="true"

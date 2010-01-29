@@ -25,12 +25,16 @@
   ~ under the License.
   -->
 
-<project name="exceptionmapper" basedir=".">
+        <!--This include sets the correct project lib dependencies for
+        the module to build as a REST webservice-->
+<project name="rest-webservice">
+<!--    <import file="build-webservice.xml"/>-->
 
-    <property name="global.dir" value="${basedir}/../../"/>
-
-    <!--Contain the normal build tasks, including war-->
-    <import file="${global.dir}/build-common.xml"/>
-
+    <selector id="rest.jars">
+        <or>
+            <filename name="jersey-1.1.4/jars/**/*.jar"/>
+            <filename name="jsr311-api-1.0/jars/**/*.jar"/>
+        </or>
+    </selector>
 
 </project>

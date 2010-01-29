@@ -32,29 +32,26 @@
     <property name="wsdl.dir"
                   value="${global.dir}/modules/highlevel/highlevel_interface/data/wsdl/"/>
 
-
     <!--Contain the normal build tasks, including war-->
+    <import  file="${global.dir}/build-webservice.xml"/>
+
+    <!--Adds the soap libs to the build-->
     <import file="${global.dir}/build-soap-webservice.xml"/>
+
+        <!--Adds the rest libs to the build-->
+    <import file="${global.dir}/build-rest-webservice.xml"/>
+
 
     <!--Project libs used by this module-->
     <fileset id="project.libs" dir="${global.dir}/lib">
-        <include name="sbutils-0.4.6/jars/**/*.jar"/>
-        <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
-
         <!--The following are only needed by surveilance-->
         <include name="doms-surveillance-rest-0.0.1/jars/**/*.jar"/>
         <include name="doms-surveillance-status-0.0.1/jars/**/*.jar"/>
-        <include name="jersey-1.1.4/jars/**/*.jar"/>
-        <include name="jsr311-api-1.0/jars/**/*.jar"/>
-
     </fileset>
 
-    <fileset id="build.project.libs" dir="${global.dir}/lib">
-        <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
-    </fileset>
 
     <dirset  id="module.dependencies" dir="${global.dir}/modules/">
-        <include name="exceptionmapper"/>
+        <include name="webservice-common"/>
         <include name="lowlevel/lowlevel_interface"/>
                 <include name="characteriser/characteriser_interface"/>
                 <include name="highlevel/highlevel_interface"/>

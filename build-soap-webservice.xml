@@ -25,39 +25,15 @@
   ~ under the License.
   -->
 
+        <!--This build-include sets the correct project lib dependencies
+        for the module to build as a soap webservice-->
 <project name="soap-webservice">
 
-    <import file="build-common.xml"/>
+<!--    <import file="build-webservice.xml"/>-->
 
-    <target name="war"
-            description="Pack the webdirectory into a warfile ready for deployment">
-        <mkdir dir="dist"/>
-
-
-        <copy todir="libtemp" flatten="true">
-            <fileset refid="module.libs"/>
-            <fileset refid="project.libs"/>
-            <path path="module.dependencies.jars"/>
-        </copy>
-
-        <war destfile="dist/${warfilename}"
-             webxml="web/WEB-INF/web.xml">
-            <classes dir="classes"/>
-            <lib dir="libtemp"/>
-            <webinf dir="web/WEB-INF">
-                <exclude name="web.xml"/>
-            </webinf>
-            <webinf dir="${wsdl.dir}" prefix="WEB-INF/wsdl" />
-            <fileset dir="web">
-                <exclude name="WEB-INF/**"/>
-            </fileset>
-        </war>
-
-        <delete dir="libtemp"/>
-
-    </target>
-
-    <target  name="_postdist" depends="war"/>
+    <selector id="soap.jars">
+        <filename name="jaxws-ri-2.1.7/jars/**/*.jar"/>
+    </selector>
 
 
 

@@ -25,7 +25,7 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.exceptions;
+package dk.statsbiblioteket.doms.webservices.exceptions;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;

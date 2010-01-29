@@ -18,7 +18,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="exceptionmapper" />
+    <orderEntry type="module" module-name="webservice-common" />
   </component>
 </module>
 

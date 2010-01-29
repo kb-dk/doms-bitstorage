@@ -34,6 +34,12 @@
 
     <listener>
         <listener-class>
+            dk.statsbiblioteket.doms.webservices.ConfigContextListener
+        </listener-class>
+    </listener>
+    
+    <listener>
+        <listener-class>
             com.sun.xml.ws.transport.http.servlet.WSServletContextListener
         </listener-class>
     </listener>

@@ -34,6 +34,29 @@
 
     <import file="build-dependencies.xml"/>
 
+    <selector id="common.jars">
+                <filename name="sbutils-0.4.6/jars/**/*.jar"/>
+    </selector>
+    <selector id="soap.jars">
+        <not>
+            <filename name="**"/>
+        </not>
+    </selector>
+    <selector id="rest.jars">
+        <not>
+            <filename name="**"/>
+        </not>
+    </selector>
+
+    <selector id="all.jars">
+        <or>
+            <selector refid="common.jars"/>
+                <selector refid="soap.jars"/>
+                <selector refid="rest.jars"/>
+            </or>
+    </selector>
+
+
     <target name="_preclean"/>
     <target name="_postclean"/>
     <target name="_preinit"/>
@@ -58,6 +81,9 @@
         <fileset refid="project.libs"/>
         <fileset refid="module.dependencies.jars"/>
         <fileset refid="build.project.libs"/>
+        <fileset dir="${global.dir}/lib">
+            <selector refid="all.jars"/>
+        </fileset>
     </path>
 
 
@@ -72,6 +98,8 @@
 
     <target name="init"/>
 
+
+
     <target name="compile" depends="init,depends,_precompile"
             description="Compile all production classes, and copy properties to class dir">
 
@@ -82,7 +110,7 @@
 
         <script language="javascript" classpathref="rhino.classpath"
                 src="${global.dir}/convertPath.js"/>
-
+        
         <!-- get the source compile classpath in a printable form -->
         <pathconvert pathsep="${line.separator}|   |-- "
                      property="echo.path.compile"

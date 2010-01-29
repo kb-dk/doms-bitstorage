@@ -38,14 +38,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.activation.DataHandler;
-import javax.annotation.Resource;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.servlet.ServletContext;
-import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.WebServiceException;
-import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOM;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -53,37 +49,13 @@ import java.net.URL;
 
 @MTOM
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice")
-public class LowlevelBitstorageSoapWebserviceImpl
-        implements LowlevelBitstorageSoapWebservice {
+public class LowlevelBitstorageSoapWebserviceImpl implements LowlevelBitstorageSoapWebservice {
 
-    Bitstorage bs;
+
 
     BitstorageToLowlevelExceptionMapper bitstorageMapper = new BitstorageToLowlevelExceptionMapper();
+
     Log log = LogFactory.getLog(this.getClass());
-
-    @Resource
-    private WebServiceContext webServiceContext;
-
-    private void initialise() {
-        if (bs != null) {
-            return;
-        }
-        ServletContext servletContext =
-                (ServletContext) webServiceContext.getMessageContext().get(
-                        MessageContext.SERVLET_CONTEXT);
-
-/*
-        Enumeration parameters = servletContext.getInitParameterNames();
-        while (parameters.hasMoreElements()) {
-            String s = (String) parameters.nextElement();
-            System.out.println(s);
-        }
-*/
-        String script = servletContext.getInitParameter("script");
-        String server = servletContext.getInitParameter("server");
-        String bitfinder = servletContext.getInitParameter("bitfinder");
-        bs = BitstorageFactory.getInstance(script,server,bitfinder);
-    }
 
     public String uploadFile(@WebParam(name = "filename",
                                        targetNamespace = "") String filename,
@@ -94,7 +66,9 @@ public class LowlevelBitstorageSoapWebserviceImpl
                              @WebParam(name = "filelength",
                                        targetNamespace = "") long filelength)
             throws LowlevelSoapException {
-        initialise();
+
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
 /*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
         try {
 
@@ -118,7 +92,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
     public void disapprove(@WebParam(name = "fileurl",
                                      targetNamespace = "") String fileurl)
             throws LowlevelSoapException {
-        initialise();
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
         try {
             bs.disapprove(new URL(fileurl));
         } catch (BitstorageException e) {
@@ -143,7 +118,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
                         @WebParam(name = "md5string",
                                   targetNamespace = "") String md5String)
             throws LowlevelSoapException {
-        initialise();
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
         try {
             bs.approve(new URL(fileurl), md5String);
         } catch (BitstorageException e) {
@@ -164,7 +140,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
 
     @WebMethod
     public long spaceleft() throws LowlevelSoapException {
-        initialise();
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
 
 
         try {
@@ -183,7 +160,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
 
     @WebMethod
     public long getMaxFileSize() throws LowlevelSoapException {
-        initialise();
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
         try {
             return bs.getMaxFileSize();
         } catch (BitstorageException e) {
@@ -199,7 +177,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
     public String getMd5(@WebParam(name = "fileurl",
                                    targetNamespace = "") String fileurl)
             throws LowlevelSoapException{
-        initialise();
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
         try {
             return bs.getMd5(new URL(fileurl));
         } catch (BitstorageException e) {
@@ -222,7 +201,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
     public boolean isApproved(@WebParam(name = "fileurl",
                                         targetNamespace = "") String fileurl)
             throws LowlevelSoapException{
-        initialise();
+        Bitstorage bs =
+                BitstorageFactory.getInstance();
         try {
             return bs.isApproved(new URL(fileurl));
         } catch (BitstorageException e) {

@@ -25,30 +25,16 @@
   ~ under the License.
   -->
 
-<project name="characteriser_impl" basedir=".">
+<project name="webservice-common" basedir=".">
 
-    <property name="global.dir" value="${basedir}/../../.."/>
-    <property name="warfilename" value="characteriser.war"/>
-    <property name="wsdl.dir"
-                  value="${global.dir}/modules/characteriser/characteriser_interface/data/wsdl/"/>
-    
+    <property name="global.dir" value="${basedir}/../../"/>
 
     <!--Contain the normal build tasks, including war-->
-    <import  file="${global.dir}/build-webservice.xml"/>
+    <import file="${global.dir}/build-common.xml"/>
 
-    <!--Adds the soap libs to the build-->
-    <import file="${global.dir}/build-soap-webservice.xml"/>
-
-
-    <!--Project libs used by this module-->
-    <fileset id="project.libs" dir="${global.dir}/lib">
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
     </fileset>
-
-
-    <dirset  id="module.dependencies" dir="${global.dir}/modules/">
-        <include name="webservice-common"/>
-        <include name="characteriser/characteriser_interface"/>
-    </dirset>
-
+    
 
 </project>

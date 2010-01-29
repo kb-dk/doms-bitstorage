@@ -27,6 +27,10 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend;
 
+import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+
+import java.util.Properties;
+
 /**
  * TODO abr forgot to document this class
  */
@@ -34,7 +38,13 @@ public class BitstorageFactory {
 
 
 
-    public static Bitstorage getInstance(String script, String server, String bitfinder) {
+    public static Bitstorage getInstance() {
+        Properties props = ConfigCollection.getProperties();
+
+        String script = props.getProperty("script");
+        String server = props.getProperty("server");
+        String bitfinder = props.getProperty("bitfinder");
+
         return new BitstorageSshImpl(server,
                                      script,
                                      bitfinder);

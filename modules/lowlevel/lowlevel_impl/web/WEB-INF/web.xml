@@ -34,9 +34,16 @@
 
     <listener>
         <listener-class>
+            dk.statsbiblioteket.doms.webservices.ConfigContextListener
+        </listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>
             com.sun.xml.ws.transport.http.servlet.WSServletContextListener
         </listener-class>
     </listener>
+    
     <context-param>
         <param-name>script</param-name>
         <param-value>bin/server.sh</param-value>
@@ -49,6 +56,26 @@
         <param-name>bitfinder</param-name>
         <param-value>http://bitfinder.statsbiblioteket.dk/</param-value>
     </context-param>
+
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location
+        </param-name>
+        <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.preferredBytesLeft
+        </param-name>
+        <param-value>1000000
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.requiredBytesLeft
+        </param-name>
+        <param-value>100000
+        </param-value>
+    </context-param>
+
 
     <servlet>
         <description>JAX-WS endpoint</description>
@@ -76,6 +103,8 @@
             <param-value>dk.statsbiblioteket.doms.surveillance.rest
             </param-value>
         </init-param>
+
+
     </servlet>
     <servlet-mapping>
         <servlet-name>Lowlevel Bitstorage Log Surveillance</servlet-name>
@@ -91,24 +120,7 @@
             <param-value>dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance
             </param-value>
         </init-param>
-        <init-param>
-            <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location
-            </param-name>
-            <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl
-            </param-value>
-        </init-param>
-        <init-param>
-            <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.preferredBytesLeft
-            </param-name>
-            <param-value>1000000
-            </param-value>
-        </init-param>
-        <init-param>                                                                                  
-            <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.requiredBytesLeft
-            </param-name>
-            <param-value>100000
-            </param-value>
-        </init-param>
+
     </servlet>
     <servlet-mapping>
         <servlet-name>Lowlevel Bitstorage Real Time Surveillance</servlet-name>

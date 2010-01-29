@@ -27,28 +27,29 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance;
 
+import dk.statsbiblioteket.doms.bitstorage.highlevel.*;
 import dk.statsbiblioteket.doms.surveillance.status.Status;
 import dk.statsbiblioteket.doms.surveillance.status.StatusMessage;
 import dk.statsbiblioteket.doms.surveillance.status.StatusMessage.Severity;
 import dk.statsbiblioteket.doms.surveillance.status.Surveyable;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.*;
+import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import dk.statsbiblioteket.util.qa.QAInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.servlet.ServletConfig;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.xml.namespace.QName;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
+import javax.annotation.PostConstruct;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
-import java.net.URL;
-import java.net.MalformedURLException;
+import java.util.Properties;
 
 /** Class that exposes real time system info for high-level bitstorage as
  * surveyable messages over REST.
@@ -62,10 +63,6 @@ import java.net.MalformedURLException;
 public class RealTimeService implements Surveyable {
     private Log log = LogFactory.getLog(getClass());
 
-    /** Servlet configuration object through which we receive various
-     * parameters that have been entered into the web.xml file. */
-    @Context
-    private ServletConfig servletConfig;
 
     /** The name of the system being surveyed by through this class. */
     private static final String SURVEYEE_NAME = "High-level bitstorage";
@@ -111,7 +108,7 @@ public class RealTimeService implements Surveyable {
 
     /** The namespace of the service */
     private static final String SERVICE_NAMESPACE_URI = "http://"
-                + "highlevel.bitstorage.doms.statsbiblioteket.dk/";
+                                                        + "highlevel.bitstorage.doms.statsbiblioteket.dk/";
 
     /** The name of the service */
     private static final String SERVICE_NAME =
@@ -124,45 +121,40 @@ public class RealTimeService implements Surveyable {
 
     }
 
-
+    @PostConstruct
     private void initialize() {
         log.trace("Entered method initialize()");
-        if (servletConfig != null) {
-            String preferredBytesLeft;
-            String requiredBytesLeft;
+        String preferredBytesLeft;
+        String requiredBytesLeft;
+        Properties props = ConfigCollection.getProperties();
 
-            location = servletConfig.getInitParameter(
-                    PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
-            log.debug("Location of wsdl for surveyee now set to '"
-                    + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
+        location = props.getProperty(
+                PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
+        log.debug("Location of wsdl for surveyee now set to '"
+                  + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
 
-            preferredBytesLeft = servletConfig.getInitParameter(
-                    PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT);
-            try {
-                preferredSpaceInBitstorage
-                        = Integer.parseInt(preferredBytesLeft);
-            } catch (NumberFormatException e) {
-                log.error("Couldn't parse the value of web.xml parameter '"
-                + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
-            }
-            log.debug("Preferred number of bytes in bitstorage now set to '"
-                    + preferredSpaceInBitstorage + "'");
-
-            requiredBytesLeft = servletConfig.getInitParameter(
-                    PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT);
-            try {
-                requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
-            } catch (NumberFormatException e) {
-                log.error("Couldn't parse the value of web.xml parameter '"
-                + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
-            }
-            log.debug("Required number of bytes in bitstorage now set to '"
-                    + requiredSpaceInBitstorage + "'");
-        } else {
-            log.error("Servlet configuration object was not properly"
-                    + " initialized (was null), and therefore could not access"
-                    + " parameters from web.xml");
+        preferredBytesLeft = props.getProperty(
+                PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT);
+        try {
+            preferredSpaceInBitstorage
+                    = Integer.parseInt(preferredBytesLeft);
+        } catch (NumberFormatException e) {
+            log.error("Couldn't parse the value of web.xml parameter '"
+                      + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
         }
+        log.debug("Preferred number of bytes in bitstorage now set to '"
+                  + preferredSpaceInBitstorage + "'");
+
+        requiredBytesLeft = props.getProperty(
+                PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT);
+        try {
+            requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
+        } catch (NumberFormatException e) {
+            log.error("Couldn't parse the value of web.xml parameter '"
+                      + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
+        }
+        log.debug("Required number of bytes in bitstorage now set to '"
+                  + requiredSpaceInBitstorage + "'");
     }
 
 
@@ -224,22 +216,22 @@ public class RealTimeService implements Surveyable {
         StatusInformation highlevelBitstorageStatus;
 
         initialize(); // One could discuss whether this call should be outside
-                      // the fault barrier
+        // the fault barrier
 
         try {
             log.debug("Making URL from location: '" + location + "'");
             wsdlLocation = new URL(location);
         } catch (MalformedURLException e) {
             log.error("URL to highlevel bitstorage WSDL is"
-                    + " broken. URL is: '" + location + "'", e);
+                      + " broken. URL is: '" + location + "'", e);
             throw new BrokenURLException("URL to highlevel bitstorage WSDL is"
-                    + " broken. URL is: '" + location + "'", e);
+                                         + " broken. URL is: '" + location + "'", e);
         }
 
         try {
             bitstorageWebserviceFactory
                     = new HighlevelBitstorageSoapWebserviceService(wsdlLocation,
-                    serviceName);
+                                                                   serviceName);
 
             bitstorageService = bitstorageWebserviceFactory
                     .getHighlevelBitstorageSoapWebservicePort();
@@ -254,31 +246,31 @@ public class RealTimeService implements Surveyable {
             highlevelBitstorageStatus = bitstorageService.status();
         } catch (CommunicationException e) {
             log.error("Trying to call method 'status' of the highlevel"
-                    + " bitstorage webservice"
-                    + " gave a CommunicationException.", e);
+                      + " bitstorage webservice"
+                      + " gave a CommunicationException.", e);
             // Report no comms with highlevel bitstorage
             return makeStatus(StatusMessage.Severity.RED,
-                    "Trying to call method 'status' of the highlevel"
-                            + " bitstorage webservice"
-                            + " gave an exception with name: '"
-                            + e.getClass().getName()
-                            + "' and message: ["
-                            + e.getMessage()
-                            +"]"
+                              "Trying to call method 'status' of the highlevel"
+                              + " bitstorage webservice"
+                              + " gave an exception with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              +"]"
             );
         } catch (HighlevelSoapException e) {
             log.error("Trying to call method 'status' of the highlevel"
-                    + " bitstorage webservice"
-                    + " gave a HighlevelSoapException.", e);
+                      + " bitstorage webservice"
+                      + " gave a HighlevelSoapException.", e);
             // Report no comms with highlevel bitstorage
             return makeStatus(StatusMessage.Severity.RED,
-                    "Trying to call method 'status' of the highlevel"
-                            + " bitstorage webservice"
-                            + " gave an exception with name: '"
-                            + e.getClass().getName()
-                            + "' and message: ["
-                            + e.getMessage()
-                            +"]"
+                              "Trying to call method 'status' of the highlevel"
+                              + " bitstorage webservice"
+                              + " gave an exception with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              +"]"
             );
         }
 
@@ -314,23 +306,23 @@ public class RealTimeService implements Surveyable {
         if (spaceLeftInBitstorage < requiredSpaceInBitstorage) {
             // Report too little space
             return new StatusMessage("Not enough space in bitstorage. Remaining"
-                    + " size must be atleast " + requiredSpaceInBitstorage
-                    + " bytes.", StatusMessage.Severity.RED,
-                    System.currentTimeMillis(), false);
+                                     + " size must be atleast " + requiredSpaceInBitstorage
+                                     + " bytes.", StatusMessage.Severity.RED,
+                                     System.currentTimeMillis(), false);
         } else if (spaceLeftInBitstorage < preferredSpaceInBitstorage) {
             // Report close to too little space
             return new StatusMessage("Space left in bitstorage is getting"
-                    + " dangerously close to the lower limit in"
-                    + " bitstorage. Remaining size should be atleast "
-                    + preferredSpaceInBitstorage + " bytes.",
-                    StatusMessage.Severity.YELLOW,
-                    System.currentTimeMillis(), false);
+                                     + " dangerously close to the lower limit in"
+                                     + " bitstorage. Remaining size should be atleast "
+                                     + preferredSpaceInBitstorage + " bytes.",
+                                     StatusMessage.Severity.YELLOW,
+                                     System.currentTimeMillis(), false);
         } else {
             // Report everything ok
             return new StatusMessage("Highlevel bitstorage is up, and there is"
-                    + " enough space. Currently " + spaceLeftInBitstorage
-                    + " bytes left.", StatusMessage.Severity.GREEN,
-                    System.currentTimeMillis(), false);
+                                     + " enough space. Currently " + spaceLeftInBitstorage
+                                     + " bytes left.", StatusMessage.Severity.GREEN,
+                                     System.currentTimeMillis(), false);
         }
     }
 
@@ -361,21 +353,21 @@ public class RealTimeService implements Surveyable {
             }
 
             message += "{"
-                    + "Operation '" + operation.getHighlevelMethod() + "' "
-                    + "with ID '" + operation.getID() + "' "
-                    + "started at '"
-                    + whenOperationStarted.getEonAndYear()
-                    + "-" + whenOperationStarted.getMonth()
-                    + "-" + whenOperationStarted.getDay()
-                    + " " + whenOperationStarted.getHour()
-                    + ":" + whenOperationStarted.getMinute()
-                    + ":" + whenOperationStarted.getSecond()
-                    + "'. Acting on "
-                    + "Fedora PID '" + operation.getFedoraPid() + "', "
-                    + "Fedora datastream '" + operation.getFedoraDatastream()
-                    + "', "
-                    + "File size '" + operation.getFileSize() + "'"
-                    + "}";
+                       + "Operation '" + operation.getHighlevelMethod() + "' "
+                       + "with ID '" + operation.getID() + "' "
+                       + "started at '"
+                       + whenOperationStarted.getEonAndYear()
+                       + "-" + whenOperationStarted.getMonth()
+                       + "-" + whenOperationStarted.getDay()
+                       + " " + whenOperationStarted.getHour()
+                       + ":" + whenOperationStarted.getMinute()
+                       + ":" + whenOperationStarted.getSecond()
+                       + "'. Acting on "
+                       + "Fedora PID '" + operation.getFedoraPid() + "', "
+                       + "Fedora datastream '" + operation.getFedoraDatastream()
+                       + "', "
+                       + "File size '" + operation.getFileSize() + "'"
+                       + "}";
 
             oneOrMoreOperationsListed = true;
         }
@@ -385,7 +377,7 @@ public class RealTimeService implements Surveyable {
         }
 
         return new StatusMessage(message, StatusMessage.Severity.GREEN,
-                System.currentTimeMillis(), false);
+                                 System.currentTimeMillis(), false);
     }
 
 

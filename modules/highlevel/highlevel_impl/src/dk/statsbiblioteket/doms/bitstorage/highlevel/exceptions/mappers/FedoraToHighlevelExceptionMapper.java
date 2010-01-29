@@ -29,7 +29,7 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.FedoraException;
-import dk.statsbiblioteket.doms.exceptions.ExceptionMapper;
+import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 
 /**
  * Created by IntelliJ IDEA.
