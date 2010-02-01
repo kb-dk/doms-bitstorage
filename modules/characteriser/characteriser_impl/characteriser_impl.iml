@@ -8,8 +8,35 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="characteriser_interface" />
-    <orderEntry type="library" name="Generic" level="application_server_libraries" />
-    <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
+    <orderEntry type="library" name="servlet.api-2.5-apache-tomcat-6.0.20" level="project" />
+    <orderEntry type="module-library">
+      <library name="Planets-IF-Common">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/pserv/jars/pserv-if-common.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Fedora_classes">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/fedora/pserv-common-fedora.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="if_storage">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/if_storage/pserv-if-storage-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/if_storage/pserv-if-storage.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
     <orderEntry type="module" module-name="webservice-common" />
     <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
   </component>
