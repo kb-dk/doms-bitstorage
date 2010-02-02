@@ -32,6 +32,13 @@
           <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-client-4.0.1-src.zip!/httpcomponents-client-4.0.1/httpclient/src/test/java" />
           <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-client-4.0.1-src.zip!/httpcomponents-client-4.0.1/httpclient/src/main/java" />
           <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-client-4.0.1-src.zip!/httpcomponents-client-4.0.1/httpmime/src/examples" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/httpcore/src/main/java" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/httpcore-nio/src/main/java" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/httpcore/src/test/java" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/httpcore/src/examples" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/httpcore-nio/src/examples" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/contrib/src/main/java" />
+          <root url="jar://$MODULE_DIR$/lib/httpcomponents-client-4.0.1/src/httpcomponents-core-4.0.1-src.zip!/httpcomponents-core-4.0.1/httpcore-nio/src/test/java" />
         </SOURCES>
       </library>
     </orderEntry>
