@@ -30,23 +30,24 @@
     <property name="global.dir" value="${basedir}/../../.."/>
     <property name="warfilename" value="lowlevelbitstorage.war"/>
     <property name="wsdl.dir"
-                  value="${global.dir}/modules/lowlevel/lowlevel_interface/data/wsdl"/>
+              value="${global.dir}/modules/lowlevel/lowlevel_interface/data/wsdl"/>
 
     <!--Contain the normal build tasks, including war-->
-    <import  file="${global.dir}/build-webservice.xml"/>
+    <import file="${global.dir}/build/build-webservice.xml"/>
 
     <!--Adds the soap libs to the build-->
-    <import file="${global.dir}/build-soap-webservice.xml"/>
+    <import file="${global.dir}/build/build-soap-webservice.xml"/>
 
-        <!--Adds the rest libs to the build-->
-    <import file="${global.dir}/build-rest-webservice.xml"/>
+    <!--Adds the rest libs to the build-->
+    <import file="${global.dir}/build/build-rest-webservice.xml"/>
 
 
-    <dirset  id="module.dependencies" dir="${global.dir}/modules/">
+    <dirset id="module.dependencies" dir="${global.dir}/modules/">
         <include name="lowlevel/lowlevel_interface"/>
-                <include name="webservice-common"/>
+        <include name="webservice-common"/>
     </dirset>
 
+    <target name="_postdist" depends="war"/>
 
     <!--Project libs used by this module-->
     <fileset id="project.libs" dir="${global.dir}/lib">

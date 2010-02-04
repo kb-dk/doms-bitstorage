@@ -34,11 +34,11 @@
               value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
 
     <property name="wsdl.dir"
-                  value="${global.dir}/modules/lowlevel/lowlevel_interface/data/wsdl"/>
+              value="${global.dir}/modules/lowlevel/lowlevel_interface/data/wsdl"/>
     <property name="wsdl.file"
-                  value="${wsdl.dir}/lowlevel.wsdl"/>
+              value="${wsdl.dir}/lowlevel.wsdl"/>
     <property name="generalSuperExceptionName"
-                  value="dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException"/>
+              value="dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException"/>
 
 
     <!--Contain the targets to build the webservice interface from the
@@ -46,7 +46,7 @@
     -->
 
 
-    <import file="${global.dir}/build-soap-webservice-interface.xml"/>
+    <import file="${global.dir}/build/build-soap-webservice-interface.xml"/>
 
 
 </project>

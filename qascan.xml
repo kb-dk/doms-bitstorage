@@ -28,9 +28,10 @@
 
 <project default="qa-report" name="qa-report" basedir=".">
 
-    <property file="build.properties"/>
+    <property file="old.build.properties"/>
 
-    <property name="report.html" value="${user.home}/public_html/qa/report.html"/>
+    <property name="report.html"
+              value="${user.home}/public_html/qa/report.html"/>
 
     <!-- ADD NEW MODULES TO THE CLASSPATH HERE.
          YOU MUST ALSO ADD TO THE INSPECTED MODULES
@@ -41,11 +42,11 @@
         </fileset>
         <pathelement location="../ingest/${classes.dir}"/>
     </path>
-	
-	<target name="qa-report">
-	    <java fork="true"
-    	      classname="dk.statsbiblioteket.util.qa.PackageScannerDriver"
-    	      output="${report.html}"
+
+    <target name="qa-report">
+        <java fork="true"
+              classname="dk.statsbiblioteket.util.qa.PackageScannerDriver"
+              output="${report.html}"
               classpathref="path.all"
               dir="${basedir}/..">
 
@@ -66,7 +67,7 @@
                  IN THE TOP OF THIS FILE -->
 
         </java>
-	</target>
-	
+    </target>
+
     <target name="release" depends="qa-report"/>
 </project>

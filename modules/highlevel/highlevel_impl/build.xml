@@ -30,17 +30,34 @@
     <property name="global.dir" value="${basedir}/../../.."/>
     <property name="warfilename" value="highlevelbitstorage.war"/>
     <property name="wsdl.dir"
-                  value="${global.dir}/modules/highlevel/highlevel_interface/data/wsdl/"/>
+              value="${global.dir}/modules/highlevel/highlevel_interface/data/wsdl/"/>
+
+    <property name="jaxb.package"
+              value="dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated"/>
+
 
     <!--Contain the normal build tasks, including war-->
-    <import  file="${global.dir}/build-webservice.xml"/>
+    <import file="${global.dir}/build/build-webservice.xml"/>
 
     <!--Adds the soap libs to the build-->
-    <import file="${global.dir}/build-soap-webservice.xml"/>
+    <import file="${global.dir}/build/build-soap-webservice.xml"/>
 
-        <!--Adds the rest libs to the build-->
-    <import file="${global.dir}/build-rest-webservice.xml"/>
+    <!--Adds the rest libs to the build-->
+    <import file="${global.dir}/build/build-rest-webservice.xml"/>
 
+    <!--Create the classes to parse the fedora output-->
+    <import file="${global.dir}/build/build-jaxb.xml"/>
+
+    <!--The location of the fedora schemas-->
+    <fileset id="schema.files" dir="${basedir}/data/fedora-return-types">
+        <include name="*.xsd"/>
+    </fileset>
+
+
+    <!--Nessesary to hack the jaxb generate in before compile...-->
+    <target name="_precompile" depends="jaxb.generate"/>
+
+    <target name="_postdist" depends="war"/>
 
     <!--Project libs used by this module-->
     <fileset id="project.libs" dir="${global.dir}/lib">
@@ -50,14 +67,13 @@
     </fileset>
 
 
-    <dirset  id="module.dependencies" dir="${global.dir}/modules/">
+    <dirset id="module.dependencies" dir="${global.dir}/modules/">
         <include name="webservice-common"/>
         <include name="lowlevel/lowlevel_interface"/>
-                <include name="characteriser/characteriser_interface"/>
-                <include name="highlevel/highlevel_interface"/>
+        <include name="characteriser/characteriser_interface"/>
+        <include name="highlevel/highlevel_interface"/>
 
     </dirset>
 
 
-   
 </project>

@@ -33,19 +33,19 @@
     <property name="wsdl.package"
               value="dk.statsbiblioteket.doms.bitstorage.highlevel"/>
     <property name="wsdl.dir"
-                  value="${global.dir}/modules/highlevel/highlevel_interface/data/wsdl"/>
+              value="${global.dir}/modules/highlevel/highlevel_interface/data/wsdl"/>
     <property name="wsdl.file"
-                  value="${wsdl.dir}/highlevel.wsdl"/>
+              value="${wsdl.dir}/highlevel.wsdl"/>
     <property name="generalSuperExceptionName"
-                  value="dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException"/>
+              value="dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException"/>
 
 
     <!--Contain the targets to build the webservice interface from the
         wsdl.location and add it as a module lib
     -->
-    
 
-    <import file="${global.dir}/build-soap-webservice-interface.xml"/>
+
+    <import file="${global.dir}/build/build-soap-webservice-interface.xml"/>
 
     <!--Project libs used by this module-->
     <fileset id="project.libs" dir="${global.dir}/lib">
