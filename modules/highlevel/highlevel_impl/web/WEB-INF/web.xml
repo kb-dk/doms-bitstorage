@@ -37,7 +37,7 @@
             dk.statsbiblioteket.doms.webservices.ConfigContextListener
         </listener-class>
     </listener>
-    
+
     <listener>
         <listener-class>
             com.sun.xml.ws.transport.http.servlet.WSServletContextListener
@@ -48,14 +48,14 @@
         <param-name>testParam</param-name>
         <param-value>testValue</param-value>
     </context-param>
-    
+
     <servlet>
         <description>JAX-WS endpoint</description>
         <display-name>WSServlet</display-name>
         <servlet-name>WSServlet</servlet-name>
         <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet
         </servlet-class>
-        <load-on-startup>1</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>WSServlet</servlet-name>
@@ -63,6 +63,21 @@
     </servlet-mapping>
 
 
+    <servlet>
+        <servlet-name>URL provider</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
+        </servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>dk.statsbiblioteket.bitstorage.highlevel
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>URL provider</servlet-name>
+        <url-pattern>/URLprovider/*</url-pattern>
+    </servlet-mapping>
 
 
     <!--Below here is the surveilance-->
@@ -88,23 +103,27 @@
         </servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance
+            <param-value>
+                dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance
             </param-value>
         </init-param>
         <init-param>
             <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.location
             </param-name>
-            <param-value>http://localhost:8080/highlevelbitstorage/highlevel/?wsdl
+            <param-value>
+                http://localhost:8080/highlevelbitstorage/highlevel/?wsdl
             </param-value>
         </init-param>
         <init-param>
-            <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.preferredBytesLeft
+            <param-name>
+                dk.statsbiblioteket.doms.bitstorage.highlevel.preferredBytesLeft
             </param-name>
             <param-value>1000000
             </param-value>
         </init-param>
         <init-param>
-            <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.requiredBytesLeft
+            <param-name>
+                dk.statsbiblioteket.doms.bitstorage.highlevel.requiredBytesLeft
             </param-name>
             <param-value>100000
             </param-value>
@@ -112,7 +131,8 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>Highlevel Bitstorage Real Time Surveillance</servlet-name>
-        <url-pattern>/highlevelbitstoragerealtimesurveillanceservice/*</url-pattern>
+        <url-pattern>/highlevelbitstoragerealtimesurveillanceservice/*
+        </url-pattern>
     </servlet-mapping>
-    
+
 </web-app>
