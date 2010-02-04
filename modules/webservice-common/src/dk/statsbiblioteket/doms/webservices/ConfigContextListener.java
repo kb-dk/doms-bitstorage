@@ -36,6 +36,7 @@ import java.util.Properties;
 /**
  * This listener retrieves the list of context params from the web.xml
  * and adds them to the ConfigCollection
+ *
  * @see dk.statsbiblioteket.doms.webservices.ConfigCollection
  */
 public class ConfigContextListener implements ServletContextListener {
@@ -48,14 +49,15 @@ public class ConfigContextListener implements ServletContextListener {
         while (names.hasMoreElements()) {
             String name = (String) names.nextElement();
             String value = servletContext.getInitParameter(name);
-            props.put(name,value);
+            props.put(name, value);
         }
         ConfigCollection.setContextConfig(props);
+        ConfigCollection.setServletContext(servletContext);
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
         Properties props = new Properties();
         ConfigCollection.setContextConfig(props);
-     }
+    }
 
 }

@@ -27,6 +27,7 @@
 
 package dk.statsbiblioteket.doms.webservices;
 
+import javax.servlet.ServletContext;
 import java.util.Properties;
 
 /**
@@ -37,6 +38,7 @@ public class ConfigCollection {
 
 
     private static Properties contextConfig;
+    private static ServletContext servletContext;
 
     static {
         contextConfig = new Properties();
@@ -45,14 +47,23 @@ public class ConfigCollection {
     /**
      * This method returns a join of the various property sources, so that the
      * values override each other correctly.
+     *
      * @return the combined Properties
      */
-    public static synchronized Properties getProperties(){
+    public static synchronized Properties getProperties() {
         //TODO do intelligent join of several Properties blocks
         return contextConfig;
     }
 
-   static synchronized void setContextConfig(Properties contextConfig) {
+    static synchronized void setContextConfig(Properties contextConfig) {
         ConfigCollection.contextConfig = contextConfig;
+    }
+
+    public static void setServletContext(ServletContext servletContext) {
+        ConfigCollection.servletContext = servletContext;
+    }
+
+    public static ServletContext getServletContext() {
+        return servletContext;
     }
 }
