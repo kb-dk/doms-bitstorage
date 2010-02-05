@@ -55,14 +55,18 @@ import java.util.Properties;
  * surveyable messages over REST.
  */
 @QAInfo(level = QAInfo.Level.NORMAL,
-        state = QAInfo.State.QA_NEEDED,
+        state = QAInfo.State.QA_OK,
         author = "jrg",
         reviewers = {"kfc"})
-@Path("/RealTimeService/")      // Part of the url to this webservice, inserted
-// at * in the relevant url-pattern in web.xml
+
+@Path("/RealTimeService/")  // Part of the url to this webservice, inserted at
+//                             * in the relevant url-pattern in web.xml
 public class RealTimeService implements Surveyable {
+    /** Logger for this class. */
     private Log log = LogFactory.getLog(getClass());
 
+    /** The time when the getStatus method of this class is called. */
+    private long timeOfGetStatusCall;
 
     /** The name of the system being surveyed by through this class. */
     private static final String SURVEYEE_NAME = "High-level bitstorage";
@@ -77,104 +81,62 @@ public class RealTimeService implements Surveyable {
     private static final String PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL
             = PACKAGE_NAME + ".location";
 
-    /** Parameter in web.xml telling the number of free bytes preferred in
-     * bitstorage*/
-    private static final String PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT
-            = PACKAGE_NAME + ".preferredBytesLeft";
-
-    /** Parameter in web.xml telling the number of free bytes required in
-     * bitstorage.*/
-    private static final String PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT
-            = PACKAGE_NAME + ".requiredBytesLeft";
-
     /** The URL describing where the wsdl file for the surveyee is located. */
     private String location;
 
-    /** The number of free bytes preferred in bitstorage. If less than this
-     * amount is left, surveillance will report it with a yellow stop-light
-     * severity.*/
-    private int preferredSpaceInBitstorage;
-
-    /** The number of free bytes required in bitstorage. If less than this
-     * amount is left, surveillance will report it with a red stop-light
-     * severity.*/
-    private int requiredSpaceInBitstorage;
-
-    /** The fully qualified name of the service to monitor
-     * @see #SERVICE_NAME
-     * @see #SERVICE_NAMESPACE_URI
-     */
-    private final QName serviceName;
-
     /** The namespace of the service */
-    private static final String SERVICE_NAMESPACE_URI = "http://"
-                                                        + "highlevel.bitstorage.doms.statsbiblioteket.dk/";
+    private static final String SERVICE_NAMESPACE_URI
+            = "http://highlevel.bitstorage.doms.statsbiblioteket.dk/";
 
     /** The name of the service */
     private static final String SERVICE_NAME =
             "HighlevelBitstorageSoapWebserviceService";
 
+    /** The fully qualified name of the service to monitor
+     * @see #SERVICE_NAME
+     * @see #SERVICE_NAMESPACE_URI
+     */
+    private final QName SERVICE_QNAME
+            = new QName(SERVICE_NAMESPACE_URI, SERVICE_NAME);
 
-    public RealTimeService() {
-        log.trace("Entered constructor RealTimeService()");
-        serviceName = new QName(SERVICE_NAMESPACE_URI, SERVICE_NAME);
 
-    }
-
-    @PostConstruct
+    /** Will be called by the webservice framework after the call of the
+     * constructor. Reads parameters from web.xml.
+     * This method serves as fault barrier. All exceptions are caught and
+     * logged.
+     */
+    @PostConstruct // Will be called after the call of the constructor
     private void initialize() {
         log.trace("Entered method initialize()");
-        String preferredBytesLeft;
-        String requiredBytesLeft;
-        Properties props = ConfigCollection.getProperties();
+        Properties props;
 
-        location = props.getProperty(
-                PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
-        log.debug("Location of wsdl for surveyee now set to '"
-                  + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
-
-        preferredBytesLeft = props.getProperty(
-                PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT);
         try {
-            preferredSpaceInBitstorage
-                    = Integer.parseInt(preferredBytesLeft);
-        } catch (NumberFormatException e) {
-            log.error("Couldn't parse the value of web.xml parameter '"
-                      + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
-        }
-        log.debug("Preferred number of bytes in bitstorage now set to '"
-                  + preferredSpaceInBitstorage + "'");
+            props = ConfigCollection.getProperties();
 
-        requiredBytesLeft = props.getProperty(
-                PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT);
-        try {
-            requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
-        } catch (NumberFormatException e) {
-            log.error("Couldn't parse the value of web.xml parameter '"
-                      + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
+            location = props.getProperty(
+                    PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
+            log.info("Location of wsdl for surveyee now set to '"
+                    + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
+        } catch (Exception e) {
+            log.error("Exception caught by fault barrier", e);
         }
-        log.debug("Required number of bytes in bitstorage now set to '"
-                  + requiredSpaceInBitstorage + "'");
     }
 
 
-    @GET
-    @Path("getStatusSince/{date}")
-    @Produces("application/xml")
     /** Returns only the current real time info.
      *
      * @param time This given date is ignored.
      * @return A status containing list of status messages.
      */
+    @GET
+    @Path("getStatusSince/{date}")
+    @Produces("application/xml")
     public Status getStatusSince(@PathParam("date") long time) {
-        log.trace("Entered method getStatusSince('" + time + "')");
+        log.trace("Entered method getStatusSince(" + time + ")");
         return getStatus();
     }
 
 
-    @GET
-    @Path("getStatus")
-    @Produces("application/xml")
     /** Returns real time info about the current state of the highlevel
      * bitstorage webservice.
      * This method serves as fault barrier. All exceptions are caught and turned
@@ -182,18 +144,23 @@ public class RealTimeService implements Surveyable {
      *
      * @return A status containing list of status messages.
      */
+    @GET
+    @Path("getStatus")
+    @Produces("application/xml")
     public Status getStatus() {
         log.trace("Entered method getStatus()");
         Status status;
 
+        timeOfGetStatusCall = System.currentTimeMillis();
+
         try {
             status = checkHighlevelBitstorageForCurrentState();
         } catch (Exception e) {
-            log.debug("Exception caught by fault barrier", e);
+            log.error("Exception caught by fault barrier", e);
             // Create status covering exception
             status = new Status(SURVEYEE_NAME, Arrays.asList(new StatusMessage(
                     "Exception caught by fault barrier: " + e.getMessage(),
-                    StatusMessage.Severity.RED, System.currentTimeMillis(),
+                    StatusMessage.Severity.RED, timeOfGetStatusCall,
                     false)));
         }
 
@@ -205,8 +172,11 @@ public class RealTimeService implements Surveyable {
      * there.
      *
      * @return A status containing list of status messages.
-     * */
-    private Status checkHighlevelBitstorageForCurrentState() {
+     *
+     */
+    private Status checkHighlevelBitstorageForCurrentState()
+            throws BrokenURLException, HighlevelBitstorageUnreachableException,
+            BitstorageCommunicationException, BitstorageHighlevelSoapException {
         log.trace("Entered method checkHighlevelBitstorageForCurrentState()");
 
         HighlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
@@ -215,29 +185,23 @@ public class RealTimeService implements Surveyable {
         List<StatusMessage> messageList;
         StatusInformation highlevelBitstorageStatus;
 
-        initialize(); // One could discuss whether this call should be outside
-        // the fault barrier
-
         try {
             log.debug("Making URL from location: '" + location + "'");
             wsdlLocation = new URL(location);
         } catch (MalformedURLException e) {
-            log.error("URL to highlevel bitstorage WSDL is"
-                      + " broken. URL is: '" + location + "'", e);
             throw new BrokenURLException("URL to highlevel bitstorage WSDL is"
-                                         + " broken. URL is: '" + location + "'", e);
+                    + " broken. URL is: '" + location + "'", e);
         }
 
         try {
             bitstorageWebserviceFactory
                     = new HighlevelBitstorageSoapWebserviceService(wsdlLocation,
-                                                                   serviceName);
+                    SERVICE_QNAME);
 
             bitstorageService = bitstorageWebserviceFactory
                     .getHighlevelBitstorageSoapWebservicePort();
         } catch (Exception e) {
             // For some reason, highlevel bitstorage webservice is unreachable
-            log.error("Highlevel bitstorage webservice is unreachable.", e);
             throw new HighlevelBitstorageUnreachableException(
                     "Highlevel bitstorage webservice is unreachable.", e);
         }
@@ -245,42 +209,25 @@ public class RealTimeService implements Surveyable {
         try {
             highlevelBitstorageStatus = bitstorageService.status();
         } catch (CommunicationException e) {
-            log.error("Trying to call method 'status' of the highlevel"
-                      + " bitstorage webservice"
-                      + " gave a CommunicationException.", e);
-            // Report no comms with highlevel bitstorage
-            return makeStatus(StatusMessage.Severity.RED,
-                              "Trying to call method 'status' of the highlevel"
-                              + " bitstorage webservice"
-                              + " gave an exception with name: '"
-                              + e.getClass().getName()
-                              + "' and message: ["
-                              + e.getMessage()
-                              +"]"
-            );
+            /* No comms with highlevel bitstorage. Throwing fault exception to
+            be caught by fault barrier.*/
+            throw new BitstorageCommunicationException("Trying to call method "
+                    + "'status' of the highlevel"
+                    + " bitstorage webservice"
+                    + " gave a CommunicationException.", e);
         } catch (HighlevelSoapException e) {
-            log.error("Trying to call method 'status' of the highlevel"
-                      + " bitstorage webservice"
-                      + " gave a HighlevelSoapException.", e);
-            // Report no comms with highlevel bitstorage
-            return makeStatus(StatusMessage.Severity.RED,
-                              "Trying to call method 'status' of the highlevel"
-                              + " bitstorage webservice"
-                              + " gave an exception with name: '"
-                              + e.getClass().getName()
-                              + "' and message: ["
-                              + e.getMessage()
-                              +"]"
-            );
+            /* No comms with highlevel bitstorage. Throwing fault exception to
+            be caught by fault barrier.*/
+            throw new BitstorageHighlevelSoapException("Trying to call method "
+                    + "'status' of the highlevel"
+                    + " bitstorage webservice"
+                    + " gave a HighlevelSoapException.", e);
         }
 
         // Now collect status messages from different parts of the status
         // we can get from the highlevel bitstorage
 
         messageList = new ArrayList<StatusMessage>();
-
-        messageList.add(makeStatusMessageForFreeSpace(
-                highlevelBitstorageStatus));
 
         messageList.add(makeStatusMessageForCurrentOperations(
                 highlevelBitstorageStatus));
@@ -289,95 +236,53 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    /** Constructs a status message with the status of free space reported
-     * by highlevel bitstorage.
-     *
-     * @param highlevelBitstorageStatus A StatusInformation object as returned
-     * by method 'status' of the highlevel bitstorage web service
-     * @return A status message detailing the status of free space reported
-     * by highlevel bitstorage
-     */
-    private StatusMessage makeStatusMessageForFreeSpace(
-            StatusInformation highlevelBitstorageStatus) {
-        Long spaceLeftInBitstorage; // In bytes.
-
-        spaceLeftInBitstorage = highlevelBitstorageStatus.getFreeSpace();
-
-        if (spaceLeftInBitstorage < requiredSpaceInBitstorage) {
-            // Report too little space
-            return new StatusMessage("Not enough space in bitstorage. Remaining"
-                                     + " size must be atleast " + requiredSpaceInBitstorage
-                                     + " bytes.", StatusMessage.Severity.RED,
-                                     System.currentTimeMillis(), false);
-        } else if (spaceLeftInBitstorage < preferredSpaceInBitstorage) {
-            // Report close to too little space
-            return new StatusMessage("Space left in bitstorage is getting"
-                                     + " dangerously close to the lower limit in"
-                                     + " bitstorage. Remaining size should be atleast "
-                                     + preferredSpaceInBitstorage + " bytes.",
-                                     StatusMessage.Severity.YELLOW,
-                                     System.currentTimeMillis(), false);
-        } else {
-            // Report everything ok
-            return new StatusMessage("Highlevel bitstorage is up, and there is"
-                                     + " enough space. Currently " + spaceLeftInBitstorage
-                                     + " bytes left.", StatusMessage.Severity.GREEN,
-                                     System.currentTimeMillis(), false);
-        }
-    }
-
-
     /** Constructs a status message listing the currently running operations
      * in highlevel bitstorage.
      *
      * @param highlevelBitstorageStatus A StatusInformation object as returned
      * by method 'status' of the highlevel bitstorage web service
-     * @return A status message detailing the status of free space reported
-     * by highlevel bitstorage
+     * @return A status message listing the currently running operations in
+     * highlevel bitstorage.
      */
     private StatusMessage makeStatusMessageForCurrentOperations(
             StatusInformation highlevelBitstorageStatus) {
-        List<Operation> runningOperations;
+        log.trace("Entered method makeStatusMessageForCurrentOperations('"
+                + highlevelBitstorageStatus.toString() + "')");
+        List<Operation> runningOperations
+                = highlevelBitstorageStatus.getOperations();
         String message = "Currently running operations: ";
-        Boolean oneOrMoreOperationsListed;
+        Boolean atleastOneOperationListed = false;
 
-        runningOperations = highlevelBitstorageStatus.getOperations();
-
-        oneOrMoreOperationsListed = false;
         for (Operation operation : runningOperations) {
             XMLGregorianCalendar whenOperationStarted
                     = operation.getHistory().get(0).getWhen();
 
-            if (oneOrMoreOperationsListed) {
+            if (atleastOneOperationListed) {
                 message += ", ";
             }
 
-            message += "{"
-                       + "Operation '" + operation.getHighlevelMethod() + "' "
-                       + "with ID '" + operation.getID() + "' "
-                       + "started at '"
-                       + whenOperationStarted.getEonAndYear()
-                       + "-" + whenOperationStarted.getMonth()
-                       + "-" + whenOperationStarted.getDay()
-                       + " " + whenOperationStarted.getHour()
-                       + ":" + whenOperationStarted.getMinute()
-                       + ":" + whenOperationStarted.getSecond()
-                       + "'. Acting on "
-                       + "Fedora PID '" + operation.getFedoraPid() + "', "
-                       + "Fedora datastream '" + operation.getFedoraDatastream()
-                       + "', "
-                       + "File size '" + operation.getFileSize() + "'"
-                       + "}";
+            message += "Operation '" + operation.getHighlevelMethod()
+                    + "'<br />"
+                    + "with ID '" + operation.getID() + "'<br />"
+                    + "started at '"
+                    + whenOperationStarted.toGregorianCalendar().getTime()
+                    .toString()
+                    + "'.<br />"
+                    + "Acting on "
+                    + "Fedora PID '" + operation.getFedoraPid() + "',<br />"
+                    + "Fedora datastream '" + operation.getFedoraDatastream()
+                    + "',<br />"
+                    + "File size '" + operation.getFileSize() + "'";
 
-            oneOrMoreOperationsListed = true;
+            atleastOneOperationListed = true;
         }
 
-        if (!oneOrMoreOperationsListed) {
-            message += "<none>";
+        if (!atleastOneOperationListed) {
+            message += "(none)";
         }
 
         return new StatusMessage(message, StatusMessage.Severity.GREEN,
-                                 System.currentTimeMillis(), false);
+                                 timeOfGetStatusCall, false);
     }
 
 
@@ -396,7 +301,7 @@ public class RealTimeService implements Surveyable {
         StatusMessage statusMessage;
 
         statusMessage = new StatusMessage(message, severity,
-                                          System.currentTimeMillis(), false);
+                                          timeOfGetStatusCall, false);
         messageList.add(statusMessage);
         return new Status(SURVEYEE_NAME, messageList);
     }

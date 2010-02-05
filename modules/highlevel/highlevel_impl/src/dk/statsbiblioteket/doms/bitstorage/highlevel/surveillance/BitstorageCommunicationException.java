@@ -27,30 +27,29 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance;
 
-
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-/** Exception in the case of a malformed URL.
+/** Exception in the case of a CommunicationException from highlevel bitstorage.
  * A fault exception, to be caught by fault barriers.
  * */
 @QAInfo(level = QAInfo.Level.NORMAL,
-        state = QAInfo.State.QA_OK,
+        state = QAInfo.State.QA_NEEDED,
         author = "jrg",
-        reviewers = {"kfc"})
-public class BrokenURLException extends RuntimeException {
-    /** Constructor for BrokenURLException
+        reviewers = {""})
+public class BitstorageCommunicationException extends RuntimeException {
+    /** Constructor for BitstorageCommunicationException
      * @param msg Message describing what went wrong
-     * @param e An exception that needs to be wrapped for later catch by a
+     * @param e The exception that needs to be wrapped for later catch by a
      * fault barrier
      */
-    public BrokenURLException(String msg, Exception e) {
+    public BitstorageCommunicationException(String msg, Exception e) {
         super(msg, e);
     }
 
-    /** Constructor for BrokenURLException
+    /** Constructor for BitstorageCommunicationException
      * @param msg Message describing what went wrong
      */
-    public BrokenURLException(String msg) {
+    public BitstorageCommunicationException(String msg) {
         super(msg);
     }
 }

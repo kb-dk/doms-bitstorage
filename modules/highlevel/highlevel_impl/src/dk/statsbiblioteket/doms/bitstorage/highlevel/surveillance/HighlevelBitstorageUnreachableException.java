@@ -33,14 +33,22 @@ import dk.statsbiblioteket.util.qa.QAInfo;
  * A fault exception, to be caught by fault barriers.
  * */
 @QAInfo(level = QAInfo.Level.NORMAL,
-        state = QAInfo.State.QA_NEEDED,
+        state = QAInfo.State.QA_OK,
         author = "jrg",
-        reviewers = {""})
+        reviewers = {"kfc"})
 public class HighlevelBitstorageUnreachableException extends RuntimeException {
+    /** Constructor for HighlevelBitstorageUnreachableException
+     * @param msg Message describing what went wrong
+     * @param e An exception that needs to be wrapped for later catch by a
+     * fault barrier
+     */
     public HighlevelBitstorageUnreachableException(String msg, Exception e) {
         super(msg, e);
     }
 
+    /** Constructor for HighlevelBitstorageUnreachableException
+     * @param msg Message describing what went wrong
+     */
     public HighlevelBitstorageUnreachableException(String msg) {
         super(msg);
     }
