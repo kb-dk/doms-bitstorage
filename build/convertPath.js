@@ -25,7 +25,7 @@
  * under the License.
  */
 
-/* Part of doms build framework version 1.0.3 */
+/* Part of doms build framework version 1.0.4 */
 importClass(java.io.File);
 importPackage(Packages.org.apache.tools.ant);
 importPackage(Packages.org.apache.tools.ant.types);

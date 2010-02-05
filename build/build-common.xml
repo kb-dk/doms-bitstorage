@@ -26,7 +26,7 @@
   -->
 
 <project name="common">
-    <!--Part of doms build framework version 1.0.3-->
+    <!--Part of doms build framework version 1.0.4-->
 
 
     <property name="global.dir" value="${basedir}"/>
@@ -99,7 +99,7 @@
 
 
     <target name="init">
-        <echo message="Using doms buildframework version 1.0.3"/>
+        <echo message="Using doms buildframework version 1.0.4"/>
     </target>
 
 

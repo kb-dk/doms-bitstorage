@@ -28,7 +28,7 @@
 <!--This build-include sets the correct project lib dependencies
 for the module to build as a soap webservice-->
 <project name="soap-webservice">
-    <!--Part of doms build framework version 1.0.3-->
+    <!--Part of doms build framework version 1.0.4-->
 
     <property file="${global.dir}/build.properties"/>
 

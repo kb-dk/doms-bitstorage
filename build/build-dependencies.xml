@@ -27,12 +27,14 @@
 
 <!-- Global- and module specific libs -->
 <project name="dependencies">
-    <!--Part of doms build framework version 1.0.3-->
+    <!--Part of doms build framework version 1.0.4-->
+
 
     <property name="global.dir" value="${basedir}"/>
 
     <dirname property="dependencies.basedir" file="${ant.file.dependencies}"/>
 
+    <property file="${dependencies.basedir}/build-framework.properties"/>
 
     <fileset id="module.libs" dir="${basedir}/lib">
         <include name="**/jars/*.jar"/>
@@ -54,7 +56,7 @@
 
 
     <path id="rhino.classpath">
-        <fileset dir="${dependencies.basedir}/build-libs/rhino/jars">
+        <fileset dir="${dependencies.basedir}/${rhino.folder}">
             <include name="*.jar"/>
         </fileset>
     </path>

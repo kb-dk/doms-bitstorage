@@ -26,7 +26,7 @@
   -->
 
 <project name="webservice">
-    <!--Part of doms build framework version 1.0.3-->
+    <!--Part of doms build framework version 1.0.4-->
 
     <property name="warfilename" value="${ant.project.name}.war"/>
 
