@@ -1,4 +1,6 @@
 <!--
+  ~ Doms build framework version 1.0.4
+  ~
   ~ $Id$
   ~ $Revision$
   ~ $Date$
@@ -62,6 +64,7 @@
     </selector>
 
 
+
     <dirset id="module.dependencies" dir="${global.dir}/modules">
         <exclude name="**"/>
     </dirset>
@@ -94,6 +97,7 @@
     </target>
 
 
+
     <target name="_preinit"/>
     <target name="_postinit"/>
 
@@ -101,6 +105,7 @@
     <target name="init">
         <echo message="Using doms buildframework version 1.0.4"/>
     </target>
+
 
 
     <target name="_postcompile"/>
@@ -153,6 +158,7 @@
 
     <target name="_prejar"/>
     <target name="_postjar"/>
+
 
 
     <target name="jar" depends="compile,_prejar">

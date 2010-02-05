@@ -1,4 +1,6 @@
 <!--
+  ~ Doms build framework version 1.0.4
+  ~
   ~ $Id$
   ~ $Revision$
   ~ $Date$
@@ -26,7 +28,7 @@
   -->
 
 <project name="soap-webservice-interface">
-    <!--Part of doms build framework version 1.0.4-->
+        <!--Part of doms build framework version 1.0.4-->
 
     <import file="build-common.xml"/>
 

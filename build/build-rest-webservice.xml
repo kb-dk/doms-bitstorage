@@ -1,4 +1,6 @@
 <!--
+  ~ Doms build framework version 1.0.4
+  ~
   ~ $Id$
   ~ $Revision$
   ~ $Date$
@@ -28,7 +30,7 @@
 <!--This include sets the correct project lib dependencies for
 the module to build as a REST webservice-->
 <project name="rest-webservice">
-    <!--Part of doms build framework version 1.0.4-->
+        <!--Part of doms build framework version 1.0.4-->
     <!--    <import file="build-webservice.xml"/>-->
 
     <property file="${global.dir}/build.properties"/>

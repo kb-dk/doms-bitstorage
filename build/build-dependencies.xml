@@ -1,4 +1,6 @@
 <!--
+  ~ Doms build framework version 1.0.4
+  ~
   ~ $Id$
   ~ $Revision$
   ~ $Date$
@@ -35,7 +37,7 @@
     <dirname property="dependencies.basedir" file="${ant.file.dependencies}"/>
 
     <property file="${dependencies.basedir}/build-framework.properties"/>
-
+    
     <fileset id="module.libs" dir="${basedir}/lib">
         <include name="**/jars/*.jar"/>
     </fileset>
