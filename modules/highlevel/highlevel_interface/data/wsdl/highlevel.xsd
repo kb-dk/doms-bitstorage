@@ -74,7 +74,8 @@
 
     <xs:element name="uploadFileToObject" type="tns:uploadFileToObject"/>
 
-    <xs:element name="uploadFileToObjectResponse" type="tns:uploadFileToObjectResponse"/>
+    <xs:element name="uploadFileToObjectResponse"
+                type="tns:uploadFileToObjectResponse"/>
 
     <xs:element name="status" type="tns:status"/>
 
@@ -94,8 +95,9 @@
 
     <xs:complexType name="statusInformation">
         <xs:sequence>
-            <xs:element name="freeSpace" type="xs:long"/>
-            <xs:element name="operations" type="tns:operation" minOccurs="0" maxOccurs="unbounded"/>
+            <!--            <xs:element name="freeSpace" type="xs:long"/>-->
+            <xs:element name="operations" type="tns:operation" minOccurs="0"
+                        maxOccurs="unbounded"/>
 
         </xs:sequence>
     </xs:complexType>
@@ -116,7 +118,8 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:element>
-            <xs:element name="history" type="tns:event" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="history" type="tns:event" minOccurs="0"
+                        maxOccurs="unbounded"/>
         </xs:sequence>
 
     </xs:complexType>
