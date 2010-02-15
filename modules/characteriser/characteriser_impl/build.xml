@@ -39,11 +39,6 @@
     <!--Adds the soap libs to the build-->
     <import file="${global.dir}/build/build-soap-webservice.xml"/>
 
-
-    <!--Project libs used by this module-->
-    <fileset id="project.libs" dir="${global.dir}/lib">
-    </fileset>
-
     <target name="_postdist" depends="war"/>
 
     <dirset id="module.dependencies" dir="${global.dir}/modules/">

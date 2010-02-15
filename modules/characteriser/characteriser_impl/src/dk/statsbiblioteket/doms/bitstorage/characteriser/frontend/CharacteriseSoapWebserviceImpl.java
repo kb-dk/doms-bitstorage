@@ -36,18 +36,8 @@ import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import javax.annotation.PostConstruct;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-//<<<<<<< .mine
-import javax.servlet.ServletContext;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.Service;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.soap.MTOMFeature;
-import javax.xml.ws.soap.SOAPBinding;
-import javax.xml.ws.handler.MessageContext;
-//=======
-//>>>>>>> .r190
 
-import com.sun.xml.internal.ws.developer.JAXWSProperties;
+
 import eu.planets_project.services.identify.Identify;
 import eu.planets_project.services.identify.IdentifyResult;
 import eu.planets_project.services.datatypes.DigitalObject;
@@ -76,9 +66,10 @@ public class CharacteriseSoapWebserviceImpl implements
     private boolean initialised = false;
 
 //    @PostConstruct
-//>>>>>>> .r190
-    private void initialise(){
-        if (initialised){
+
+    //>>>>>>> .r190
+    private void initialise() {
+        if (initialised) {
             return;
         }
 //<<<<<<< .mine
@@ -102,7 +93,7 @@ public class CharacteriseSoapWebserviceImpl implements
 
         String testparam = ConfigCollection.getProperties().getProperty("testParam");
         initialised = true;
-        
+
 //>>>>>>> .r190
     }
 
@@ -115,6 +106,7 @@ public class CharacteriseSoapWebserviceImpl implements
             throws CommunicationException, FileNotAvailableException {
         initialise();
 
+/*
         DigitalObject studiedItem;
         URI uri = new URI(pid);
         try {
@@ -173,9 +165,11 @@ public class CharacteriseSoapWebserviceImpl implements
 
         //characterise()
 
+*/
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+/*
 
     private List<String> outPutListAsStrings(Characterisation list) {
         ArrayList<String> outputList = new ArrayList<String>();
@@ -184,11 +178,12 @@ public class CharacteriseSoapWebserviceImpl implements
         }
         return outputList;
     }
+*/
 
 
-    private List<String> outPutListAsStrings (Set<URI> inputList){
+    private List<String> outPutListAsStrings(Set<URI> inputList) {
         ArrayList<String> outputList = new ArrayList<String>();
-        for(Object o:inputList){
+        for (Object o : inputList) {
             outputList.add(o.toString());
         }
         return outputList;
