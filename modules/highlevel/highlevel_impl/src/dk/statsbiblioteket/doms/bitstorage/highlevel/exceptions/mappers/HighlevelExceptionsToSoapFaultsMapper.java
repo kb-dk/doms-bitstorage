@@ -29,10 +29,14 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
 
 import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
 import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 
 import javax.xml.ws.WebServiceException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,10 +47,19 @@ import javax.xml.ws.WebServiceException;
  */
 public class HighlevelExceptionsToSoapFaultsMapper extends ExceptionMapper<HighlevelSoapException, HighlevelException> {
 
+    private Log log;
+
+    public HighlevelExceptionsToSoapFaultsMapper() {
+        log = LogFactory.getLog(HighlevelExceptionsToSoapFaultsMapper.class);
+    }
 
     public HighlevelSoapException convert(HighlevelException ce) {
         //return new HighlevelSoapException(ce);
         throw new WebServiceException("Attempting to convert unknown type", ce);
     }
 
+
+    public CommunicationException convert(dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.CommunicationException ce) {
+        return new CommunicationException("Something failed in the communication with the other backend services", ce.getMessage(), ce);
+    }
 }

@@ -28,6 +28,7 @@
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
 import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 
@@ -42,5 +43,9 @@ public class LowlevelToHighlevelExceptionMapper extends ExceptionMapper<Highleve
 
     public HighlevelException convert(LowlevelSoapException ce) {
         return new HighlevelException(ce);
+    }
+
+    public CommunicationException convert(dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException ce) {
+        return new CommunicationException(ce);
     }
 }

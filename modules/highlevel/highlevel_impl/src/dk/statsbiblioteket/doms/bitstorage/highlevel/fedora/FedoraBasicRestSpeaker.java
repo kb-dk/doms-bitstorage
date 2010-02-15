@@ -95,7 +95,7 @@ public class FedoraBasicRestSpeaker {
         host = new HttpHost(server, port);
         try {
             JAXBContext context = JAXBContext.newInstance(
-                    "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated;" +
+                    "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated:" +
                             Characterisation.class.getPackage().getName());
             unmarshaller = context.createUnmarshaller();
             marshaller = context.createMarshaller();

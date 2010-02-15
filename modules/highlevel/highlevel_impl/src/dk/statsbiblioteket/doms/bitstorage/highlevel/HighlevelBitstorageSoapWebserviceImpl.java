@@ -43,7 +43,7 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraDat
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraObjectNotFoundException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+import dk.statsbiblioteket.doms.webservices.*;
 import org.apache.log4j.Logger;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -120,11 +120,17 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
         if (initialised) {
             return;
         }
+        System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
+        threads = new ArrayList<Operation>();
+        lowlevelMapper = new LowlevelToHighlevelExceptionMapper();
+        fedoraMapper = new FedoraToHighlevelExceptionMapper();
+        characMapper = new CharacteriseToHighlevelExceptionMapper();
+        highlevelMapper = new HighlevelExceptionsToSoapFaultsMapper();
         log = LogFactory.getLog(HighlevelBitstorageSoapWebserviceImpl.class);
 
         initialiseLowLevelConnector();
         initialiseCharacteriserConnector();
-/*        initialiseFedoraSpeaker();*/
+        initialiseFedoraSpeaker();
 
 
         try {
@@ -147,27 +153,14 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
         int port = Integer.decode(ConfigCollection.getProperties().getProperty("dk.statsbiblioteket.doms.bitstorage.fedora.port"));
         String charac = ConfigCollection.getProperties().getProperty("dk.statsbiblioteket.doms.bitstorage.fedora.characstream");
         String contents = ConfigCollection.getProperties().getProperty("dk.statsbiblioteket.doms.bitstorage.fedora.contentstream");
-        String username = null;
-        String password = null;
-
-        MessageContext mc = context.getMessageContext();
-
-        HttpServletRequest request = (HttpServletRequest) mc.get(MessageContext.SERVLET_REQUEST);
-        String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Basic")) {
-            try {
-                byte[] data = Base64.decode(
-                        authorizationHeader.substring("Basic ".length()));
-                String auth;
-                auth = new String(data);
-                username = auth.substring(0, auth.indexOf(':'));
-                password = auth.substring(auth.indexOf(':') + 1);
-            } catch (IOException e) {
-                log.error(e.getMessage());
-            }
+        Credentials creds;
+        try {
+            creds = ExtractCredentials.extract(context);
+        } catch (CredentialsException e) {//TODO
+            log.warn("Attempted call at Bitstorage without credentials", e);
+            creds = new Credentials("", "");
         }
-        new FedoraSpeakerRestImpl(contents, charac, username, password, server, port);
+        new FedoraSpeakerRestImpl(contents, charac, creds.getUsername(), creds.getPassword(), server, port);
     }
 
     private void initialiseLowLevelConnector() throws ConfigException {
@@ -215,7 +208,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             @WebParam(name = "filelength", targetNamespace = "")
             long filelength) throws
             HighlevelSoapException {
-        initialiseFedoraSpeaker();
+        initialise();
         Operation op = initOperation("Upload");
         String message;
         try {
