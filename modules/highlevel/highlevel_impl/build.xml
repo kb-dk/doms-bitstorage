@@ -72,8 +72,11 @@
         <include name="lowlevel/lowlevel_interface"/>
         <include name="characteriser/characteriser_interface"/>
         <include name="highlevel/highlevel_interface"/>
-
     </dirset>
+
+    <fileset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
+    </fileset>
 
 
 </project>
