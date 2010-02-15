@@ -44,10 +44,38 @@
         </listener-class>
     </listener>
 
+
     <context-param>
-        <param-name>testParam</param-name>
-        <param-value>testValue</param-value>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.characteriser.location</param-name>
+        <param-value>http://localhost:8080/characteriser/characterise/?wsdl</param-value>
     </context-param>
+
+
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location</param-name>
+        <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.server</param-name>
+        <param-value>localhost</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.port</param-name>
+        <param-value>7910</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.characstream</param-name>
+        <param-value>CHARACTERISATION</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.contentstream</param-name>
+        <param-value>CONTENTS</param-value>
+    </context-param>
+
 
     <servlet>
         <description>JAX-WS endpoint</description>
@@ -69,7 +97,7 @@
         </servlet-class>
         <init-param>
             <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>dk.statsbiblioteket.bitstorage.highlevel
+            <param-value>dk.statsbiblioteket.doms.bitstorage.highlevel
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
