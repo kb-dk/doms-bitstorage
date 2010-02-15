@@ -14,7 +14,7 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/dist/lowlevel_interface_src.zip!/" />
+          <root url="jar://$MODULE_DIR$/dist/lowlevel_interface-src.zip!/" />
         </SOURCES>
       </library>
     </orderEntry>
