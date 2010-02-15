@@ -25,31 +25,24 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
-
-
+package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 20, 2010
- * Time: 6:01:19 PM
- * To change this template use File | Settings | File Templates.
+ * TODO ABR forgot to javadoc this class
  */
-public class FedoraException extends Exception{
-
-    public FedoraException() {
+public class ResourceNotFoundException extends FedoraException {
+    public ResourceNotFoundException() {
     }
 
-    public FedoraException(String message) {
+    public ResourceNotFoundException(String message) {
         super(message);
     }
 
-    public FedoraException(String message, Throwable cause) {
+    public ResourceNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public FedoraException(Throwable cause) {
+    public ResourceNotFoundException(Throwable cause) {
         super(cause);
     }
 }

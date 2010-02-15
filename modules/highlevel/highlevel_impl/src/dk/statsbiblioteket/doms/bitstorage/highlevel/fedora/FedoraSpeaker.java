@@ -28,7 +28,9 @@
 package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
 
 import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
 
+import javax.xml.bind.JAXBException;
 import java.util.Collection;
 
 /**
@@ -41,54 +43,66 @@ import java.util.Collection;
 public interface FedoraSpeaker {
 
 
+    public void createContentDatastream(String pid,
+                                        String url,
+                                        String checksum)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraDatastreamAlreadyExistException,
+            FedoraCommunicationException,
+            FedoraChecksumFailedException;
 
-    public void createContentDatastream(String pid, String url, String checksum) throws
-                                                                                 FedoraObjectNotFoundException,
-                                                                                 FedoraDatastreamAlreadyExistException,
-                                                                                 FedoraCommunicationException,
-                                                                                 FedoraChecksumFailedException;
 
-    public void replaceContentDatastream(String pid, String url, String checksum) throws
-                                                                                  FedoraObjectNotFoundException,
-                                                                                  FedoraDatastreamNotFoundException,
-                                                                                  FedoraCommunicationException,
-                                                                                  FedoraChecksumFailedException;
+    public Collection<String> getFormatURI(String pid,
+                                           String datastream)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraDatastreamNotFoundException,
+            FedoraCommunicationException;
 
-    public Collection<String> getFormatURI(String pid, String datastream) throws
-                                                                          FedoraObjectNotFoundException,
-                                                                          FedoraDatastreamNotFoundException,
-                                                                          FedoraCommunicationException;
+    public void storeCharacterization(String pid,
+                                      Characterisation characterisation)
+            throws
+            FedoraObjectNotFoundException,
 
-    public void storeCharacterization(String pid, Characterisation characterisation) throws
-                                                                                     FedoraObjectNotFoundException,
+            FedoraCommunicationException,
+            JAXBException;
 
-                                                                                     FedoraCommunicationException;
+    public boolean datastreamExists(String pid,
+                                    String datastream)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraCommunicationException;
 
-    public boolean datastreamExists(String pid, String datastream) throws
-                                                                   FedoraObjectNotFoundException,
-                                                                   FedoraCommunicationException;
+    public boolean datastreamHasContent(String pid,
+                                        String datastream)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraDatastreamNotFoundException,
+            FedoraCommunicationException;
 
-    public boolean datastreamHasContent(String pid, String datastream) throws
-                                                                       FedoraObjectNotFoundException,
-                                                                       FedoraDatastreamNotFoundException,
-                                                                       FedoraCommunicationException;
-
-    void deleteDatastream(String pid, String ds) throws
-                                                 FedoraObjectNotFoundException,
-                                                 FedoraDatastreamNotFoundException,
-                                                 FedoraCommunicationException;
+    void deleteDatastream(String pid,
+                          String ds)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraDatastreamNotFoundException,
+            FedoraCommunicationException;
 
     public String getContentDatastreamName();
 
     public String getCharacterisationDatastreamName();
 
-    String getFileUrl(String pid)  throws
-                                                 FedoraObjectNotFoundException,
-                                                 FedoraDatastreamNotFoundException,
-                                                 FedoraCommunicationException;
+    String getFileUrl(String pid)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraDatastreamNotFoundException,
+            FedoraCommunicationException;
 
-    String getFileChecksum(String pid)  throws
-                                                 FedoraObjectNotFoundException,
-                                                 FedoraDatastreamNotFoundException,
-                                                 FedoraCommunicationException;;
+    String getFileChecksum(String pid)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraDatastreamNotFoundException,
+            FedoraCommunicationException;
+
+    ;
 }

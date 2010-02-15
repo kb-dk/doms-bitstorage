@@ -25,14 +25,24 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
+package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 19, 2010
- * Time: 12:05:45 PM
- * To change this template use File | Settings | File Templates.
+ * TODO ABR forgot to javadoc this class
  */
-public class FedoraDatastreamNotFoundException extends FedoraException {
+public class FedoraClientException extends FedoraCommunicationException {
+    public FedoraClientException() {
+    }
+
+    public FedoraClientException(String message) {
+        super(message);
+    }
+
+    public FedoraClientException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FedoraClientException(Throwable cause) {
+        super(cause);
+    }
 }

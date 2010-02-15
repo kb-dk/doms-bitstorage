@@ -25,14 +25,24 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
+package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 19, 2010
- * Time: 12:06:49 PM
- * To change this template use File | Settings | File Templates.
+ * TODO ABR forgot to javadoc this class
  */
-public class FedoraChecksumFailedException extends FedoraException{
+public class FedoraAuthenticationException extends FedoraCommunicationException {
+    public FedoraAuthenticationException() {
+    }
+
+    public FedoraAuthenticationException(String message) {
+        super(message);
+    }
+
+    public FedoraAuthenticationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FedoraAuthenticationException(Throwable cause) {
+        super(cause);
+    }
 }

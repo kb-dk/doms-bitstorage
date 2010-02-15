@@ -25,14 +25,30 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
+package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
+
 
 /**
  * Created by IntelliJ IDEA.
  * User: abr
- * Date: Jan 19, 2010
- * Time: 12:05:38 PM
+ * Date: Jan 20, 2010
+ * Time: 6:01:19 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FedoraDatastreamAlreadyExistException extends FedoraException {
+public class FedoraException extends Exception {
+
+    public FedoraException() {
+    }
+
+    public FedoraException(String message) {
+        super(message);
+    }
+
+    public FedoraException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FedoraException(Throwable cause) {
+        super(cause);
+    }
 }
