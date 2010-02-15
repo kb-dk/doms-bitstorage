@@ -38,11 +38,9 @@ import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
  * Time: 5:54:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CharacteriseToHighlevelExceptionMapper extends ExceptionMapper<HighlevelException,CharacteriseSoapException> {
+public class CharacteriseToHighlevelExceptionMapper extends ExceptionMapper<HighlevelException, CharacteriseSoapException> {
 
     public HighlevelException convert(CharacteriseSoapException ce) {
-
-        //TODO
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return new HighlevelException(ce);
     }
 }

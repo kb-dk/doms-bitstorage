@@ -41,11 +41,12 @@ import javax.xml.ws.WebServiceException;
  * Time: 2:13:41 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HighlevelExceptionsToSoapFaultsMapper extends ExceptionMapper<HighlevelSoapException,HighlevelException> {
+public class HighlevelExceptionsToSoapFaultsMapper extends ExceptionMapper<HighlevelSoapException, HighlevelException> {
 
 
     public HighlevelSoapException convert(HighlevelException ce) {
-        throw new WebServiceException("Attempting to convert unknown type",ce);
+        //return new HighlevelSoapException(ce);
+        throw new WebServiceException("Attempting to convert unknown type", ce);
     }
 
 }

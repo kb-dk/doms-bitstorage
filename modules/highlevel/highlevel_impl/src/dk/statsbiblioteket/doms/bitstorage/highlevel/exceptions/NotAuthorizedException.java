@@ -27,28 +27,26 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions;
 
-
 /**
  * Created by IntelliJ IDEA.
  * User: abr
- * Date: Jan 20, 2010
- * Time: 2:09:20 PM
+ * Date: Feb 10, 2010
+ * Time: 3:08:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HighlevelException extends Exception {
-
-    public HighlevelException() {
+public class NotAuthorizedException extends HighlevelException {
+    public NotAuthorizedException() {
     }
 
-    public HighlevelException(String message) {
+    public NotAuthorizedException(String message) {
         super(message);
     }
 
-    public HighlevelException(String message, Throwable cause) {
+    public NotAuthorizedException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public HighlevelException(Throwable cause) {
+    public NotAuthorizedException(Throwable cause) {
         super(cause);
     }
 }

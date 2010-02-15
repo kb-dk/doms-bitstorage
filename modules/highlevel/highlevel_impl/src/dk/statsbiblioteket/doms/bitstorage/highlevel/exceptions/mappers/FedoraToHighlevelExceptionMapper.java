@@ -27,8 +27,8 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.FedoraException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.*;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
 import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 
 /**
@@ -38,10 +38,29 @@ import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
  * Time: 6:00:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FedoraToHighlevelExceptionMapper extends ExceptionMapper<HighlevelException,FedoraException> {
+public class FedoraToHighlevelExceptionMapper extends ExceptionMapper<HighlevelException, FedoraException> {
 
 
-    public HighlevelException convert(FedoraException ce) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public HighlevelException convert(FedoraException e) {
+        return new HighlevelException(e);
     }
+
+    public HighlevelException convert(FedoraAuthenticationException e) {
+        return new NotAuthorizedException(e);
+    }
+
+
+    public HighlevelException convert(FedoraChecksumFailedException e) {
+        return new ChecksumFailedException(e);
+    }
+
+    public HighlevelException convert(FedoraCommunicationException e) {
+        return new CommunicationException(e);
+    }
+
+
+    public HighlevelException convert(FedoraObjectNotFoundException e) {
+        return new ObjectNotFoundException(e);
+    }
+
 }
