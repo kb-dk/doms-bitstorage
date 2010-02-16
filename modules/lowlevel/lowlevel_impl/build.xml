@@ -47,14 +47,15 @@
         <include name="webservice-common"/>
     </dirset>
 
-    <target name="_postdist" depends="war"/>
+    <target name="_postall" depends="war"/>
 
     <!--Project libs used by this module-->
-    <fileset id="project.libs" dir="${global.dir}/lib">
+    <dirset id="project.libs" dir="${global.dir}/lib">
+        <include name="domsutil-*/"/>
         <!--The following are only needed by surveilance-->
-        <include name="doms-surveillance-rest-0.0.1/jars/**/*.jar"/>
-        <include name="doms-surveillance-status-0.0.1/jars/**/*.jar"/>
-    </fileset>
+        <include name="doms-surveillance-rest-0.0.1/"/>
+        <include name="doms-surveillance-status-0.0.1/"/>
+    </dirset>
 
 
 </project>
