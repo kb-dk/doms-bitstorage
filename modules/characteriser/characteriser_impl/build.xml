@@ -39,12 +39,13 @@
     <!--Adds the soap libs to the build-->
     <import file="${global.dir}/build/build-soap-webservice.xml"/>
 
-    <target name="_postdist" depends="war"/>
+    <target name="_postall" depends="war"/>
 
     <dirset id="module.dependencies" dir="${global.dir}/modules/">
-        <include name="webservice-common"/>
         <include name="characteriser/characteriser_interface"/>
     </dirset>
 
-
+    <dirset id="project.libs" dir="${global.dir}/lib/">
+        <include name="domsutil-0.0.2#SNAPSHOT"/>
+    </dirset>
 </project>
