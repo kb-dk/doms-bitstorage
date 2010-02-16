@@ -40,8 +40,8 @@
     <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
     <orderEntry type="module" module-name="lowlevel_interface" />
     <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
-    <orderEntry type="module" module-name="webservice-common" />
     <orderEntry type="library" name="jsr311-api-1.0" level="project" />
+    <orderEntry type="library" name="webservice-common-0.0.1" level="project" />
   </component>
 </module>
 

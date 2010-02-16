@@ -8,7 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="characteriser_interface" />
-    <orderEntry type="module" module-name="webservice-common" />
     <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
     <orderEntry type="module-library">
       <library name="Planets">
@@ -22,6 +21,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="webservice-common-0.0.1" level="project" />
   </component>
 </module>
 
