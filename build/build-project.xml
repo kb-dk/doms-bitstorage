@@ -166,6 +166,8 @@
 
         <zip destfile="dist/${dist.src.zip}">
             <zipfileset prefix="${dist.name}" dir=".">
+                <include name="**/*"/>
+                <exclude name="out/**"/>
             </zipfileset>
         </zip>
     </target>
