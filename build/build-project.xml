@@ -25,7 +25,7 @@
   ~ under the License.
   -->
 
-<project name="dist">
+<project name="project">
 
     <property name="global.dir" value="${basedir}/.."/>
 
@@ -45,7 +45,7 @@
 
     <target name="clean">
         <delete dir="dist"/>
-        <delete dir="temp/*"/>
+        <delete dir="temp"/>
         <dependsloop target="clean" dependencies="project.modules"/>
     </target>
 
@@ -97,9 +97,11 @@
     <target name="release.bin">
 
         <mkdir dir="dist"/>
+
         <mkdir dir="temp/libtemp"/>
         <mkdir dir="temp/licensestemp"/>
         <mkdir dir="temp/usedlibs"/>
+        <mkdir dir="temp/wartemp"/>
 
         <dependsloop target="all" dependencies="project.modules"/>
         <!--Collect the used project libs from all the ordinary modules -->
@@ -152,8 +154,9 @@
         </zip>
 
         <delete dir="temp/libtemp"/>
-        <delete dir="temp/apidocstemp"/>
         <delete dir="temp/licensestemp"/>
+        <delete dir="temp/usedlibs"/>
+        <delete dir="temp/wartemp"/>
 
     </target>
 
