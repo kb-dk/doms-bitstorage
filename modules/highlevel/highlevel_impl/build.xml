@@ -37,16 +37,10 @@
 
 
     <!--Contain the normal build tasks, including war-->
-    <import file="${global.dir}/build/build-webservice.xml"/>
+    <import file="${global.dir}/build/build-webservice-module.xml"/>
 
-    <!--Adds the soap libs to the build-->
-    <import file="${global.dir}/build/build-soap-webservice.xml"/>
+    <import file="${global.dir}/build/build-macros-jaxws.xml"/>
 
-    <!--Adds the rest libs to the build-->
-    <import file="${global.dir}/build/build-rest-webservice.xml"/>
-
-    <!--Create the classes to parse the fedora output-->
-    <import file="${global.dir}/build/build-jaxb.xml"/>
 
     <!--The location of the fedora schemas-->
     <fileset id="schema.files" dir="${basedir}/data/fedora-return-types">
@@ -54,30 +48,57 @@
     </fileset>
 
 
-    <!--Nessesary to hack the jaxb generate in before compile...-->
-    <target name="_precompile" depends="jaxb.generate"/>
+    <!-- Generate jaxb classes from schemas before compile-->
+    <target name="depends" depends="module.depends,generate.check"
+            unless="schemasNotChanged">
+        <jaxb.generate jaxb.package="${jaxb.package}"
+                       schema.files="schema.files"/>
+    </target>
 
-    <target name="_postall" depends="war"/>
+    <target name="generate.check">
+
+        <pathconvert property="generated.dir" dirsep="/" pathsep=";"
+                     description="Replace '.' with '/' and assign value to new property">
+            <path path="${jaxb.package}"
+                  description="Original package name with dot notation"/>
+
+            <!--Pathconvert will try to add the root directory to the "path", so replace with empty string -->
+            <map from="${basedir}" to=""/>
+
+            <filtermapper>
+                <replacestring from="." to="/"/>
+            </filtermapper>
+
+        </pathconvert>
+
+        <echo message="this is the generated dir ${generated.dir}"/>
+        <uptodate property="schemasNotChanged"
+                  targetfile="tempsrc/${generated.dir}">
+            <srcfiles refid="schema.files"/>
+        </uptodate>
+    </target>
+
 
     <!--Project libs used by this module-->
-    <fileset id="project.libs" dir="${global.dir}/lib">
-        <include name="domsutil-*/"/>
-        <!--The following are only needed by surveilance-->
-        <include name="doms-surveillance-rest-0.0.1/"/>
-        <include name="doms-surveillance-status-0.0.1/"/>
-    </fileset>
+    <dirset id="project.libs" dir="${global.dir}/lib/">
+        <include name="${domsutil.lib}"/>
+        <include name="${sbutils.lib}"/>
+        <include name="${doms-surveillance-rest.lib}"/>
+        <include name="${doms-surveillance-status.lib}"/>
+        <include name="${jaxws-ri.lib}"/>
+        <include name="${jersey.lib}"/>
+        <include name="${jsr311-api.lib}"/>
 
+    </dirset>
 
     <dirset id="module.dependencies" dir="${global.dir}/modules/">
-        <include name="webservice-common"/>
         <include name="lowlevel/lowlevel_interface"/>
         <include name="characteriser/characteriser_interface"/>
         <include name="highlevel/highlevel_interface"/>
     </dirset>
 
-    <fileset id="build.project.libs" dir="${global.dir}/lib">
-        <include name="servlet-api-2.5-apache-tomcat-6.0.20/jars/**/*.jar"/>
-    </fileset>
-
+    <dirset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="${servlet.lib}"/>
+    </dirset>
 
 </project>

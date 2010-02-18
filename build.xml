@@ -31,42 +31,6 @@
     <property name="include.wars" value="true"/>
 
     <property name="global.dir" value="${basedir}"/>
-    <import file="build/build-dist.xml"/>
-    <!--
+    <import file="build/build-project.xml"/>
 
-        <target name="clean">
-            <subant target="clean">
-                <fileset dir="modules" includes="**/build.xml" excludes="oldwebservices/**"/>
-            </subant>
-        </target>
-
-        <target name="dist">
-            <mkdir dir="dist"/>
-            <subant target="war">
-                <fileset dir="modules/lowlevel/lowlevel_impl" includes="build.xml"/>
-            </subant>
-            <copy todir="dist">
-                <fileset dir="modules/lowlevel/lowlevel_impl/dist/">
-                    <include name="*.war"/>
-                </fileset>
-            </copy>
-            <subant target="war">
-                <fileset dir="modules/highlevel/highlevel_impl" includes="build.xml"/>
-            </subant>
-            <copy todir="dist">
-                <fileset dir="modules/highlevel/highlevel_impl/dist/">
-                    <include name="*.war"/>
-                </fileset>
-            </copy>
-            <subant target="war">
-                <fileset dir="modules/characteriser/characteriser_impl" includes="build.xml"/>
-            </subant>
-            <copy todir="dist">
-                <fileset dir="modules/characteriser/characteriser_impl/dist/">
-                    <include name="*.war"/>
-                </fileset>
-            </copy>
-        </target>
-
-    -->
 </project>

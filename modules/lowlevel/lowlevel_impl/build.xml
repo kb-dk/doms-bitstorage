@@ -27,34 +27,38 @@
 
 <project name="lowlevel_impl" basedir=".">
 
+
     <property name="global.dir" value="${basedir}/../../.."/>
+
+    <property file="${global.dir}/build.properties"/>
+
     <property name="warfilename" value="lowlevelbitstorage.war"/>
     <property name="wsdl.dir"
               value="${global.dir}/modules/lowlevel/lowlevel_interface/data/wsdl"/>
 
+
     <!--Contain the normal build tasks, including war-->
-    <import file="${global.dir}/build/build-webservice.xml"/>
-
-    <!--Adds the soap libs to the build-->
-    <import file="${global.dir}/build/build-soap-webservice.xml"/>
-
-    <!--Adds the rest libs to the build-->
-    <import file="${global.dir}/build/build-rest-webservice.xml"/>
+    <import file="${global.dir}/build/build-webservice-module.xml"/>
 
 
     <dirset id="module.dependencies" dir="${global.dir}/modules/">
         <include name="lowlevel/lowlevel_interface"/>
-        <include name="webservice-common"/>
     </dirset>
 
-    <target name="_postall" depends="war"/>
 
     <!--Project libs used by this module-->
-    <dirset id="project.libs" dir="${global.dir}/lib">
-        <include name="domsutil-*/"/>
-        <!--The following are only needed by surveilance-->
-        <include name="doms-surveillance-rest-0.0.1/"/>
-        <include name="doms-surveillance-status-0.0.1/"/>
+    <dirset id="project.libs" dir="${global.dir}/lib/">
+        <include name="${domsutil.lib}"/>
+
+        <include name="${sbutils.lib}"/>
+
+        <include name="${doms-surveillance-rest.lib}"/>
+        <include name="${doms-surveillance-status.lib}"/>
+        <include name="${jaxws-ri.lib}"/>
+        <include name="${jersey.lib}"/>
+        <include name="${jsr311-api.lib}"/>
+
+
     </dirset>
 
 

@@ -1,10 +1,8 @@
 /*
- * Doms build framework version 1.0.4
- *
- * $Id: convertPath.js 213 2010-02-05 10:07:18Z blekinge $
- * $Revision: 213 $
- * $Date: 2010-02-05 11:07:18 +0100 (Fri, 05 Feb 2010) $
- * $Author: blekinge $
+ * $Id$
+ * $Revision$
+ * $Date$
+ * $Author$
  *
  * The DOMS project.
  * Copyright (C) 2007-2010  The State and University Library
@@ -27,7 +25,7 @@
  * under the License.
  */
 
-/* Part of doms build framework version 1.0.4 */
+/* Part of doms build framework version 1.0.5 */
 importClass(java.io.File);
 importPackage(Packages.org.apache.tools.ant);
 importPackage(Packages.org.apache.tools.ant.types);
@@ -36,7 +34,23 @@ importPackage(Packages.org.apache.tools.ant.taskdefs);
 
 
 // Obtain a reference to a fileset in the enclosing project
-dirSet = project.getReference("module.dependencies");
+dirSetname = attributes.get("dirset");
+dirSet = project.getReference(dirSetname);
+if (dirSetname == null) {
+    self.fail("Invalid number of arguments for convertPath")
+}
+
+
+postfix = attributes.get("postfix")
+if (postfix == null) {
+    self.fail("Invalid number of arguments for convertPath")
+}
+
+newfileset = attributes.get("newfileset")
+if (newfileset == null) {
+    self.fail("Invalid number of arguments for convertPath")
+}
+
 
 //This requires ant 1.7+ //TODO find another way that is more backwards
 includes = dirSet.mergeIncludes(project);
@@ -50,7 +64,7 @@ fileset.setDir(dirSet.getDir());
 
 if (includes != null) {
     for (var i = 0; i < includes.length; i++) {
-        fileset.setIncludes(includes[i] + "/dist/**/*.jar");
+        fileset.setIncludes(includes[i] + postfix);
     }
 }
 
@@ -60,4 +74,4 @@ if (excludes != null) {
     }
 }
 
-project.addReference("module.dependencies.jars", fileset);
+project.addReference(newfileset, fileset);

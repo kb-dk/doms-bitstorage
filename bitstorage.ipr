@@ -16,7 +16,9 @@
       <customJdkName value="" />
       <maximumHeapSize value="128" />
       <maximumStackSize value="32" />
-      <properties />
+      <properties>
+        <property name="-verbose" value="" />
+      </properties>
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/modules/highlevel/highlevel_interface/build.xml">
       <additionalClassPath />
@@ -515,19 +517,14 @@
     </library>
     <library name="domsutils-0.0.2#SNAPSHOT">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/webservice-common-0.0.1/jars" />
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/jars/webservice-common.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/jars/servlet-api.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/webservice-common-0.0.1/apidocs/domsutils-apidocs.zip!/apidocs" />
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/apidocs/webservice-common-apidocs.zip!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/webservice-common-0.0.1/src/webservice-common-src.zip!/" />
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/src/domsutil-0.0.2#SNAPSHOT-src.zip!/domsutil-0.0.2#SNAPSHOT/modules/webservice-common/src" />
       </SOURCES>
-      <jarDirectory url="file://$PROJECT_DIR$/lib/webservice-common-0.0.1/jars" recursive="false" />
     </library>
   </component>
 </project>

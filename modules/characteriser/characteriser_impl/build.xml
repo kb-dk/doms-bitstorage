@@ -34,18 +34,25 @@
 
 
     <!--Contain the normal build tasks, including war-->
-    <import file="${global.dir}/build/build-webservice.xml"/>
+    <import file="${global.dir}/build/build-webservice-module.xml"/>
 
-    <!--Adds the soap libs to the build-->
-    <import file="${global.dir}/build/build-soap-webservice.xml"/>
-
-    <target name="_postall" depends="war"/>
 
     <dirset id="module.dependencies" dir="${global.dir}/modules/">
         <include name="characteriser/characteriser_interface"/>
     </dirset>
 
+    <!--Project libs used by this module-->
     <dirset id="project.libs" dir="${global.dir}/lib/">
-        <include name="domsutil-0.0.2#SNAPSHOT"/>
+        <include name="${domsutil.lib}"/>
+
+        <include name="${sbutils.lib}"/>
+
+        <include name="${doms-surveillance-rest.lib}"/>
+        <include name="${doms-surveillance-status.lib}"/>
+        <include name="${jaxws-ri.lib}"/>
+        <include name="${jersey.lib}"/>
+        <include name="${jsr311-api.lib}"/>
+
     </dirset>
+
 </project>

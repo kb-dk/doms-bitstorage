@@ -28,7 +28,7 @@
 <project name="lowlevel_interface" basedir=".">
 
     <property name="global.dir" value="${basedir}/../../.."/>
-
+    <property file="${global.dir}/build.properties"/>
 
     <property name="wsdl.package"
               value="dk.statsbiblioteket.doms.bitstorage.lowlevel"/>
@@ -46,7 +46,7 @@
     -->
 
 
-    <import file="${global.dir}/build/build-soap-webservice-interface.xml"/>
+    <import file="${global.dir}/build/build-webservice-interface-module.xml"/>
 
 
 </project>

@@ -45,12 +45,16 @@
     -->
 
 
-    <import file="${global.dir}/build/build-soap-webservice-interface.xml"/>
+    <import file="${global.dir}/build/build-webservice-interface-module.xml"/>
 
+    <!--
+    -->
     <!--Project libs used by this module-->
-    <fileset id="project.libs" dir="${global.dir}/lib">
-        <include name="sbutils-0.4.6/jars/**/*.jar"/>
-        <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
-    </fileset>
+    <!--
+        <fileset id="project.libs" dir="${global.dir}/lib">
+            <include name="sbutils-0.4.6/jars/**/*.jar"/>
+            <include name="jaxws-ri-2.1.7/jars/**/*.jar"/>
+        </fileset>
+    -->
 
 </project>

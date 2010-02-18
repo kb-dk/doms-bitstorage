@@ -46,7 +46,10 @@
     -->
 
 
-    <import file="${global.dir}/build/build-soap-webservice-interface.xml"/>
+    <import file="${global.dir}/build/build-webservice-interface-module.xml"/>
 
+    <dirset id="project.libs" dir="${global.dir}/lib/">
+        <include name="${domsutil.lib}"/>
+    </dirset>
 
 </project>

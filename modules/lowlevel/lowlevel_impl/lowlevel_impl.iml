@@ -34,7 +34,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbutils-0.4.6" level="project" />
-    <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
     <orderEntry type="library" name="jersey-1.1.4" level="project" />
     <orderEntry type="library" name="doms-surveillance-status-0.0.1" level="project" />
     <orderEntry type="library" name="doms-surveillance-rest-0.0.1" level="project" />
@@ -42,6 +41,7 @@
     <orderEntry type="library" name="servlet-api-2.5-apache-tomcat-6.0.20" level="project" />
     <orderEntry type="library" name="jsr311-api-1.0" level="project" />
     <orderEntry type="library" name="domsutils-0.0.2#SNAPSHOT" level="project" />
+    <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
   </component>
 </module>
 
