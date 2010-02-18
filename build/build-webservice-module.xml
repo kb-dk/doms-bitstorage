@@ -51,6 +51,6 @@
     <target name="all" depends="war,module.all"/>
 
     <!--All project libs are packed in the war, do not copy them-->
-    <target name="-copyLibsForDist"/>
+    <target name="-copyLibsForDist" depends="-copyLicensesForDist"/>
 
 </project>
