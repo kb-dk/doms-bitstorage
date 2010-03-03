@@ -44,14 +44,13 @@
     <!--Project libs used by this module-->
     <dirset id="project.libs" dir="${global.dir}/lib/">
         <include name="${domsutil.lib}"/>
-
         <include name="${sbutils.lib}"/>
-
         <include name="${surveillance.lib}"/>
         <include name="${jaxws-ri.lib}"/>
         <include name="${jersey.lib}"/>
         <include name="${jsr311-api.lib}"/>
-
+        <include name="${log4j.lib}"/>
+        <include name="${commons-logging.lib}"/>
     </dirset>
 
 </project>

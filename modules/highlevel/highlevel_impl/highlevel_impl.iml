@@ -47,6 +47,8 @@
     <orderEntry type="library" name="jersey-1.1.4" level="project" />
     <orderEntry type="library" name="jsr311-api-1.0" level="project" />
     <orderEntry type="library" name="domsutils-0.0.2#SNAPSHOT" level="project" />
+    <orderEntry type="library" name="log4j-1.2.15" level="project" />
+    <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
   </component>
 </module>
 
