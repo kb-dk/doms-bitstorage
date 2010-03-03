@@ -477,19 +477,20 @@
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/src/jersey-server-1.1.4-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="doms-surveillance-status-0.0.1">
+    <library name="surveillance-0.0.3">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/doms-surveillance-status-0.0.1/jars/doms-surveillance-status-0.0.1.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib/surveillance-0.0.3/jars" />
       </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="doms-surveillance-rest-0.0.1">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/doms-surveillance-rest-0.0.1/jars/doms-surveillance-rest-0.0.1.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/surveillance-0.0.3/apidocs/surveillance-0.0.3-doc.zip!/surveillance-0.0.3" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/surveillance-0.0.3/src/surveillance-0.0.3-src.zip!/surveillance-0.0.3/modules/status/src" />
+        <root url="jar://$PROJECT_DIR$/lib/surveillance-0.0.3/src/surveillance-0.0.3-src.zip!/surveillance-0.0.3/modules/rest/src" />
+        <root url="jar://$PROJECT_DIR$/lib/surveillance-0.0.3/src/surveillance-0.0.3-src.zip!/surveillance-0.0.3/modules/fedorasurveyor/src" />
+        <root url="jar://$PROJECT_DIR$/lib/surveillance-0.0.3/src/surveillance-0.0.3-src.zip!/surveillance-0.0.3/modules/surveyor/src" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib/surveillance-0.0.3/jars" recursive="false" />
     </library>
     <library name="servlet-api-2.5-apache-tomcat-6.0.20">
       <CLASSES>

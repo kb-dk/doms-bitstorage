@@ -52,8 +52,7 @@
 
         <include name="${sbutils.lib}"/>
 
-        <include name="${doms-surveillance-rest.lib}"/>
-        <include name="${doms-surveillance-status.lib}"/>
+        <include name="${surveillance.lib}"/>
         <include name="${jaxws-ri.lib}"/>
         <include name="${jersey.lib}"/>
         <include name="${jsr311-api.lib}"/>
