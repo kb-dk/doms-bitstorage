@@ -54,10 +54,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
+import javax.xml.bind.*;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -211,6 +208,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
         initialise();
         Operation op = initOperation("Upload");
         String message;
+
         try {
             String uploadedURL;
             try {//No rollback here, we have not reached first checkpoint
@@ -287,6 +285,7 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
         } finally {
             endOperation(op);
         }
+
     }
 
     private void evaluateCharacterisation(String pid,
@@ -685,7 +684,8 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
             return "";
         }
         try {
-            marshaller.marshal(op, sw);
+            JAXBElement<Operation> jaxboperation = new ObjectFactory().createOperation(op);
+            marshaller.marshal(jaxboperation, sw);
         } catch (JAXBException e) {
             log.error("Cannot marshall operation", e);
             return "";
