@@ -663,10 +663,10 @@ public class HighlevelBitstorageSoapWebserviceImpl implements HighlevelBitstorag
 
     private String dumpOperation(Operation op) {
         java.io.StringWriter sw = new StringWriter();
-        JAXBContext jaxbcontext =
-                null;
+
+        JAXBContext jaxbcontext = null;
         try {
-            jaxbcontext = JAXBContext.newInstance(Operation.class, Event.class);
+            jaxbcontext = JAXBContext.newInstance("dk.statsbiblioteket.doms.bitstorage.highlevel");
         } catch (JAXBException e) {
             log.error("Cannot create jaxbcontext", e);
             return "";

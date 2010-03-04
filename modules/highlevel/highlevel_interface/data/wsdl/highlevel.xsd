@@ -81,6 +81,8 @@
 
     <xs:element name="statusResponse" type="tns:statusResponse"/>
 
+    <xs:element name="operation" type="tns:operation"/>
+
 
     <!--Type defs-->
     <xs:complexType name="status">
