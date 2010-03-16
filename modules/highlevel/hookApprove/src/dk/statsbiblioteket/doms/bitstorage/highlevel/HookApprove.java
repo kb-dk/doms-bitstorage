@@ -32,11 +32,12 @@ import org.fcrepo.server.management.ManagementModule;
 import org.fcrepo.server.errors.ModuleInitializationException;
 import org.fcrepo.server.errors.ServerInitializationException;
 import org.fcrepo.server.Server;
+import org.fcrepo.server.Context;
+import org.fcrepo.server.access.Access;
+import org.fcrepo.server.access.ObjectProfile;
 import org.fcrepo.common.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
@@ -44,6 +45,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.io.File;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.List;
+import java.util.LinkedList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,48 +61,62 @@ public class HookApprove extends AbstractInvocationHandler {
      * Logger for this class.
      */
     private static Log LOG = LogFactory.getLog(HookApprove.class);
-
+    public static final QName SERVICENAME =
+            new QName(
+                    "http://highlevel.bitstorage.doms.statsbiblioteket.dk/",
+                    "HighlevelBitstorageSoapWebserviceService");
 
     public static final String HOOKEDMETHOD = "modifyObject";
 
-
     private boolean initialised = false;
 
-    private String username;
-    private String password;
-    private String webservicelocation;
     private HighlevelBitstorageSoapWebservice bs;
-    public static final QName servicename = new QName("http://highlevel.bitstorage.doms.statsbiblioteket.dk/", "HighlevelBitstorageSoapWebserviceService");
+
+    private ManagementModule m_manager;
+    private Access m_access;
+
+    private Server s_server;
+
+    private List<String> filemodels;
 
 
-    public void init() throws Exception {
+    //synchronized to avoid problems with dual inits
+    public synchronized void init() throws ModuleInitializationException, ServerInitializationException, MalformedURLException {
         if (initialised) {
             return;
         }
-        try {
-            Server s_server;
-
-            s_server = Server.getInstance(new File(Constants.FEDORA_HOME), false);
 
 
-            ManagementModule m_manager = (ManagementModule) s_server.getModule(
-                    "fedora.server.management.Management");
+        s_server = Server.getInstance(new File(Constants.FEDORA_HOME), false);
 
+        filemodels = new LinkedList<String>();
 
-            webservicelocation = m_manager.getParameter("bitstorage.webservice.location");
-            if (webservicelocation == null) {
-                webservicelocation = "http://localhost:8080/ecm/validate/";
-                LOG.info("No validator.webservice.location specified, using default location: " + webservicelocation);
-            }
-            URL wsdl;
-            wsdl = new URL(webservicelocation);
+        //get the management module
+        m_manager = (ManagementModule) s_server.getModule("org.fcrepo.server.management.Management");
 
-            bs = new HighlevelBitstorageSoapWebserviceService(wsdl, servicename).getHighlevelBitstorageSoapWebservicePort();
+        //get the access module
+        m_access = (Access) s_server.getModule("org.fcrepo.server.access.Access");
 
-        } catch (Exception e) {
-            LOG.error("Failed to initialise the hookapprove");
-            throw e;
+        //read the parameters from the management module
+        String filecmodel = m_manager.getParameter("dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel");
+        if (filecmodel != null) {
+            filemodels.add(filecmodel);
+        } else {
+            LOG.warn("No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel specified, disabling hookapprove");
         }
+
+        String webservicelocation = m_manager.getParameter("dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation");
+        if (webservicelocation == null) {
+            webservicelocation = "http://localhost:8080/ecm/validate/";//TODO
+            LOG.info("No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation specified, using default location: " + webservicelocation);
+        }
+
+        //create the bitstorage client
+        URL wsdl;
+        wsdl = new URL(webservicelocation);
+        bs = new HighlevelBitstorageSoapWebserviceService(wsdl, SERVICENAME)
+                .getHighlevelBitstorageSoapWebservicePort();
+
         initialised = true;
 
     }
@@ -108,47 +125,91 @@ public class HookApprove extends AbstractInvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object returnValue = null;
         try {
-            if (!initialised) {
-                init();
-            }
-            //before change is committed
-
-            returnValue = method.invoke(target, args);
-
-            //after change is committed
+            init();
+            //what should happen before change is committed
 
             if (!HOOKEDMETHOD.equals(method.getName())) {
-                return returnValue;
+                return method.invoke(target, args);
             }
-
-            //If we are here, we have modifyObject
-            LOG.info("We are hooking method " + method.getName());
 
             //If the call does not change the state to active, pass through
             String state = (String) args[2];
             if (!(state != null && state.startsWith("A"))) {
-                return returnValue;
+                return method.invoke(target, args);
             }
 
+            //so, we have a modify object that change state to A
 
+            Context context = (Context) args[0];//call context
             String pid = args[1].toString();
-            LOG.info("The method was called with the pid " + pid);
+
+            //save profile for rollback
+            ObjectProfile profile = m_access.getObjectProfile(context, pid, null);
+
+            //Do the change, to see if it was allowed
+            returnValue = method.invoke(target, args);
+
+            //If we are here, the change committed without exceptions thrown
+
+
             try {
-                bs.publish(pid);
-            } catch (HighlevelSoapException e) {//something broke, so undo the state operation
-                //TODO here we should do rollback
-                throw e;
+                if (isFileObject(profile)) {//is this a file object?
+                    bs.publish(pid);//milestone, any fails beyound this must rollback
+
+                }
+                return returnValue;
+
+            } catch (Exception e) {//something broke in publishing, so undo the state operation
+
+
+                //rollback
+                String old_state = profile.objectState;
+                String old_label = null;
+                if (args[3] != null) {
+                    //label changed
+                    old_label = profile.objectLabel;
+                }
+                String old_ownerid = null;
+                if (args[4] != null) {
+                    //ownerid changed
+                    old_ownerid = profile.objectOwnerId;
+                }
+                //commit the rollback. TODO perform this directly on the Management, instead?
+                Object new_return = method.invoke(target,
+                        context,
+                        pid,
+                        old_state,
+                        old_label,
+                        old_ownerid,
+                        "Undoing state change because file could not be published");
+                //discard rollback returnvalue
+                throw new FileCouldNotBePublishedException("The file in '" + pid + "' could not be published. State change rolled back.", e);
             }
+        } catch (InvocationTargetException e) {
+            //if the invoke method failed, throw the original exception on
+            throw e.getCause();
+        }//if anything else failed, let it pass
+    }
 
-            return returnValue;
+    private boolean isFileObject(ObjectProfile profile) {
+        for (String model : profile.objectModels) {
+            if (model == null) {
+                continue;
+            }
+            model = ensurePid(model);
+            if (filemodels.contains(model)) {
+                return true;
+            }
+        }
+        return false;
 
-        } catch (InvocationTargetException e) {//if the invoke method failed
-            throw e.getCause(); //extract the real exception and rethrow
+    }
+
+    private String ensurePid(String model) {
+        if (model.startsWith("info:fedora/")) {
+            return model.substring("info:fedora/".length());
         }
-        catch (Exception e) { // something of our own failed
-            LOG.error("Failed to publish the file", e); //log it
-            throw e;
-        }
+        return model;
     }
 
 }
