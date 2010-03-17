@@ -27,15 +27,6 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
-import org.fcrepo.server.proxy.AbstractInvocationHandler;
-import org.fcrepo.server.management.ManagementModule;
-import org.fcrepo.server.errors.ModuleInitializationException;
-import org.fcrepo.server.errors.ServerInitializationException;
-import org.fcrepo.server.Server;
-import org.fcrepo.server.Context;
-import org.fcrepo.server.access.Access;
-import org.fcrepo.server.access.ObjectProfile;
-import org.fcrepo.common.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,12 +39,19 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.LinkedList;
 
+import fedora.server.proxy.AbstractInvocationHandler;
+import fedora.server.management.ManagementModule;
+import fedora.server.access.Access;
+import fedora.server.access.ObjectProfile;
+import fedora.server.Server;
+import fedora.server.Context;
+import fedora.server.errors.ModuleInitializationException;
+import fedora.server.errors.ServerInitializationException;
+import fedora.common.Constants;
+
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Mar 15, 2010
- * Time: 3:01:30 PM
- * To change this template use File | Settings | File Templates.
+ * Hooks the ModifyObject method, so that when an file object is set to Active
+ * the file is published.
  */
 public class HookApprove extends AbstractInvocationHandler {
 
@@ -86,16 +84,15 @@ public class HookApprove extends AbstractInvocationHandler {
             return;
         }
 
-
         s_server = Server.getInstance(new File(Constants.FEDORA_HOME), false);
 
         filemodels = new LinkedList<String>();
 
         //get the management module
-        m_manager = (ManagementModule) s_server.getModule("org.fcrepo.server.management.Management");
+        m_manager = getManagement();
 
         //get the access module
-        m_access = (Access) s_server.getModule("org.fcrepo.server.access.Access");
+        m_access = getAccess();
 
         //read the parameters from the management module
         String filecmodel = m_manager.getParameter("dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel");
@@ -121,9 +118,38 @@ public class HookApprove extends AbstractInvocationHandler {
 
     }
 
+    private Access getAccess() {
+        Access module = (Access) s_server.getModule("org.fcrepo.server.access.Access");
+        if (module == null) {
+            module = (Access) s_server.getModule("fedora.server.access.Access");
+        }
+        return module;
+    }
 
+    private ManagementModule getManagement() {
+        ManagementModule module = (ManagementModule) s_server.getModule("org.fcrepo.server.management.Management");
+        if (module == null) {
+            module = (ManagementModule) s_server.getModule("fedora.server.management.Management");
+        }
+        return module;
+
+    }
+
+    /**
+     * If the Method is ModifyObject AND object to me modified has the specified
+     * content model AND is set to the Active state, then attempt to publish
+     * file via the bitstorage system. If the file cannot be published, the
+     * modification to the object is undone (but will leave a trail in the object
+     * log).
+     *
+     * @param proxy  ?
+     * @param method The method to invoke
+     * @param args   the arguments to the method
+     * @return the method return type
+     * @throws Throwable
+     */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object returnValue = null;
+
         try {
             init();
             //what should happen before change is committed
@@ -147,7 +173,7 @@ public class HookApprove extends AbstractInvocationHandler {
             ObjectProfile profile = m_access.getObjectProfile(context, pid, null);
 
             //Do the change, to see if it was allowed
-            returnValue = method.invoke(target, args);
+            Object returnValue = method.invoke(target, args);
 
             //If we are here, the change committed without exceptions thrown
 

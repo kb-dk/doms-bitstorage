@@ -28,11 +28,8 @@
 package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Mar 16, 2010
- * Time: 2:26:37 PM
- * To change this template use File | Settings | File Templates.
+ * The File in this file object could not approved, and thus the operation has
+ * been cancelled
  */
 public class FileCouldNotBePublishedException extends Exception {
     public FileCouldNotBePublishedException() {

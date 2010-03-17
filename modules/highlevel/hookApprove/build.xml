@@ -43,5 +43,9 @@
         <include name="highlevel/highlevel_interface"/>
     </dirset>
 
+    <dirset id="build.project.libs" dir="${global.dir}/lib">
+        <include name="${fedora-server.lib}"/>
+    </dirset>
+
 
 </project>
