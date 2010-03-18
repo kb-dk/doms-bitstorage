@@ -29,45 +29,95 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
 import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
+import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.xml.ws.WebServiceException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 20, 2010
- * Time: 6:26:55 PM
- * To change this template use File | Settings | File Templates.
+ * Exception mapper that maps exceptions from actual bitstorage to the lowlevel
+ * webservice exceptions.
  */
-public class BitstorageToLowlevelExceptionMapper extends ExceptionMapper<LowlevelSoapException,BitstorageException>{
-
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class BitstorageToLowlevelExceptionMapper
+        extends ExceptionMapper<LowlevelSoapException, BitstorageException> {
+    /**
+     * Generic mapper. This method maps all exceptions that are not otherwise
+     * mapped to WebServiceException.
+     * @param ce Exception mapped from.
+     * @return Resulting WebServiceException.
+     */
     public LowlevelSoapException convert(BitstorageException ce) {
-        throw new WebServiceException("Attempted to convert unknown type of exception",ce);
+        throw new WebServiceException(
+                "Attempted to convert unknown type of exception", ce);
     }
 
+    /**
+     * Maps ChecksumFailedException to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
     public LowlevelSoapException convert(ChecksumFailedException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException(ce.getMessage(),ce.getMessage(),ce);
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException(
+                ce.getMessage(), ce.getMessage(), ce);
     }
 
-    public LowlevelSoapException convert(dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException(ce.getMessage(),ce.getMessage(),ce);
+    /**
+     * Maps CommunicationException to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
+    public LowlevelSoapException convert(
+            dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException ce) {
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException(
+                ce.getMessage(), ce.getMessage(), ce);
     }
 
+    /**
+     * Maps FileAlreadyApprovedException to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
     public LowlevelSoapException convert(FileAlreadyApprovedException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException(ce.getMessage(),ce.getMessage(),ce);
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException(
+                ce.getMessage(), ce.getMessage(), ce);
     }
 
+    /**
+     * Maps FileNotFoundException to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
     public LowlevelSoapException convert(FileNotFoundException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(ce.getMessage(),ce.getMessage(),ce);
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
+                ce.getMessage(), ce.getMessage(), ce);
     }
 
+    /**
+     * Maps InvalidFilenameException to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
     public LowlevelSoapException convert(InvalidFilenameException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException(ce.getMessage(),ce.getMessage(),ce);
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException(
+                ce.getMessage(), ce.getMessage(), ce);
     }
 
+    /**
+     * Maps NotEnoughFreeSpaceException to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
     public LowlevelSoapException convert(NotEnoughFreeSpaceException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException(ce.getMessage(),ce.getMessage(),ce);
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException(
+                ce.getMessage(), ce.getMessage(), ce);
     }
-
-
 }
