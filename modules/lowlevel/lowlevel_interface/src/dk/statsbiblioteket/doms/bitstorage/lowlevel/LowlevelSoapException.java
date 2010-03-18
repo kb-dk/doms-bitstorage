@@ -27,26 +27,45 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel;
 
+import dk.statsbiblioteket.util.qa.QAInfo;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Jan 20, 2010
- * Time: 5:51:06 PM
- * To change this template use File | Settings | File Templates.
+ * Super-exception for all lowlevel bitstorage web service exceptions.
  */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        state = QAInfo.State.QA_OK)
 public class LowlevelSoapException extends Exception{
+    /**
+     * Construct a lowlevel soap exception.
+     */
     public LowlevelSoapException() {
     }
 
+    /**
+     * Construct a lowlevel soap exception.
+     *
+     * @param message The message for the exception.
+     */
     public LowlevelSoapException(String message) {
         super(message);
     }
 
+    /**
+     * Construct a lowlevel soap exception.
+     *
+     * @param message The message for the exception.
+     * @param cause The cause of the exception.
+     */
     public LowlevelSoapException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Construct a lowlevel soap exception.
+     *
+     * @param cause The cause of the exception.
+     */
     public LowlevelSoapException(Throwable cause) {
         super(cause);
     }
