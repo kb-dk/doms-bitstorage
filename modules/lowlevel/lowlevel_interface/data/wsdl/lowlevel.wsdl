@@ -102,7 +102,7 @@
         <part name="parameters" element="tns:isApprovedResponse"/>
     </message>
     <portType name="LowlevelBitstorageSoapWebservice">
-        <documentation>Java interface the bitstorage system.
+        <documentation>Interface to the bitstorage system.
         </documentation>
         <operation name="uploadFile">
             <documentation>Upload the provided file to the temporary area of bitstorage, giving it
@@ -141,7 +141,7 @@ If the file is not in temporary bitstorage nothing happens.
 
         </operation>
         <operation name="approve">
-            <documentation>     * Check the earlier uploaded file against the provided checksum, and if
+            <documentation>Check the earlier uploaded file against the provided checksum, and if
 this succeeds, and possibly other criteria are met, move the file from
 the temporary area of bitstorage to the permanent bitstorage.
 
