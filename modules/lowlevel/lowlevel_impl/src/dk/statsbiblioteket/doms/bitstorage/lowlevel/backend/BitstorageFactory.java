@@ -27,27 +27,34 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend;
 
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+import dk.statsbiblioteket.util.qa.QAInfo;
 
-import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * TODO abr forgot to document this class
+ * This is the factory for interacting with the backend bitstorage system. It
+ * creates threadsafe BitStorage implementations.
  */
+@QAInfo(author = "abr", reviewers = "kfc", state = QAInfo.State.IN_DEVELOPMENT, level = QAInfo.Level.NORMAL)
 public class BitstorageFactory {
 
+    static Log log = LogFactory.getLog(BitstorageFactory.class);
 
+    static Bitstorage bs = null;
 
-    public static Bitstorage getInstance() {
-        Properties props = ConfigCollection.getProperties();
-
-        String script = props.getProperty("script");
-        String server = props.getProperty("server");
-        String bitfinder = props.getProperty("bitfinder");
-
-        return new BitstorageSshImpl(server,
-                                     script,
-                                     bitfinder);
+    /**
+     * Factory method for Bitstorage implementations. This method provides
+     * a singleton object for the bitstorage system.
+     *
+     * @return a Bitstorage Object, initialised and ready to use
+     */
+    public synchronized static Bitstorage getInstance() {
+        log.trace("Getting an instance of Bitstorage");
+        if (bs == null) {//TODO look into the surveilance factory
+            bs = new BitstorageScriptImpl();
+        }
+        return bs;
 
 
     }

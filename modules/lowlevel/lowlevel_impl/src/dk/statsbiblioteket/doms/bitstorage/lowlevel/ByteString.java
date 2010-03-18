@@ -36,7 +36,7 @@ import dk.statsbiblioteket.util.qa.QAInfo;
         state = QAInfo.State.QA_OK,
         author = "kfc",
         reviewers = {"abr"})
-public class ByteString {
+public final class ByteString {
     /**
      * The number of bits in a nibble (used for shifting).
      */
