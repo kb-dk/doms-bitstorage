@@ -29,19 +29,21 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-/** An exception signalling that a given file name has incorrect format. */
+/**
+ * An exception signalling that a given file name has incorrect format.
+ */
 @QAInfo(author = "abr",
         reviewers = "kfc",
         level = QAInfo.Level.NORMAL,
         state = QAInfo.State.QA_OK)
-public class InvalidFilenameException extends BitstorageException {
+public class InvalidFileNameException extends BitstorageException {
     /**
      * An exception signalling that a given file name has incorrect format.
      *
      * @param message A message describing the problem. Should always include
      *                the file name.
      */
-    public InvalidFilenameException(String message) {
+    public InvalidFileNameException(String message) {
         super(message);
     }
 
@@ -52,7 +54,7 @@ public class InvalidFilenameException extends BitstorageException {
      *                the file name.
      * @param cause   An exception that caused this exception.
      */
-    public InvalidFilenameException(String message, Throwable cause) {
+    public InvalidFileNameException(String message, Throwable cause) {
         super(message, cause);
     }
 }
