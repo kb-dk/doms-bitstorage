@@ -46,11 +46,14 @@ public abstract class BitstorageException extends Exception {
         super(message);
     }
 
+    /**
+     * Initialise a bitstorage exception.
+     *
+     * @param message A message describing the exception.
+     * @param cause   An exception that caused this exception.
+     */
     public BitstorageException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public BitstorageException(Throwable cause) {
-        super(cause);
-    }
 }

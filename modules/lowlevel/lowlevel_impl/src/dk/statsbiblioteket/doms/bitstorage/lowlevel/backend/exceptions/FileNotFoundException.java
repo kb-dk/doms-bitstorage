@@ -47,11 +47,14 @@ public class FileNotFoundException extends BitstorageException {
         super(message);
     }
 
+    /**
+     * Initialise a FileNotFound exception.
+     *
+     * @param message A description of the error message. Should always contain
+     *                information about what file is not found.
+     * @param cause   An exception that caused this exception.
+     */
     public FileNotFoundException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public FileNotFoundException(Throwable cause) {
-        super(cause);
     }
 }

@@ -46,11 +46,14 @@ public class CommunicationException extends BitstorageException {
         super(message);
     }
 
+    /**
+     * Initialise an exception in communication.
+     *
+     * @param message A message describing the exception.
+     * @param cause   An exception that caused this exception.
+     */
     public CommunicationException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public CommunicationException(Throwable cause) {
-        super(cause);
-    }
 }

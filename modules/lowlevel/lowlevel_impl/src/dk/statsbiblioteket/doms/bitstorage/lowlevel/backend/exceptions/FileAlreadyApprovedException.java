@@ -48,11 +48,14 @@ public class FileAlreadyApprovedException extends BitstorageException {
         super(message);
     }
 
+    /**
+     * Initialise a "file already approved" exception.
+     *
+     * @param message A message describing the exception. Should always include
+     *                the file name.
+     * @param cause   An exception that caused this exception.
+     */
     public FileAlreadyApprovedException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public FileAlreadyApprovedException(Throwable cause) {
-        super(cause);
     }
 }

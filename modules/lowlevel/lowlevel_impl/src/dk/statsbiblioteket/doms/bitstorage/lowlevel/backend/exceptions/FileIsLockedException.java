@@ -27,19 +27,36 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
+import dk.statsbiblioteket.util.qa.QAInfo;
+
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Mar 19, 2010
- * Time: 12:20:35 PM
- * To change this template use File | Settings | File Templates.
+ * An exception signalling that the operation failed, because the designated
+ * file is locked by another thread
  */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
 public class FileIsLockedException extends BitstorageException {
+
+    /**
+     * Initialise a "file is locked" exception.
+     *
+     * @param message A message describing the exception. Should always include
+     *                the file name.
+     */
 
     public FileIsLockedException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise a "file is locked" exception.
+     *
+     * @param message A message describing the exception. Should always include
+     *                the file name.
+     * @param cause   An exception that caused this exception.
+     */
     public FileIsLockedException(String message, Throwable cause) {
         super(message, cause);
     }

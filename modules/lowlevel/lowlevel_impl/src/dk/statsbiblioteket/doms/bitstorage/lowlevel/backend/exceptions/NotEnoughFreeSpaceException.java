@@ -46,11 +46,13 @@ public class NotEnoughFreeSpaceException extends BitstorageException {
         super(message);
     }
 
+    /**
+     * Initialise an exception signalling not enough free space.
+     *
+     * @param message A description of the problem.
+     * @param cause   An exception that caused this to happen.
+     */
     public NotEnoughFreeSpaceException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public NotEnoughFreeSpaceException(Throwable cause) {
-        super(cause);
     }
 }

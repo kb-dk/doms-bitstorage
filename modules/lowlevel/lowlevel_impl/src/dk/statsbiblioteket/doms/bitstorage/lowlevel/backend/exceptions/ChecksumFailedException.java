@@ -47,11 +47,15 @@ public class ChecksumFailedException extends BitstorageException {
         super(message);
     }
 
+    /**
+     * Initialise a checksum failed exception.
+     *
+     * @param message A message describing the problem. Should always include
+     *                the two checksums, and if possible their origin.
+     * @param cause   An exception that caused the checksum comparison to fail.
+     */
     public ChecksumFailedException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ChecksumFailedException(Throwable cause) {
-        super(cause);
-    }
 }
