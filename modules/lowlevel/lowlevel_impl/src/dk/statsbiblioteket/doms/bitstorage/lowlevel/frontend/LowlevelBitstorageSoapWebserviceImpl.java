@@ -27,16 +27,21 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageToLowlevelExceptionMapper;
+import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.activation.DataHandler;
 import javax.jws.WebMethod;
@@ -44,49 +49,96 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.soap.MTOM;
-import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Web service that exposes a low level bitstorage.
+ * This class handles communication with SOAP and delegating calls to the
+ * underlying bitstorage. Exceptions are logged and delegated as SOAP faults.
+ */
 @MTOM
-@WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice")
-public class LowlevelBitstorageSoapWebserviceImpl
-        implements LowlevelBitstorageSoapWebservice {
+@WebService(
+        endpointInterface = "dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice")
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class LowlevelBitstorageSoapWebserviceImpl implements LowlevelBitstorageSoapWebservice {
+    /**
+     * An exception mapper that maps exceptions from the underlying bitstorage
+     * to SOAP faults.
+     */
+    private BitstorageToLowlevelExceptionMapper bitstorageMapper
+            = new BitstorageToLowlevelExceptionMapper();
 
+    /** The logger for this class. */
+    private static final Log LOG
+            = LogFactory.getLog(LowlevelBitstorageSoapWebserviceImpl.class);
 
-    BitstorageToLowlevelExceptionMapper bitstorageMapper = new BitstorageToLowlevelExceptionMapper();
-
-    Log log = LogFactory.getLog(this.getClass());
-
+    /**
+     * Upload the provided file for later approval, for details, see
+     * {@link Bitstorage#upload(String, InputStream, String, long)}.
+     *
+     * The data for the file should be streamed to the underlying service.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @param filename The name to give the file to upload.
+     * @param filedata The data for the file.
+     * @param md5String MD5 checksum of the data.
+     * @param filelength Size of the data.
+     * @return The checksum calculated by the server.
+     * @throws ChecksumFailedException If the server calculated a different
+     * checksum than the given checksum
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws FileAlreadyApprovedException If a file with the given name is
+     * already in approved storage
+     * @throws InvalidFilenameException If the given filename cannot be used
+     * @throws NotEnoughFreeSpaceException If there is not enough space to store
+     * the file.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
+    @WebMethod
     public String uploadFile(@WebParam(name = "filename",
-            targetNamespace = "") String filename,
+                                       targetNamespace = "")
+                             String filename,
                              @WebParam(name = "filedata",
-                                     targetNamespace = "") DataHandler filedata,
+                                       targetNamespace = "")
+                             DataHandler filedata,
                              @WebParam(name = "md5string",
-                                     targetNamespace = "") String md5String,
+                                       targetNamespace = "")
+                             String md5String,
                              @WebParam(name = "filelength",
-                                     targetNamespace = "") long filelength)
-            throws LowlevelSoapException {
-
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
-/*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
+                                       targetNamespace = "")
+                             long filelength)
+            throws ChecksumFailedException, CommunicationException,
+            FileAlreadyApprovedException, InvalidFilenameException,
+            NotEnoughFreeSpaceException, LowlevelSoapException,
+            WebServiceException {
+        LOG.trace("Enter uploadFile('" + filename + "','" + filedata + "','"
+                + md5String + "','" + filelength + "')");
+        String errorMessage = "Trouble while uploading file '" + filename + "'";
         try {
-
-            return bs.upload(filename,
-                    filedata.getInputStream(),
-                    md5String,
-                    filelength).toString();
-        } catch (IOException e) {
-            throw new WebServiceException(e);
+            Bitstorage bs =  BitstorageFactory.getInstance();
+            //TODO: Look into MTOM streaming
+            /*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
+            return bs.upload(
+                    filename, filedata.getInputStream(), md5String, filelength)
+                    .toString();
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
+        } catch (Exception e){
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
-        catch (Exception e) {
-            log.error(e);
-            throw new WebServiceException(e);
-        }
-
     }
 
     @WebMethod
@@ -100,13 +152,13 @@ public class LowlevelBitstorageSoapWebserviceImpl
         } catch (BitstorageException e) {
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
-            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
+            throw new InvalidFilenameException(
                     e.getMessage(),
                     e.getMessage(),
                     e);
 
-        } catch (Exception e) {
-            log.error(e);
+        } catch (Exception e){
+            LOG.error(e);
             throw new WebServiceException(e);
         }
 
@@ -131,8 +183,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
                     e.getMessage(),
                     e);
 
-        } catch (Exception e) {
-            log.error(e);
+        } catch (Exception e){
+            LOG.error(e);
             throw new WebServiceException(e);
         }
 
@@ -150,8 +202,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
             return bs.spaceLeft();
         } catch (BitstorageException e) {
             throw bitstorageMapper.convertMostApplicable(e);
-        } catch (Exception e) {
-            log.error(e);
+        } catch (Exception e){
+            LOG.error(e);
             throw new WebServiceException(e);
         }
 
@@ -166,8 +218,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
             return bs.getMaxFileSize();
         } catch (BitstorageException e) {
             throw bitstorageMapper.convertMostApplicable(e);
-        } catch (Exception e) {
-            log.error(e);
+        } catch (Exception e){
+            LOG.error(e);
             throw new WebServiceException(e);
         }
 
@@ -189,8 +241,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
                     e.getMessage(),
                     e);
 
-        } catch (Exception e) {
-            log.error(e);
+        } catch (Exception e){
+            LOG.error(e);
             throw new WebServiceException(e);
         }
 
@@ -213,8 +265,8 @@ public class LowlevelBitstorageSoapWebserviceImpl
                     e.getMessage(),
                     e);
 
-        } catch (Exception e) {
-            log.error(e);
+        } catch (Exception e){
+            LOG.error(e);
             throw new WebServiceException(e);
         }
 
