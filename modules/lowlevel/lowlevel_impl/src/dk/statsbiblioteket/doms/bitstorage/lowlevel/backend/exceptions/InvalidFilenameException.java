@@ -27,23 +27,32 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-/**
- * TODO abr forgot to document this class
- */
-public class InvalidFilenameException
-        extends BitstorageException {
-    public InvalidFilenameException() {
-    }
+import dk.statsbiblioteket.util.qa.QAInfo;
 
+/** An exception signalling that a given file name has incorrect format. */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class InvalidFilenameException extends BitstorageException {
+    /**
+     * An exception signalling that a given file name has incorrect format.
+     *
+     * @param message A message describing the problem. Should always include
+     *                the file name.
+     */
     public InvalidFilenameException(String message) {
         super(message);
     }
 
+    /**
+     * An exception signalling that a given file name has incorrect format.
+     *
+     * @param message A message describing the problem. Should always include
+     *                the file name.
+     * @param cause   An exception that caused this exception.
+     */
     public InvalidFilenameException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public InvalidFilenameException(Throwable cause) {
-        super(cause);
     }
 }

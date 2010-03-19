@@ -89,12 +89,12 @@ public interface Bitstorage {
      *                                      bitstorage
      * @throws NotEnoughFreeSpaceException  if there is not enough space for
      *                                      the file to be uploaded
-     * @throws InvalidFileNameException     If the filename could not be
+     * @throws InvalidFilenameException     If the filename could not be
      *                                      transformed into a valid URL
      * @see #approve(java.net.URL, String)
      */
     public URL upload(String filename, InputStream data, String md5, long filelength)
-            throws InvalidFileNameException, CommunicationException,
+            throws InvalidFilenameException, CommunicationException,
             NotEnoughFreeSpaceException, ChecksumFailedException,
             FileAlreadyApprovedException;
 
@@ -107,11 +107,11 @@ public interface Bitstorage {
      *
      * @param file The url to the file (in bitstorage)
      * @throws CommunicationException   on problems communicating with bitstorage
-     * @throws InvalidFileNameException if the url is not of the format of
+     * @throws InvalidFilenameException if the url is not of the format of
      *                                  this bitstorage
      */
     public void disapprove(URL file)
-            throws CommunicationException, InvalidFileNameException;
+            throws CommunicationException, InvalidFilenameException;
 
 
     /**
@@ -133,12 +133,12 @@ public interface Bitstorage {
      *                                     the permanent storage
      * @throws ChecksumFailedException     if the supplied checksum does not
      *                                     match the checksum of the file
-     * @throws InvalidFileNameException    if the url is not of the format of
+     * @throws InvalidFilenameException    if the url is not of the format of
      *                                     this bitstorage
      */
     public String approve(URL file, String md5)
             throws FileNotFoundException, CommunicationException,
-            NotEnoughFreeSpaceException, ChecksumFailedException, InvalidFileNameException;
+            NotEnoughFreeSpaceException, ChecksumFailedException, InvalidFilenameException;
 
     /**
      * Return the number of bytes left in permanent bitstorage.
@@ -172,11 +172,11 @@ public interface Bitstorage {
      * @throws FileNotFoundException    if the file is not found in either
      *                                  permanent or temporary bitstorage.
      * @throws CommunicationException   on problems communicating with bitstorage
-     * @throws InvalidFileNameException if the url is not of the format of
+     * @throws InvalidFilenameException if the url is not of the format of
      *                                  this bitstorage
      */
     public String getMd5(URL file)
-            throws FileNotFoundException, CommunicationException, InvalidFileNameException;
+            throws FileNotFoundException, CommunicationException, InvalidFilenameException;
 
 
     /**
@@ -186,11 +186,11 @@ public interface Bitstorage {
      * @return true if is an approved file, false if it is an temporary file
      * @throws FileNotFoundException    if the file is not found in bitstorage
      * @throws CommunicationException   on problems communicating with bitstorage
-     * @throws InvalidFileNameException if the url is not of the format of
+     * @throws InvalidFilenameException if the url is not of the format of
      *                                  this bitstorage
      */
     public boolean isApproved(URL file)
-            throws FileNotFoundException, CommunicationException, InvalidFileNameException;
+            throws FileNotFoundException, CommunicationException, InvalidFilenameException;
 
 
 }

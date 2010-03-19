@@ -28,14 +28,15 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageToLowlevelExceptionMapper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.activation.DataHandler;
 import javax.jws.WebMethod;
@@ -146,7 +147,7 @@ public class LowlevelBitstorageSoapWebserviceImpl implements LowlevelBitstorageS
 
         try {
 //            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException("My test exception");
-            return bs.spaceleft();
+            return bs.spaceLeft();
         } catch (BitstorageException e){
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (Exception e){

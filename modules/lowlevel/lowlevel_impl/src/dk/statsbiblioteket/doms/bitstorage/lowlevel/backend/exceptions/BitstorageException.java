@@ -27,24 +27,30 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-/**
- * TODO abr forgot to document this class
- */
-public abstract class BitstorageException
-        extends Exception {
+import dk.statsbiblioteket.util.qa.QAInfo;
 
-    public BitstorageException() {
-    }
-
+/** General superclass for all bitstorage exceptions. */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public abstract class BitstorageException extends Exception {
+    /**
+     * Initialise a bitstorage exception.
+     *
+     * @param message A message describing the exception.
+     */
     public BitstorageException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise a bitstorage exception.
+     *
+     * @param message A message describing the exception.
+     * @param cause   An exception that caused this exception.
+     */
     public BitstorageException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public BitstorageException(Throwable cause) {
-        super(cause);
     }
 }

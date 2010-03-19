@@ -27,24 +27,35 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
+import dk.statsbiblioteket.util.qa.QAInfo;
+
 /**
- * TODO abr forgot to document this class
+ * An exception signalling that uploading failed, because the file was
+ * already approved with that name.
  */
-public class FileAlreadyApprovedException
-        extends BitstorageException {
-
-    public FileAlreadyApprovedException() {
-    }
-
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class FileAlreadyApprovedException extends BitstorageException {
+    /**
+     * Initialise a "file already approved" exception.
+     *
+     * @param message A message describing the exception. Should always include
+     *                the file name.
+     */
     public FileAlreadyApprovedException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise a "file already approved" exception.
+     *
+     * @param message A message describing the exception. Should always include
+     *                the file name.
+     * @param cause   An exception that caused this exception.
+     */
     public FileAlreadyApprovedException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public FileAlreadyApprovedException(Throwable cause) {
-        super(cause);
     }
 }

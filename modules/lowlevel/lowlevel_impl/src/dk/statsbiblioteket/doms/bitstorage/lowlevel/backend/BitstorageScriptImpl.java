@@ -127,11 +127,11 @@ public class BitstorageScriptImpl
      *                                      match the provided checksum
      * @throws FileAlreadyApprovedException If the filename is already used
      *                                      by an already approved file
-     * @throws InvalidFileNameException     If the filename is not valid
+     * @throws InvalidFilenameException     If the filename is not valid
      */
     public URL upload(String filename, InputStream data, String md5, long filelength)
             throws CommunicationException,
-            ChecksumFailedException, FileAlreadyApprovedException, InvalidFileNameException {
+            ChecksumFailedException, FileAlreadyApprovedException, InvalidFilenameException {
         //TODO locking?
         String output;
         try {
@@ -140,15 +140,19 @@ public class BitstorageScriptImpl
             String stdout = e.getStdout();
             if (stdout.contains(ALREADY_STORED_REPLY)) {
                 throw new FileAlreadyApprovedException(
-                        "File '" + filename + "' have already been approved");
+                        "File '" + filename + "' has already been approved,"
+                                + "and so cannot be uploaded again.");
             } else {
-                throw new CommunicationException("Unrecognized script failure", e);
+                throw new CommunicationException("Unrecognized script failure"
+                        + " during upload of '" + filename + "'", e);
             }
         }
         output = output.trim();
 
         if (!isChecksum(output)) {//script returned normally, but output is not checksum
-            throw new CommunicationException("Script returned unrecognized blob for checksum: '" + output + "'");
+            throw new CommunicationException("Script returned unrecognized blob" 
+                    + " for checksum: '" + output + "' while uploading file '"
+                    + filename + "'");
 
         }
 
@@ -156,8 +160,8 @@ public class BitstorageScriptImpl
             return createURL(filename);
         } else {
             throw new ChecksumFailedException(
-                    "Given checksum '" + md5 + "' but server calculated '" +
-                            output + "'");
+                    "Given checksum for file '" + filename + "' was '" + md5
+                            + "' but server calculated '" + output + "'");
         }
     }
 
@@ -186,7 +190,7 @@ public class BitstorageScriptImpl
      *                                command
      */
     public void disapprove(URL file)
-            throws CommunicationException, InvalidFileNameException {
+            throws CommunicationException, InvalidFilenameException {
 
         String datafile = getFileNameFromURL(file);
         String output;
@@ -197,11 +201,13 @@ public class BitstorageScriptImpl
             if (output.contains(FILE_NOT_FOUND_REPLY)) {
                 //ok, not a problem
             } else {
-                throw new CommunicationException("Unrecognized script failure", e);
+                throw new CommunicationException("Unrecognized script failure"
+                        + " while disapproving '" + file + "'", e);
             }
         }
         if (output.trim().length() > 0) {//non empty reply
-            throw new CommunicationException("Expected empty reply, got '" + output + "'");
+            throw new CommunicationException("Expected empty reply, got '"
+                    + output + "' while disapproving '" + file + "'");
         }
 
     }
@@ -214,13 +220,13 @@ public class BitstorageScriptImpl
      * @param md5  the md5sum of the file. Is currently not used.  TODO let approve use md5
      * @throws CommunicationException      is there was some problem with the script
      *                                     command
-     * @throws InvalidFileNameException    if the url is not of the expected format
+     * @throws InvalidFilenameException    if the url is not of the expected format
      * @throws NotEnoughFreeSpaceException if there is not enough free space in
      *                                     bitstorage
      */
     public String approve(URL file, String md5)
             throws NotEnoughFreeSpaceException,
-            CommunicationException, InvalidFileNameException {
+            CommunicationException, InvalidFilenameException {
 
         String datafile = getFileNameFromURL(file);
         String output;
@@ -234,11 +240,15 @@ public class BitstorageScriptImpl
                 throw new NotEnoughFreeSpaceException(
                         "Not enough free space for file '" + file + "'");
             } else {
-                throw new CommunicationException("Unrecognized script failure", e);
+                throw new CommunicationException(
+                        "Unrecognized script failure for approve of '" + file
+                                + "'", e);
             }
         }
         if (!isChecksum(output)) {//script returned normally, but output is not checksum
-            throw new CommunicationException("Script returned unrecognized blob for checksum: '" + output + "'");
+            throw new CommunicationException(
+                    "Script returned unrecognized blob for checksum: '"
+                            + output + "' while approving '" + file +  "'");
 
         }
         return output;
@@ -252,7 +262,8 @@ public class BitstorageScriptImpl
         try {
             output = runcommand(SPACELEFT_COMMAND);
         } catch (ContingencyException e) {
-            throw new CommunicationException("Unrecognized script failure", e);
+            throw new CommunicationException("Unrecognized script failure"
+                    + " while checking free space", e);
         }
         //TODO defensive code
         int index = output.indexOf(FREE_SPACE_REPLY);
@@ -263,14 +274,15 @@ public class BitstorageScriptImpl
         try {
             return Long.parseLong(longstring);
         } catch (NumberFormatException e) {
-            throw new CommunicationException("Script did not return a long", e);
+            throw new CommunicationException("Script did not return a long,"
+                    + " but '" + longstring + "' while checking free space", e);
         }
 
     }
 
     //TODO javadoc
     public String getMd5(URL file)
-            throws CommunicationException, FileNotFoundException, InvalidFileNameException {
+            throws CommunicationException, FileNotFoundException, InvalidFilenameException {
         String datafile = getFileNameFromURL(file);
         String output;
         try {
@@ -278,9 +290,12 @@ public class BitstorageScriptImpl
         } catch (ContingencyException e) {
             output = e.getStdout();
             if (output.trim().isEmpty()) {
-                throw new FileNotFoundException("File not found '" + file + "'", e);
+                throw new FileNotFoundException("File not found '" + file
+                        + "' while trying to get checksum for file",
+                                                e);
             } else {
-                throw new CommunicationException("Unrecognized script failure", e);
+                throw new CommunicationException("Unrecognized script failure"
+                        + " while getting checksum for '" + file + "'", e);
             }
         }
         return output;
@@ -288,7 +303,7 @@ public class BitstorageScriptImpl
 
     //TODO javadoc
     public boolean isApproved(URL file)
-            throws FileNotFoundException, CommunicationException, InvalidFileNameException {
+            throws FileNotFoundException, CommunicationException, InvalidFilenameException {
         String datafile = getFileNameFromURL(file);
         String output;
         try {
@@ -298,13 +313,18 @@ public class BitstorageScriptImpl
             } else if (output.contains(FILE_IN_STORAGE)) {
                 return true;
             }
-            throw new CommunicationException("Unrecognized script return: '" + output + "'");
+            throw new CommunicationException("Unrecognized script return: '"
+                    + output + "' while checking whether '" + file
+                    + "' is approved");
         } catch (ContingencyException e) {
             output = e.getStdout();
             if (output.contains(FILE_NOT_FOUND)) {
-                throw new FileNotFoundException("File not found");
+                throw new FileNotFoundException("File not found '" + file + "'"
+                        + "while checking whether it was approved.");
             } else {
-                throw new CommunicationException("Unrecognized script failure", e);
+                throw new CommunicationException("Unrecognized script failure "
+                        + "while checking whether '" + file + "' is approved",
+                                                 e);
             }
         }
     }
@@ -315,7 +335,8 @@ public class BitstorageScriptImpl
         try {
             output = runcommand(SPACELEFT_COMMAND);
         } catch (ContingencyException e) {
-            throw new CommunicationException("Unrecognized script failure", e);
+            throw new CommunicationException("Unrecognized script failure while"
+                    + " getting max file size", e);
         }
 
         int index1 = output.indexOf(MAX_FILE_SIZE_REPLY);
@@ -329,7 +350,8 @@ public class BitstorageScriptImpl
             }
         }
         //the output is not of the expected format
-        throw new CommunicationException("Unrecognized script return: '" + output + "'");
+        throw new CommunicationException("Unrecognized script return: '"
+                + output + "' while getting max file size");
 
 
     }
@@ -377,7 +399,8 @@ public class BitstorageScriptImpl
         nr.run();
         if (nr.isTimedOut()) {
             throw new CommunicationException(
-                    "Communication with Bitstorage timed out");
+                    "Communication with Bitstorage timed out while running"
+                            + " command '" + arrayList + "'");
         }
 
         if (nr.getReturnCode() != 0) {
@@ -394,13 +417,15 @@ public class BitstorageScriptImpl
      *
      * @param file the url
      * @return the localfilename
-     * @throws InvalidFileNameException if the url is not of the expected format
+     * @throws InvalidFilenameException if the url is not of the expected format
      */
-    private String getFileNameFromURL(URL file) throws InvalidFileNameException {
+    private String getFileNameFromURL(URL file) throws InvalidFilenameException {
         if (file.toString().startsWith(bitfinder)) {
             return file.toString().substring(bitfinder.length());
         } else {
-            throw new InvalidFileNameException("The url '" + file + "' was not recognized");
+            throw new InvalidFilenameException("The url '" + file 
+                    + "' did not start with required prefix '"
+                    + bitfinder + "'");
         }
     }
 
@@ -409,14 +434,15 @@ public class BitstorageScriptImpl
      *
      * @param filename the filename
      * @return an url
-     * @throws InvalidFileNameException if the filename cannot be converted to
+     * @throws InvalidFilenameException if the filename cannot be converted to
      *                                  an url
      */
-    private URL createURL(String filename) throws InvalidFileNameException {
+    private URL createURL(String filename) throws InvalidFilenameException {
         try {
             return new URL(bitfinder + filename);
         } catch (MalformedURLException e) {
-            throw new InvalidFileNameException("The provided filename cannot be turned into an url", e);
+            throw new InvalidFilenameException("The provided filename '"
+                    + filename + "' cannot be turned into a URL", e);
         }
     }
 

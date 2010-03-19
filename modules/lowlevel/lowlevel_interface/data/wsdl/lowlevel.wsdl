@@ -76,11 +76,11 @@
         <part name="parameters" element="tns:approveResponse"/>
     </message>
 
-    <message name="spaceleft">
-        <part name="parameters" element="tns:spaceleft"/>
+    <message name="spaceLeft">
+        <part name="parameters" element="tns:spaceLeft"/>
     </message>
-    <message name="spaceleftResponse">
-        <part name="parameters" element="tns:spaceleftResponse"/>
+    <message name="spaceLeftResponse">
+        <part name="parameters" element="tns:spaceLeftResponse"/>
     </message>
     <message name="getMaxFileSize">
         <part name="parameters" element="tns:getMaxFileSize"/>
@@ -164,10 +164,10 @@ exception.
 
         </operation>
 
-        <operation name="spaceleft">
+        <operation name="spaceLeft">
             <documentation>Return the number of bytes left in bitstorage.</documentation>
-            <input message="tns:spaceleft"/>
-            <output message="tns:spaceleftResponse"/>
+            <input message="tns:spaceLeft"/>
+            <output message="tns:spaceLeftResponse"/>
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
         </operation>
@@ -271,7 +271,7 @@ exception.
             </fault>
             
         </operation>
-        <operation name="spaceleft">
+        <operation name="spaceLeft">
             <soap:operation soapAction=""/>
             <input>
                 <soap:body use="literal"/>

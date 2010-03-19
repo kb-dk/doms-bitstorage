@@ -27,24 +27,30 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-/**
- * TODO abr forgot to document this class
- */
-public class NotEnoughFreeSpaceException
-        extends BitstorageException {
+import dk.statsbiblioteket.util.qa.QAInfo;
 
-    public NotEnoughFreeSpaceException() {
-    }
-
+/** An exception signalling that an operation failed due to lack of disk space. */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class NotEnoughFreeSpaceException extends BitstorageException {
+    /**
+     * Initialise an exception signalling not enough free space.
+     *
+     * @param message A description of the problem.
+     */
     public NotEnoughFreeSpaceException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise an exception signalling not enough free space.
+     *
+     * @param message A description of the problem.
+     * @param cause   An exception that caused this to happen.
+     */
     public NotEnoughFreeSpaceException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public NotEnoughFreeSpaceException(Throwable cause) {
-        super(cause);
     }
 }

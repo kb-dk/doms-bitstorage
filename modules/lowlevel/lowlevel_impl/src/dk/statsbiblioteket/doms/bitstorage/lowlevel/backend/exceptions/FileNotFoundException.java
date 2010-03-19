@@ -27,23 +27,32 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-/**
- * TODO abr forgot to document this class
- */
-public class FileNotFoundException
-        extends BitstorageException {
-    public FileNotFoundException() {
-    }
+import dk.statsbiblioteket.util.qa.QAInfo;
 
+/** An exception signalling "File not found" */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class FileNotFoundException extends BitstorageException {
+    /**
+     * Initialise a FileNotFound exception.
+     *
+     * @param message A description of the error message. Should always contain
+     *                information about what file is not found.
+     */
     public FileNotFoundException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise a FileNotFound exception.
+     *
+     * @param message A description of the error message. Should always contain
+     *                information about what file is not found.
+     * @param cause   An exception that caused this exception.
+     */
     public FileNotFoundException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public FileNotFoundException(Throwable cause) {
-        super(cause);
     }
 }

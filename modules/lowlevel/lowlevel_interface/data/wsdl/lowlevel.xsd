@@ -68,9 +68,9 @@
 
     <xs:element name="isApprovedResponse" type="tns:isApprovedResponse"/>
 
-    <xs:element name="spaceleft" type="tns:spaceleft"/>
+    <xs:element name="spaceLeft" type="tns:spaceLeft"/>
 
-    <xs:element name="spaceleftResponse" type="tns:spaceleftResponse"/>
+    <xs:element name="spaceLeftResponse" type="tns:spaceLeftResponse"/>
 
     <xs:element name="uploadFile" type="tns:uploadFile"/>
 
@@ -88,11 +88,11 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="spaceleft">
+    <xs:complexType name="spaceLeft">
         <xs:sequence/>
     </xs:complexType>
 
-    <xs:complexType name="spaceleftResponse">
+    <xs:complexType name="spaceLeftResponse">
         <xs:sequence>
             <xs:element name="return" type="xs:long"/>
         </xs:sequence>

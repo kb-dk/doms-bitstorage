@@ -27,23 +27,32 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-/**
- * TODO abr forgot to document this class
- */
-public class ChecksumFailedException
-        extends BitstorageException {
-    public ChecksumFailedException() {
-    }
+import dk.statsbiblioteket.util.qa.QAInfo;
 
+/** An exception signalling a checksum comparison failed. */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class ChecksumFailedException extends BitstorageException {
+    /**
+     * Initialise a checksum failed exception.
+     *
+     * @param message A message describing the problem. Should always include
+     *                the two checksums, and if possible their origin.
+     */
     public ChecksumFailedException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise a checksum failed exception.
+     *
+     * @param message A message describing the problem. Should always include
+     *                the two checksums, and if possible their origin.
+     * @param cause   An exception that caused the checksum comparison to fail.
+     */
     public ChecksumFailedException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public ChecksumFailedException(Throwable cause) {
-        super(cause);
     }
 }

@@ -27,24 +27,30 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-/**
- * TODO abr forgot to document this class
- */
-public class CommunicationException
-        extends BitstorageException {
+import dk.statsbiblioteket.util.qa.QAInfo;
 
-    public CommunicationException() {
-    }
-
+/** A generic failure due to trouble communicating with the underlying script. */
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.QA_OK)
+public class CommunicationException extends BitstorageException {
+    /**
+     * Initialise an exception in communication.
+     *
+     * @param message A message describing the exception.
+     */
     public CommunicationException(String message) {
         super(message);
     }
 
+    /**
+     * Initialise an exception in communication.
+     *
+     * @param message A message describing the exception.
+     * @param cause   An exception that caused this exception.
+     */
     public CommunicationException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public CommunicationException(Throwable cause) {
-        super(cause);
     }
 }
