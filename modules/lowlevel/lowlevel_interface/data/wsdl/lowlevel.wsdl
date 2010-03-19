@@ -51,8 +51,8 @@
     <message name="FileAlreadyApprovedException">
         <part name="fault" element="tns:FileAlreadyApprovedException"/>
     </message>
-    <message name="InvalidFilenameException">
-        <part name="fault" element="tns:InvalidFilenameException"/>
+    <message name="InvalidFileNameException">
+        <part name="fault" element="tns:InvalidFileNameException"/>
     </message>
     <message name="CommunicationException">
         <part name="fault" element="tns:CommunicationException"/>
@@ -120,8 +120,8 @@
             </documentation>
             <input message="tns:uploadFile"/>
             <output message="tns:uploadFileResponse"/>
-            <fault message="tns:InvalidFilenameException"
-                   name="InvalidFilenameException"/>
+            <fault message="tns:InvalidFileNameException"
+                   name="InvalidFileNameException"/>
             <fault message="tns:FileAlreadyApprovedException"
                    name="FileAlreadyApprovedException"/>
             <fault message="tns:ChecksumFailedException"
@@ -244,8 +244,8 @@
             <fault name="ChecksumFailedException">
                 <soap:fault name="ChecksumFailedException" use="literal"/>
             </fault>
-            <fault name="InvalidFilenameException">
-                <soap:fault name="InvalidFilenameException" use="literal"/>
+            <fault name="InvalidFileNameException">
+                <soap:fault name="InvalidFileNameException" use="literal"/>
             </fault>
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>

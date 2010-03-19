@@ -45,7 +45,7 @@
 
     <xs:element name="FileAlreadyApprovedException" type="xs:string"/>
 
-    <xs:element name="InvalidFilenameException" type="xs:string"/>
+    <xs:element name="InvalidFileNameException" type="xs:string"/>
 
     <xs:element name="FileIsLockedException" type="xs:string"/>
 

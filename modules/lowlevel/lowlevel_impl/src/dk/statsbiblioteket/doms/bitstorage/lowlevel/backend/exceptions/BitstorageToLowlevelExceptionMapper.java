@@ -119,7 +119,7 @@ public class BitstorageToLowlevelExceptionMapper
      * @return Resulting exception.
      */
     public LowlevelSoapException convert(InvalidFileNameException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException(
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFileNameException(
                 ce.getMessage(), ce.getMessage(), ce);
     }
 
