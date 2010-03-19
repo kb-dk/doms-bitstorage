@@ -33,6 +33,9 @@ import org.apache.commons.logging.LogFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileIsLockedException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFileNameException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
@@ -100,6 +103,7 @@ public class LowlevelBitstorageSoapWebserviceImpl implements LowlevelBitstorageS
      * @throws InvalidFilenameException If the given filename cannot be used
      * @throws NotEnoughFreeSpaceException If there is not enough space to store
      * the file.
+     * @throws FileIsLockedException If the file is locked by another operation.
      * @throws LowlevelSoapException On internal errors that are not correctly
      * mapped to SOAP faults. Should never happen.
      * @throws WebServiceException On other unclassified errors. Should never
@@ -120,15 +124,15 @@ public class LowlevelBitstorageSoapWebserviceImpl implements LowlevelBitstorageS
                              long filelength)
             throws ChecksumFailedException, CommunicationException,
             FileAlreadyApprovedException, InvalidFilenameException,
-            NotEnoughFreeSpaceException, LowlevelSoapException,
-            WebServiceException {
+            NotEnoughFreeSpaceException, FileIsLockedException,
+            LowlevelSoapException, WebServiceException {
         LOG.trace("Enter uploadFile('" + filename + "','" + filedata + "','"
                 + md5String + "','" + filelength + "')");
         String errorMessage = "Trouble while uploading file '" + filename + "'";
         try {
             Bitstorage bs =  BitstorageFactory.getInstance();
             //TODO: Look into MTOM streaming
-            /*        StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
+            /* StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
             return bs.upload(
                     filename, filedata.getInputStream(), md5String, filelength)
                     .toString();
@@ -141,136 +145,264 @@ public class LowlevelBitstorageSoapWebserviceImpl implements LowlevelBitstorageS
         }
     }
 
+    /**
+     * Remove a file that has not yet been approved, for details see
+     * {@link Bitstorage#disapprove(URL)}.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @param fileurl The url of the file to disapprove.
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * url.
+     * @throws FileIsLockedException If the file is locked by another operation.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
     @WebMethod
     public void disapprove(@WebParam(name = "fileurl",
-            targetNamespace = "") String fileurl)
-            throws LowlevelSoapException {
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
+                                     targetNamespace = "")
+                           String fileurl)
+            throws InvalidFilenameException, FileIsLockedException,
+            CommunicationException, LowlevelSoapException, WebServiceException {
+        LOG.trace("Enter disapprove('" + fileurl + "')");
+        String errorMessage = "Trouble while disapproving file '" + fileurl
+                + "'";
         try {
+            Bitstorage bs = BitstorageFactory.getInstance();
             bs.disapprove(new URL(fileurl));
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
+            LOG.error(errorMessage, e);
             throw new InvalidFilenameException(
-                    e.getMessage(),
-                    e.getMessage(),
+                    errorMessage + ": " + e,
+                    errorMessage + ": " + e,
                     e);
-
         } catch (Exception e){
-            LOG.error(e);
-            throw new WebServiceException(e);
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
 
 
     }
 
+    /**
+     * Approve a file for permanent storage, for details see
+     * {@link Bitstorage#approve(URL, String)}.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @param fileurl The url of the file to approve.
+     * @param md5String The md5 checksum of files.
+     * @throws FileNotFoundException If the file does not exist in any storage.
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws NotEnoughFreeSpaceException If there is not enough space to store
+     * the file.
+     * @throws ChecksumFailedException If the file on server has a different
+     * checksum than the given checksum
+     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * url.
+     * @throws FileIsLockedException If the file is locked by another operation.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
     @WebMethod
     public void approve(@WebParam(name = "fileurl",
             targetNamespace = "") String fileurl,
                         @WebParam(name = "md5string",
                                 targetNamespace = "") String md5String)
-            throws LowlevelSoapException {
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
+            throws FileNotFoundException, CommunicationException,
+            NotEnoughFreeSpaceException, ChecksumFailedException,
+            InvalidFileNameException, FileIsLockedException,
+            LowlevelSoapException, WebServiceException {
+        LOG.trace("Enter approve('" + fileurl + "', '" + md5String + "')");
+        String errorMessage = "Trouble while approving file '" + fileurl + "'";
         try {
+            Bitstorage bs = BitstorageFactory.getInstance();
             bs.approve(new URL(fileurl), md5String);
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
-            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
-                    e.getMessage(),
-                    e.getMessage(),
+            LOG.error(errorMessage, e);
+            throw new InvalidFilenameException(
+                    errorMessage + ": " + e,
+                    errorMessage + ": " + e,
                     e);
-
         } catch (Exception e){
-            LOG.error(e);
-            throw new WebServiceException(e);
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
-
-
     }
 
+    /**
+     * Get amount of free space in bitstorage, for details see
+     * {@link Bitstorage#spaceLeft()}.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @return Amount of free space in bytes.
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
     @WebMethod
-    public long spaceLeft() throws LowlevelSoapException {
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
-
-
+    public long spaceLeft() throws CommunicationException,
+            LowlevelSoapException, WebServiceException {
+        LOG.trace("Enter spaceLeft()");
+        String errorMessage = "Trouble while checking free space";
         try {
-//            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException("My test exception");
+            Bitstorage bs = BitstorageFactory.getInstance();
             return bs.spaceLeft();
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (Exception e){
-            LOG.error(e);
-            throw new WebServiceException(e);
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
-
-
     }
 
+    /**
+     * Get amount of free space in bitstorage for a single file, for details see
+     * {@link Bitstorage#getMaxFileSize()}.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @return Amount of free space in bytes for one single file.
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
     @WebMethod
-    public long getMaxFileSize() throws LowlevelSoapException {
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
+    public long getMaxFileSize() throws CommunicationException,
+            LowlevelSoapException, WebServiceException {
+        LOG.trace("Enter getMaxFileSize()");
+        String errorMessage = "Trouble while checking free space";
         try {
+            Bitstorage bs = BitstorageFactory.getInstance();
             return bs.getMaxFileSize();
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (Exception e){
-            LOG.error(e);
-            throw new WebServiceException(e);
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
-
     }
 
+    /**
+     * Get checksum for a file, for details see
+     * {@link Bitstorage#getMd5(URL)}.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @param fileurl The url of the file to get checksum for.
+     * @return Checksum for file.
+     * @throws FileNotFoundException If the file does not exist in any storage.
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * url.
+     * @throws FileIsLockedException If the file is locked by another operation.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
     @WebMethod
     public String getMd5(@WebParam(name = "fileurl",
-            targetNamespace = "") String fileurl)
-            throws LowlevelSoapException {
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
+                                   targetNamespace = "")
+                                   String fileurl)
+            throws FileNotFoundException, CommunicationException,
+            InvalidFileNameException, FileIsLockedException,
+            LowlevelSoapException, WebServiceException {
+        LOG.trace("Enter getMd5('" + fileurl + "')");
+        String errorMessage = "Trouble while getting checksum for fileurl '"
+                + fileurl + "'";
         try {
+            Bitstorage bs = BitstorageFactory.getInstance();
             return bs.getMd5(new URL(fileurl));
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
-            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
-                    e.getMessage(),
-                    e.getMessage(),
+            LOG.error(errorMessage, e);
+            throw new InvalidFilenameException(
+                    errorMessage + ": " + e,
+                    errorMessage + ": " + e,
                     e);
-
         } catch (Exception e){
-            LOG.error(e);
-            throw new WebServiceException(e);
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
-
-
     }
 
+    /**
+     * Check whether a file is approved, for details see
+     * {@link Bitstorage#isApproved(URL)}.
+     *
+     * This method works as a fault barrier, handling exceptions by converting
+     * them to relecant SOAP faults.
+     *
+     * @param fileurl The url of the file to check whether is approved.
+     * @return true if exists and is approved, false if exists but is not yet
+     * approved.
+     * @throws FileNotFoundException If the file does not exist in any storage.
+     * @throws CommunicationException On generic trouble communicating with the
+     * underlying script.
+     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * url.
+     * @throws FileIsLockedException If the file is locked by another operation.
+     * @throws LowlevelSoapException On internal errors that are not correctly
+     * mapped to SOAP faults. Should never happen.
+     * @throws WebServiceException On other unclassified errors. Should never
+     * happen.
+     */
     @WebMethod
     public boolean isApproved(@WebParam(name = "fileurl",
-            targetNamespace = "") String fileurl)
-            throws LowlevelSoapException {
-        Bitstorage bs =
-                BitstorageFactory.getInstance();
+                                        targetNamespace = "")
+                                        String fileurl)
+            throws FileNotFoundException, CommunicationException,
+            InvalidFileNameException, FileIsLockedException,
+            LowlevelSoapException, WebServiceException {
+        LOG.trace("Enter getMd5('" + fileurl + "')");
+        String errorMessage = "Trouble while checking if fileurl '"
+                + fileurl + "' is approved";
         try {
+            Bitstorage bs = BitstorageFactory.getInstance();
             return bs.isApproved(new URL(fileurl));
         } catch (BitstorageException e) {
+            LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
-            throw new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException(
-                    e.getMessage(),
-                    e.getMessage(),
+            LOG.error(errorMessage, e);
+            throw new InvalidFilenameException(
+                    errorMessage + ": " + e,
+                    errorMessage + ": " + e,
                     e);
-
         } catch (Exception e){
-            LOG.error(e);
-            throw new WebServiceException(e);
+            LOG.error(errorMessage, e);
+            throw new WebServiceException(errorMessage + ": " + e, e);
         }
-
     }
-
-
 }
