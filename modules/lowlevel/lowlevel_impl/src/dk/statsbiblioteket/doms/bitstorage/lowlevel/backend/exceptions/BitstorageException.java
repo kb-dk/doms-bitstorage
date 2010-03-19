@@ -29,7 +29,9 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-/** General superclass for all bitstorage exceptions. */
+/**
+ * General superclass for all bitstorage backend exceptions.
+ */
 @QAInfo(author = "abr",
         reviewers = "kfc",
         level = QAInfo.Level.NORMAL,
@@ -44,13 +46,11 @@ public abstract class BitstorageException extends Exception {
         super(message);
     }
 
-    /**
-     * Initialise a bitstorage exception.
-     *
-     * @param message A message describing the exception.
-     * @param cause   An exception that caused this exception.
-     */
     public BitstorageException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public BitstorageException(Throwable cause) {
+        super(cause);
     }
 }

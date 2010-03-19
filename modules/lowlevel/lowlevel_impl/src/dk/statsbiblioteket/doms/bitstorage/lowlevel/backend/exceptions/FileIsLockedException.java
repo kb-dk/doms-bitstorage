@@ -27,32 +27,20 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
-import dk.statsbiblioteket.util.qa.QAInfo;
-
 /**
- * An exception signalling that uploading failed, because the file was
- * already approved with that name.
+ * Created by IntelliJ IDEA.
+ * User: abr
+ * Date: Mar 19, 2010
+ * Time: 12:20:35 PM
+ * To change this template use File | Settings | File Templates.
  */
-@QAInfo(author = "abr",
-        reviewers = "kfc",
-        level = QAInfo.Level.NORMAL,
-        state = QAInfo.State.QA_OK)
-public class FileAlreadyApprovedException extends BitstorageException {
-    /**
-     * Initialise a "file already approved" exception.
-     *
-     * @param message A message describing the exception. Should always include
-     *                the file name.
-     */
-    public FileAlreadyApprovedException(String message) {
+public class FileIsLockedException extends BitstorageException {
+
+    public FileIsLockedException(String message) {
         super(message);
     }
 
-    public FileAlreadyApprovedException(String message, Throwable cause) {
+    public FileIsLockedException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    public FileAlreadyApprovedException(Throwable cause) {
-        super(cause);
     }
 }

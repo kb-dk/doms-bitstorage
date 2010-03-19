@@ -28,6 +28,7 @@
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend;
 
 import dk.statsbiblioteket.util.qa.QAInfo;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.scriptimpl.BitstorageScriptImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,7 +37,10 @@ import org.apache.commons.logging.LogFactory;
  * This is the factory for interacting with the backend bitstorage system. It
  * creates threadsafe BitStorage implementations.
  */
-@QAInfo(author = "abr", reviewers = "kfc", state = QAInfo.State.IN_DEVELOPMENT, level = QAInfo.Level.NORMAL)
+@QAInfo(author = "abr",
+        reviewers = "kfc",
+        state = QAInfo.State.IN_DEVELOPMENT,
+        level = QAInfo.Level.NORMAL)
 public class BitstorageFactory {
 
     static Log log = LogFactory.getLog(BitstorageFactory.class);

@@ -47,6 +47,8 @@
 
     <xs:element name="InvalidFilenameException" type="xs:string"/>
 
+    <xs:element name="FileIsLockedException" type="xs:string"/>
+
     <xs:element name="approve" type="tns:approve"/>
 
     <xs:element name="approveResponse" type="tns:approveResponse"/>
@@ -78,7 +80,7 @@
 
     <xs:complexType name="isApproved">
         <xs:sequence>
-            <xs:element name="fileurl" type="xs:anyURI" />
+            <xs:element name="fileurl" type="xs:anyURI"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -149,14 +151,14 @@
 
     <xs:complexType name="getMd5Response">
         <xs:sequence>
-            <xs:element name="return" type="xs:string" />
+            <xs:element name="return" type="xs:string"/>
 
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="disapprove">
         <xs:sequence>
-            <xs:element name="fileurl" type="xs:anyURI" />
+            <xs:element name="fileurl" type="xs:anyURI"/>
         </xs:sequence>
     </xs:complexType>
 

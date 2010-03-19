@@ -29,7 +29,9 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-/** A generic failure due to trouble communicating with the underlying script. */
+/**
+ * A generic failure due to trouble communicating with the underlying script.
+ */
 @QAInfo(author = "abr",
         reviewers = "kfc",
         level = QAInfo.Level.NORMAL,
@@ -44,13 +46,11 @@ public class CommunicationException extends BitstorageException {
         super(message);
     }
 
-    /**
-     * Initialise an exception in communication.
-     *
-     * @param message A message describing the exception.
-     * @param cause   An exception that caused this exception.
-     */
     public CommunicationException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public CommunicationException(Throwable cause) {
+        super(cause);
     }
 }

@@ -46,6 +46,7 @@ public class BitstorageToLowlevelExceptionMapper
     /**
      * Generic mapper. This method maps all exceptions that are not otherwise
      * mapped to WebServiceException.
+     *
      * @param ce Exception mapped from.
      * @return Resulting WebServiceException.
      */
@@ -89,6 +90,18 @@ public class BitstorageToLowlevelExceptionMapper
     }
 
     /**
+     * Maps FileIsLocked to the equivalent SOAP fault.
+     *
+     * @param ce Exception mapped from.
+     * @return Resulting exception.
+     */
+    public LowlevelSoapException convert(FileIsLockedException ce) {
+        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileIsLockedException(
+                ce.getMessage(), ce.getMessage(), ce);
+    }
+
+
+    /**
      * Maps FileNotFoundException to the equivalent SOAP fault.
      *
      * @param ce Exception mapped from.
@@ -105,7 +118,7 @@ public class BitstorageToLowlevelExceptionMapper
      * @param ce Exception mapped from.
      * @return Resulting exception.
      */
-    public LowlevelSoapException convert(InvalidFilenameException ce) {
+    public LowlevelSoapException convert(InvalidFileNameException ce) {
         return new dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException(
                 ce.getMessage(), ce.getMessage(), ce);
     }

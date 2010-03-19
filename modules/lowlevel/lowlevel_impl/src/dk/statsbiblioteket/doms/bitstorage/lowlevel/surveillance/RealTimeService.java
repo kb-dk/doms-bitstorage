@@ -52,57 +52,76 @@ import java.util.List;
 import java.util.Properties;
 
 
-/** Class that exposes real time system info for low-level bitstorage as
+/**
+ * Class that exposes real time system info for low-level bitstorage as
  * surveyable messages over REST.
  */
 @QAInfo(level = QAInfo.Level.NORMAL,
         state = QAInfo.State.QA_NEEDED,
         author = "jrg",
         reviewers = {"kfc"})
-@Path("/RealTimeService/")      // Part of the url to this webservice, inserted
+@Path("/RealTimeService/")
+// Part of the url to this webservice, inserted
 // at * in the relevant url-pattern in web.xml
 public class RealTimeService implements Surveyable {
     private Log log = LogFactory.getLog(getClass());
 
 
-    /** The name of the system being surveyed by through this class. */
+    /**
+     * The name of the system being surveyed by through this class.
+     */
     private static final String SURVEYEE_NAME = "Low-level bitstorage";
 
-    /** Common prefix of those parameters in web.xml which are used in this
-     * class.*/
+    /**
+     * Common prefix of those parameters in web.xml which are used in this
+     * class.
+     */
     private static final String PACKAGE_NAME
             = "dk.statsbiblioteket.doms.bitstorage.lowlevel";
 
-    /** Parameter in web.xml describing where the wsdl file for the surveyee is
-     * located.  */
+    /**
+     * Parameter in web.xml describing where the wsdl file for the surveyee is
+     * located.
+     */
     private static final String PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL
             = PACKAGE_NAME + ".location";
 
-    /** Parameter in web.xml telling the number of free bytes preferred in
-     * bitstorage*/
+    /**
+     * Parameter in web.xml telling the number of free bytes preferred in
+     * bitstorage
+     */
     private static final String PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT
             = PACKAGE_NAME + ".preferredBytesLeft";
 
-    /** Parameter in web.xml telling the number of free bytes required in
-     * bitstorage.*/
+    /**
+     * Parameter in web.xml telling the number of free bytes required in
+     * bitstorage.
+     */
     private static final String PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT
             = PACKAGE_NAME + ".requiredBytesLeft";
 
-    /** The URL describing where the wsdl file for the surveyee is located. */
+    /**
+     * The URL describing where the wsdl file for the surveyee is located.
+     */
     private String location;
 
-    /** The number of free bytes preferred in bitstorage. If less than this
+    /**
+     * The number of free bytes preferred in bitstorage. If less than this
      * amount is left, surveillance will report it with a yellow stop-light
-     * severity.*/
+     * severity.
+     */
     private int preferredSpaceInBitstorage;
 
-    /** The number of free bytes required in bitstorage. If less than this
+    /**
+     * The number of free bytes required in bitstorage. If less than this
      * amount is left, surveillance will report it with a red stop-light
-     * severity.*/
+     * severity.
+     */
     private int requiredSpaceInBitstorage;
 
     /**
      * The fully qualified name of the service to monitor
+     *
      * @see #SERVICE_NAME
      * @see #SERVICE_NAMESPACE_URI
      */
@@ -112,7 +131,7 @@ public class RealTimeService implements Surveyable {
      * The namespace of the service
      */
     private static final String SERVICE_NAMESPACE_URI = "http://"
-                                                        + "lowlevel.bitstorage.doms.statsbiblioteket.dk/";
+            + "lowlevel.bitstorage.doms.statsbiblioteket.dk/";
 
     /**
      * The name of the service
@@ -133,7 +152,7 @@ public class RealTimeService implements Surveyable {
         location = props.getProperty(
                 PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
         log.debug("Location of wsdl for surveyee now set to '"
-                  + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
+                + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
 
         preferredBytesLeft = props.getProperty(
                 PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT);
@@ -142,10 +161,10 @@ public class RealTimeService implements Surveyable {
                     = Integer.parseInt(preferredBytesLeft);
         } catch (NumberFormatException e) {
             log.error("Couldn't parse the value of web.xml parameter '"
-                      + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
+                    + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
         }
         log.debug("Preferred number of bytes in bitstorage now set to '"
-                  + preferredSpaceInBitstorage + "'");
+                + preferredSpaceInBitstorage + "'");
 
         requiredBytesLeft = props.getProperty(
                 PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT);
@@ -153,10 +172,10 @@ public class RealTimeService implements Surveyable {
             requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
         } catch (NumberFormatException e) {
             log.error("Couldn't parse the value of web.xml parameter '"
-                      + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
+                    + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
         }
         log.debug("Required number of bytes in bitstorage now set to '"
-                  + requiredSpaceInBitstorage + "'");
+                + requiredSpaceInBitstorage + "'");
     }
 
 
@@ -203,11 +222,12 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    /** Tries to connect to lowlevel-bitstorage and checks the amount of space
+    /**
+     * Tries to connect to lowlevel-bitstorage and checks the amount of space
      * left there.
      *
      * @return A status containing list of status messages.
-     * */
+     */
     private Status checkLowlevelBitstorageForCurrentState() {
         log.trace("Entered method checkLowlevelBitstorageForCurrentState()");
 
@@ -222,15 +242,15 @@ public class RealTimeService implements Surveyable {
             wsdlLocation = new URL(location);
         } catch (MalformedURLException e) {
             log.error("URL to lowlevel bitstorage WSDL is"
-                      + " broken. URL is: '" + location + "'", e);
+                    + " broken. URL is: '" + location + "'", e);
             throw new BrokenURLException("URL to lowlevel bitstorage WSDL is"
-                                         + " broken. URL is: '" + location + "'", e);
+                    + " broken. URL is: '" + location + "'", e);
         }
 
         try {
             bitstorageWebserviceFactory
                     = new LowlevelBitstorageSoapWebserviceService(wsdlLocation,
-                                                                  serviceName);
+                    serviceName);
 
             bitstorageService = bitstorageWebserviceFactory
                     .getLowlevelBitstorageSoapWebservicePort();
@@ -242,7 +262,7 @@ public class RealTimeService implements Surveyable {
         }
 
         try {
-            spaceLeftInBitstorage = bitstorageService.spaceleft();
+            spaceLeftInBitstorage = bitstorageService.spaceLeft();
         } catch (CommunicationException e) {
             /*
             // Development note: Have tried to find out how to get the
@@ -254,75 +274,75 @@ public class RealTimeService implements Surveyable {
             */
 
             log.error("Lowlevel bitstorage webservice"
-                      + " was called but it couldn't communicate with"
-                      + " backend ssh-server.", e);
+                    + " was called but it couldn't communicate with"
+                    + " backend ssh-server.", e);
             // Report no comms with backend ssh-server
             return makeStatus(StatusMessage.Severity.RED,
-                              "Lowlevel bitstorage webservice"
-                              + " was called but it couldn't communicate with"
-                              + " backend ssh-server."
-                              + " Exception thrown with name: '"
-                              + e.getClass().getName()
-                              + "' and message: ["
-                              + e.getMessage()
-                              +"]"
+                    "Lowlevel bitstorage webservice"
+                            + " was called but it couldn't communicate with"
+                            + " backend ssh-server."
+                            + " Exception thrown with name: '"
+                            + e.getClass().getName()
+                            + "' and message: ["
+                            + e.getMessage()
+                            + "]"
             );
         } catch (Exception e) {
             log.error("Something went wrong calling"
-                      + " the lowlevel bitstorage webservice.", e);
+                    + " the lowlevel bitstorage webservice.", e);
             // Report something unknown went wrong
             return makeStatus(StatusMessage.Severity.RED,
-                              "Something went wrong calling"
-                              + " the lowlevel bitstorage webservice."
-                              + " Exception thrown with name: '"
-                              + e.getClass().getName()
-                              + "' and message: ["
-                              + e.getMessage()
-                              +"]"
+                    "Something went wrong calling"
+                            + " the lowlevel bitstorage webservice."
+                            + " Exception thrown with name: '"
+                            + e.getClass().getName()
+                            + "' and message: ["
+                            + e.getMessage()
+                            + "]"
             );
         }
-
 
 
         if (spaceLeftInBitstorage < requiredSpaceInBitstorage) {
             // Report too little space
             return makeStatus(StatusMessage.Severity.RED,
-                              "Not enough space" +
-                              "in bitstorage. Remaining size must be atleast "
-                              + requiredSpaceInBitstorage + " bytes.");
+                    "Not enough space" +
+                            "in bitstorage. Remaining size must be atleast "
+                            + requiredSpaceInBitstorage + " bytes.");
         } else if (spaceLeftInBitstorage < preferredSpaceInBitstorage) {
             // Report close to too little space
             return makeStatus(StatusMessage.Severity.YELLOW,
-                              "Space left in bitstorage is getting"
-                              + " dangerously close to the lower limit in"
-                              + " bitstorage. Remaining size should be atleast "
-                              + preferredSpaceInBitstorage + " bytes.");
+                    "Space left in bitstorage is getting"
+                            + " dangerously close to the lower limit in"
+                            + " bitstorage. Remaining size should be atleast "
+                            + preferredSpaceInBitstorage + " bytes.");
         } else {
             // Report everything ok
             return makeStatus(StatusMessage.Severity.GREEN,
-                              "Lowlevel bitstorage is up, and there is enough space."
-                              + " Currently " + spaceLeftInBitstorage
-                              + " bytes left.");
+                    "Lowlevel bitstorage is up, and there is enough space."
+                            + " Currently " + spaceLeftInBitstorage
+                            + " bytes left.");
         }
     }
 
 
-    /** Constructs a status containing a status message with the input severity,
+    /**
+     * Constructs a status containing a status message with the input severity,
      * input message, and the current system time.
      *
      * @param severity The severity to be given to the returned status
-     * @param message The message to be entered in the returned status
+     * @param message  The message to be entered in the returned status
      * @return A status containing a message with the given severity and message
-     * text
+     *         text
      */
     private Status makeStatus(Severity severity, String message) {
         log.trace("Entered method makeStatus('" + severity + "', '" + message
-                  + "')");
+                + "')");
         List<StatusMessage> messageList = new ArrayList<StatusMessage>();
         StatusMessage statusMessage;
 
         statusMessage = new StatusMessage(message, severity,
-                                          System.currentTimeMillis(), false);
+                System.currentTimeMillis(), false);
         messageList.add(statusMessage);
         return new Status(SURVEYEE_NAME, messageList);
     }

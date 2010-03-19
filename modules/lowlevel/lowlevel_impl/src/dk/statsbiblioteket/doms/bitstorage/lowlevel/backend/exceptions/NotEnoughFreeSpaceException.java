@@ -29,7 +29,9 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
 
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-/** An exception signalling that an operation failed due to lack of disk space. */
+/**
+ * An exception signalling that an operation failed due to lack of disk space.
+ */
 @QAInfo(author = "abr",
         reviewers = "kfc",
         level = QAInfo.Level.NORMAL,
@@ -44,13 +46,11 @@ public class NotEnoughFreeSpaceException extends BitstorageException {
         super(message);
     }
 
-    /**
-     * Initialise an exception signalling not enough free space.
-     *
-     * @param message A description of the problem.
-     * @param cause   An exception that caused this to happen.
-     */
     public NotEnoughFreeSpaceException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public NotEnoughFreeSpaceException(Throwable cause) {
+        super(cause);
     }
 }
