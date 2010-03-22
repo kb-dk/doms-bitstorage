@@ -111,7 +111,7 @@ public class LockRegistry {
             return true;//lock aquired
         }
 
-        return lock == id;//if lock == id, locked by me, so true
+        return lock.equals(id);//if lock == id, locked by me, so true
     }
 
 
@@ -130,7 +130,7 @@ public class LockRegistry {
             return;
         }
 
-        if (lock == id) {//release
+        if (lock.equals(id)) {//release
             locks.remove(file);
         } else {//locked by another thread....
             //return queitly, do not unlock
