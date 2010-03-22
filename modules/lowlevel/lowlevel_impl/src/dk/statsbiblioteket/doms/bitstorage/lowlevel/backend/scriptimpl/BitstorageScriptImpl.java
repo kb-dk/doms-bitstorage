@@ -78,24 +78,37 @@ public class BitstorageScriptImpl
 
 
     private Log log = LogFactory.getLog(BitstorageScriptImpl.class);
-    /**
-     * These are the commands the shell script understands
-     */
-    private static final String UPLOAD_COMMAND = "save-md5";
-    private static final String APPROVE_COMMAND = "approve";
-    private static final String DISAPPROVE_COMMAND = "delete";
-    private static final String SPACELEFT_COMMAND = "space-left";
-    private static final String GETMD5_COMMAND = "get-md5";
-    private static final String GETSTATE_COMMAND = "get-state";
 
     /**
-     * This is the server to be used as a prefix for making filenames into urls
+     * These are the commands the shell script understands.
+     */
+    private static enum ScriptCommand {
+        UPLOAD_COMMAND("save-md5"),
+        APPROVE_COMMAND("approve"),
+        DISAPPROVE_COMMAND("delete"),
+        SPACELEFT_COMMAND("space-left"),
+        GETMD5_COMMAND("get-md5"),
+        GETSTATE_COMMAND("get-state");
+
+        private String command;
+
+        ScriptCommand(String command) {
+            this.command = command;
+        }
+
+        public String getCommand() {
+            return command;
+        }
+    }
+
+    /**
+     * This is the server to be used as a prefix for making filenames into urls.
      */
     private String bitfinder;
 
 
     /**
-     * These are patterns to match for, for parsing output
+     * These are patterns to match for, for parsing output.
      */
     private static final String ALREADY_STORED_REPLY = "was stored!";
     private static final String FILE_NOT_FOUND_REPLY = "not found";
@@ -153,14 +166,17 @@ public class BitstorageScriptImpl
         String output;
         URL url = createURL(filename);
         log.debug("Locking file '" + url + "'");
-        if (!LockRegistry.getInstance().lockFile(url)) {//could not lock the file
-            throw new FileIsLockedException("The file " + url + " is locked by another process");
-        }
 
         try {
+            if (!LockRegistry.getInstance().lockFile(url)) {//could not lock the file
+                throw new FileIsLockedException("The file " + url + " is locked by another process");
+            }
+
             try {
                 log.debug("Starting upload script command");
-                output = runcommand(data, UPLOAD_COMMAND, filename);
+                output = runcommand(data,
+                        ScriptCommand.UPLOAD_COMMAND,
+                        filename);
                 log.debug("Upload script command exited normally");
             } catch (ContingencyException e) {//something went wrong
                 String stdout = e.getStdout();
@@ -216,16 +232,17 @@ public class BitstorageScriptImpl
             InvalidFileNameException,
             FileIsLockedException {
         log.trace("Entering disapprove(" + file + ")");
-        if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
-            throw new FileIsLockedException("The file " + file + " is locked by another process");
-        }
 
         try {
+            if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+                throw new FileIsLockedException("The file " + file + " is locked by another process");
+            }
+
 
             String datafile = getFileNameFromURL(file);
             String output;
             try {
-                output = runcommand(DISAPPROVE_COMMAND, datafile);
+                output = runcommand(ScriptCommand.DISAPPROVE_COMMAND, datafile);
             } catch (ContingencyException e) {
                 output = e.getStdout();
                 if (output.contains(FILE_NOT_FOUND_REPLY)) {
@@ -271,11 +288,12 @@ public class BitstorageScriptImpl
             FileNotFoundException,
             ChecksumFailedException {
         log.trace("Entering approve(" + file + ", " + md5 + ")");
-        if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
-            throw new FileIsLockedException("The file " + file + " is locked by another process");
-        }
 
         try {
+            if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+                throw new FileIsLockedException("The file " + file + " is locked by another process");
+            }
+
 
             //TODO remove this when/if the scripts take checksums on approve
             String serverchecksum = getMd5(file);
@@ -289,7 +307,7 @@ public class BitstorageScriptImpl
             String datafile = getFileNameFromURL(file);
             String output;
             try {
-                output = runcommand(APPROVE_COMMAND, datafile);
+                output = runcommand(ScriptCommand.APPROVE_COMMAND, datafile);
             } catch (ContingencyException e) {
                 output = e.getStdout();
                 if (output.contains(FILE_NOT_FOUND_REPLY)) {
@@ -328,7 +346,7 @@ public class BitstorageScriptImpl
         log.trace("Entering spaceLeft()");
         String output;
         try {
-            output = runcommand(SPACELEFT_COMMAND);
+            output = runcommand(ScriptCommand.SPACELEFT_COMMAND);
         } catch (ContingencyException e) {
             throw new CommunicationException("Unrecognized script failure"
                     + " while checking free space", e);
@@ -372,17 +390,16 @@ public class BitstorageScriptImpl
             InvalidFileNameException,
             FileIsLockedException {
         log.trace("Entering getMd5(" + file + ")");
-        if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
-            throw new FileIsLockedException("The file " + file + " is locked by another process");
-        }
 
         try {
-
+            if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+                throw new FileIsLockedException("The file " + file + " is locked by another process");
+            }
 
             String datafile = getFileNameFromURL(file);
             String output;
             try {
-                output = runcommand(GETMD5_COMMAND, datafile);
+                output = runcommand(ScriptCommand.GETMD5_COMMAND, datafile);
             } catch (ContingencyException e) {
                 output = e.getStdout();
                 if (output.trim().isEmpty()) {
@@ -420,16 +437,17 @@ public class BitstorageScriptImpl
             InvalidFileNameException,
             FileIsLockedException {
         log.trace("Entering isApproved(" + file + ")");
-        if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
-            throw new FileIsLockedException("The file " + file + " is locked by another process");
-        }
 
         try {
+            if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+                throw new FileIsLockedException("The file " + file + " is locked by another process");
+            }
+
 
             String datafile = getFileNameFromURL(file);
             String output;
             try {
-                output = runcommand(GETSTATE_COMMAND, datafile);
+                output = runcommand(ScriptCommand.GETSTATE_COMMAND, datafile);
                 if (output.contains(FILE_IN_STAGE)) {
                     return false;
                 } else if (output.contains(FILE_IN_STORAGE)) {
@@ -467,7 +485,7 @@ public class BitstorageScriptImpl
         log.trace("Entering getMaxFileSize()");
         String output;
         try {
-            output = runcommand(SPACELEFT_COMMAND);
+            output = runcommand(ScriptCommand.SPACELEFT_COMMAND);
         } catch (ContingencyException e) {
             throw new CommunicationException("Unrecognized script failure while"
                     + " getting max file size", e);
@@ -496,18 +514,21 @@ public class BitstorageScriptImpl
      * the output written on stdout is returned as a string. Equivalent to
      * runcommand(null,command);
      *
-     * @param command the command and paramenters
+     * @param command    the command
+     * @param parameters the string parameters
      * @return the standard output
      * @throws CommunicationException If the execution timed out
      * @throws ContingencyException   if the script returned abnormally. Contains
      *                                both the return code, the standard out and the standard error.
-     * @see #runcommand(java.io.InputStream, String[])
+     * @see #runcommand(java.io.InputStream, dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.scriptimpl.BitstorageScriptImpl.ScriptCommand, String[])
      */
-    private String runcommand(String... command) throws
+    private String runcommand(ScriptCommand command, String... parameters)
+            throws
             CommunicationException,
             ContingencyException {
-        log.trace("Entering runcommand(" + Arrays.deepToString(command) + ")");
-        return runcommand(null, command);
+        log.trace("Entering runcommand(" + command.getCommand() +
+                ", " + Arrays.deepToString(parameters) + ")");
+        return runcommand(null, command, parameters);
     }
 
 
@@ -515,17 +536,20 @@ public class BitstorageScriptImpl
      * Run the specified command in the script. If the script returns normally,
      * the output written on stdout is returned as a string.
      *
-     * @param input   the inputstream to feed as stdin
-     * @param command the command and paramenters
+     * @param input      the inputstream to feed as stdin
+     * @param command    the command
+     * @param parameters the string parameters
      * @return the standard output
      * @throws CommunicationException If the execution timed out
      * @throws ContingencyException   if the script returned abnormally. Contains
      *                                both the return code, the standard out and the standard error.
      */
-    private String runcommand(InputStream input, String... command)
+    private String runcommand(InputStream input,
+                              ScriptCommand command,
+                              String... parameters)
             throws CommunicationException, ContingencyException {
-        log.trace("Entering runcommand(" + "input ," + Arrays.deepToString(
-                command) + ")");
+        log.trace("Entering runcommand(" + "input ," + command.getCommand() +
+                ", " + Arrays.deepToString(parameters) + ")");
 
         List<String> arrayList = new ArrayList<String>();
         String scriptblob = ConfigCollection.getProperties().getProperty(
@@ -533,19 +557,20 @@ public class BitstorageScriptImpl
         String[] scriptlist = scriptblob.split(" ");
 
         arrayList.addAll(Arrays.asList(scriptlist));
-        arrayList.addAll(Arrays.asList(command));
+        arrayList.add(command.getCommand());
+        arrayList.addAll(Arrays.asList(parameters));
 
         ProcessRunner nr = new ProcessRunner(arrayList);
 
         nr.setInputStream(input);
 
-        log.debug("Starting script command '" + Arrays.deepToString(arrayList.toArray()) + "'");
+        log.debug("Starting script parameters '" + Arrays.deepToString(arrayList.toArray()) + "'");
         nr.run();
-        log.debug("script command '" + Arrays.deepToString(arrayList.toArray()) + "' terminated");
-        if (nr.isTimedOut()) {  //default 1000 ms
+        log.debug("script parameters '" + Arrays.deepToString(arrayList.toArray()) + "' terminated");
+        if (nr.isTimedOut()) {  //default Long.max ms
             throw new CommunicationException(
                     "Communication with Bitstorage timed out while running"
-                            + " command '" + arrayList + "'");
+                            + " parameters '" + arrayList + "'");
         }
 
         if (nr.getReturnCode() != 0) {
@@ -576,7 +601,7 @@ public class BitstorageScriptImpl
     }
 
     /**
-     * Simple method for constructing the url from a filename
+     * Simple method for constructing the url from a filename.
      *
      * @param filename the filename
      * @return an url
@@ -620,27 +645,27 @@ public class BitstorageScriptImpl
 
     /**
      * This is the contingency exception, used by the runcommand method to indicate
-     * that the command did not terminate with error code 0
+     * that the command did not terminate with error code 0.
      */
     public static class ContingencyException extends Exception {
 
         /**
-         * The actual errorcode received
+         * The actual errorcode received.
          */
         private int returncode;
 
         /**
-         * The stdout from the process
+         * The stdout from the process.
          */
         private String stdout;
 
         /**
-         * The stderr from the process
+         * The stderr from the process.
          */
         private String stderr;
 
         /**
-         * Constructor
+         * Constructor.
          *
          * @param returncode the return code
          * @param stdout     the stdout string
@@ -655,7 +680,7 @@ public class BitstorageScriptImpl
         }
 
         /**
-         * Get the return code of the process
+         * Get the return code of the process.
          *
          * @return the return code, 0 is success
          */
@@ -664,7 +689,7 @@ public class BitstorageScriptImpl
         }
 
         /**
-         * Get the std out from the process as a string
+         * Get the std out from the process as a string.
          *
          * @return a string with the collected stdout
          */
@@ -673,7 +698,7 @@ public class BitstorageScriptImpl
         }
 
         /**
-         * Get the stderr from the process as a string
+         * Get the stderr from the process as a string.
          *
          * @return a string with the collected stderr
          */
