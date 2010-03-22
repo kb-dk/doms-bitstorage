@@ -25,9 +25,10 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions;
+package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.*;
 import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
