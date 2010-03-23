@@ -27,6 +27,7 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
+import com.sun.xml.ws.developer.StreamingDataHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -43,7 +44,6 @@ import dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend.BitstorageToLowlevelExceptionMapper;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.activation.DataHandler;
@@ -134,11 +134,22 @@ public class LowlevelBitstorageSoapWebserviceImpl
         String errorMessage = "Trouble while uploading file '" + filename + "'";
         try {
             Bitstorage bs = BitstorageFactory.getInstance();
-            //TODO: Look into MTOM streaming
-            /* StreamingDataHandler dh = (StreamingDataHandler) filedata;*/
-            return bs.upload(
-                    filename, filedata.getInputStream(), md5String, filelength)
-                    .toString();
+            InputStream data;
+            if (filedata instanceof StreamingDataHandler) {
+                LOG.trace("Reading data for file '" + filedata
+                        + "' as streaming data");
+                data = ((StreamingDataHandler) filedata).readOnce();
+            } else {
+                LOG.trace("Reading data for file '" + filedata
+                        + "' as non-streaming data");
+                data = filedata.getInputStream();
+            }
+            try {
+                return bs.upload(filename, data, md5String, filelength)
+                        .toString();
+            } finally {
+                data.close();
+            }
         } catch (BitstorageException e) {
             LOG.error(errorMessage, e);
             throw bitstorageMapper.convertMostApplicable(e);

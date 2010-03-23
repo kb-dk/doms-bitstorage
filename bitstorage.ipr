@@ -433,8 +433,7 @@
   <component name="libraryTable">
     <library name="sbutils-0.4.8">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.8/jars/qaScan-0.4.8.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.8/jars/sbutil-0.4.8.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib/sbutils-0.4.8/jars" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.8/apidocs/sbutil-0.4.8-apidocs.zip!/sbutil-0.4.8/doc" />
@@ -442,31 +441,19 @@
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/sbutils-0.4.8/src/sbutil-0.4.8-src.zip!/sbutil-0.4.8/src" />
       </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib/sbutils-0.4.8/jars" recursive="false" />
     </library>
     <library name="jaxws-ri-2.1.7">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/http.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jaxws-tools.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/saaj-impl.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/activation.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/mimepull.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jaxws-rt.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jaxws-api.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jaxb-xjc.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/woodstox.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jaxb-api.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jaxb-impl.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jsr173_api.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/stax-ex.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/saaj-api.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/resolver.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/FastInfoset.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jsr181-api.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/streambuffer.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars/jsr250-api.jar!/" />
+        <root url="file://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars" />
       </CLASSES>
-      <JAVADOC />
-      <SOURCES />
+      <JAVADOC>
+        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/apidocs/jaxws-2.1.7-apidocs.zip!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/src/jaxws-src.zip!/jaxws-ri-20090416/src" />
+      </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars" recursive="false" />
     </library>
     <library name="jersey-1.1.4">
       <CLASSES>
