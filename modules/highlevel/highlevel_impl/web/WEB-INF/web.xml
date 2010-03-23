@@ -44,20 +44,40 @@
         </listener-class>
     </listener>
 
+    <filter>
+        <display-name>AuthFilter</display-name>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>dk.statsbiblioteket.doms.webservices.AuthFilter
+        </filter-class>
+        <init-param>
+            <param-name>Realm name</param-name>
+            <param-value>Bitstorage</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <servlet-name>WSServlet</servlet-name>
+    </filter-mapping>
+
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.characteriser.location</param-name>
-        <param-value>http://localhost:8080/characteriser/characterise/?wsdl</param-value>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.characteriser.location
+        </param-name>
+        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        </param-value>
     </context-param>
 
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location</param-name>
-        <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl</param-value>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location
+        </param-name>
+        <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl
+        </param-value>
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.server</param-name>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.server
+        </param-name>
         <param-value>localhost</param-value>
     </context-param>
 
@@ -67,12 +87,14 @@
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.characstream</param-name>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.characstream
+        </param-name>
         <param-value>CHARACTERISATION</param-value>
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.contentstream</param-name>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.contentstream
+        </param-name>
         <param-value>CONTENTS</param-value>
     </context-param>
 
