@@ -25,11 +25,18 @@
  * under the License.
  */
 
+
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.scriptimpl;
+
+import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+import dk.statsbiblioteket.util.qa.QAInfo;
 
 import java.net.URL;
 import java.util.Map;
 import java.util.HashMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -43,8 +50,9 @@ import java.util.HashMap;
  * manipulating the same files concurrently. There is no locking control on
  * the backend script, so the webservice needs to do it.
  * <p/>
- * Since bitstorage operations can be very longrunning, these locks are
- * non-blocking. Rather, if the lock cannot be aquired false is returned from
+ * Since bitstorage operations can be very longrunning, these locks will only
+ * block for a certain amount of time.  If the lock cannot be aquired
+ * false is returned from
  * lockFile(URL). This allows the webservice to inform the user of the problem
  * rather than waiting for another process to terminate.
  * <p/>
@@ -55,7 +63,13 @@ import java.util.HashMap;
  * @see #release(java.net.URL)
  * @see #getInstance()
  */
+@QAInfo(author = "abr",
+        reviewers = "",
+        level = QAInfo.Level.FINE,
+        state = QAInfo.State.QA_NEEDED)
 public class LockRegistry {
+
+    private static Log log = LogFactory.getLog(LockRegistry.class);
 
     /**
      * The singleton variable.
@@ -68,11 +82,45 @@ public class LockRegistry {
     private Map<URL, Long> locks;
 
     /**
-     * Private constructor.
+     * The interval in which to check if a lock has become available
+     */
+    private long pollinterval;
+
+    /**
+     * The total time to wait for a lock
+     */
+    private long timeout;
+
+    /**
+     * Private constructor. Uses the two configCollection values
+     * dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.pollInterval and
+     * dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.timeout.
+     * <p/>
+     * PollInterval controls how often the threads should check to get the lock
+     * of a file.
+     * <p/>
+     * Timeout controls the total time a thread should wait to get the lock of
+     * a file.
      */
     private LockRegistry() {
+        log.trace("Invoking LockRegistry Constructor");
         locks = new HashMap<URL, Long>();
-
+        String pollinterval_string = ConfigCollection.getProperties().getProperty(
+                "dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.pollInterval");
+        if (Utils.isLong(pollinterval_string)) {
+            pollinterval = Long.parseLong(pollinterval_string);
+        } else {
+            pollinterval = 1000;//default value, 1 sec
+        }
+        log.trace("pollinterval is set to '" + pollinterval + "'");
+        String timeout_string = ConfigCollection.getProperties().getProperty(
+                "dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.timeout");
+        if (Utils.isLong(timeout_string)) {
+            timeout = Long.parseLong(timeout_string);
+        } else {
+            timeout = 1000 * 60 * 10;//default value, 10 min
+        }
+        log.trace("timeout is set to '" + timeout + "'");
     }
 
     /**
@@ -81,7 +129,9 @@ public class LockRegistry {
      * @return a Lockregistry Object
      */
     public synchronized static LockRegistry getInstance() {
+        log.trace("Entering getInstance");
         if (registry == null) {
+            log.trace("No registry, creating new one");
             registry = new LockRegistry();
         }
         return registry;
@@ -99,19 +149,63 @@ public class LockRegistry {
      * If you attempt to lock a file you already have locked (ie. locking a file
      * twice), both attempts will give true. You will still only need to unlock
      * it once.
+     * <p/>This method will, at most, wait the timeout duration to get the
+     * lock. If the lock is not available within that time, the method will
+     * return false.
      *
      * @param file the file to lock
      * @return true if the lock could be aquired, false otherwise.
      */
     public synchronized boolean lockFile(URL file) {
+        log.trace("Entering lockFile(" + file.toString() + ")");
+
+        boolean lockbool = getLock(file);//attemp to get the lock
+        if (lockbool) {
+            log.trace("We have aquired the log, returning");
+        } else {
+            log.trace("File is locked by another thread, starting wait-while");
+        }
+        long startTime = System.currentTimeMillis();
+
+        while (!lockbool) {//only if we have not gotten it yet
+            try {
+                wait(pollinterval); //wait for a while
+            } catch (InterruptedException e) {
+                //not a problem, just continue
+            }
+            lockbool = getLock(file); //is it available now?
+            if (System.currentTimeMillis() - startTime > timeout) {//we have waited to long
+                log.trace("Timeout reached, we will wait no more for the lock");
+                break;
+            }
+
+        }
+        return lockbool; //return if we have the lock or not
+
+    }
+
+    /**
+     * Attempts to get the lock for a file. If the lock is not currently assigned
+     * it is given to the thread and true is returned. If it is assigned to this
+     * thread, true is returned. If it is given to another thread, false is
+     * returned.
+     *
+     * @param file the file to lock
+     * @return true if the lock was aquired, false otherwise.
+     */
+    private synchronized boolean getLock(URL file) {
+        log.trace("Entering getLock(" + file.toString() + ")");
         long id = Thread.currentThread().getId();
         Long lock = locks.get(file);
         if (lock == null) {//unregistered
             locks.put(file, id);//lock the file
             return true;//lock aquired
         }
-
-        return lock.equals(id);//if lock == id, locked by me, so true
+        if (lock.equals(id)) {//we already have the Lock
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
@@ -124,29 +218,35 @@ public class LockRegistry {
      * @param file the file to release
      */
     public synchronized void release(URL file) {
+        log.trace("Entering release(" + file.toString() + ")");
         long id = Thread.currentThread().getId();
         Long lock = locks.get(file);
         if (lock == null) {//unregistered, so return quietly
+            log.trace("Lock is not registered, returning");
             return;
         }
 
         if (lock.equals(id)) {//release
+            log.trace("File is locked by this thread, unlocking");
             locks.remove(file);
         } else {//locked by another thread....
             //return queitly, do not unlock
+            log.trace("File is locked by another thread. Returning without" +
+                    "unlocking");
             return;
         }
 
     }
 
     /**
-     * This is a singleton object, we should not allow cline.
+     * This is a singleton object, we should not allow clone.
      *
      * @return nothing
      * @throws CloneNotSupportedException always
      */
     @Override
     protected Object clone() throws CloneNotSupportedException {
+        log.trace("Entering clone(). This is not allowed, throwing exception");
         throw new CloneNotSupportedException();
     }
 }

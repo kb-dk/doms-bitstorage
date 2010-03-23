@@ -193,7 +193,7 @@ public class BitstorageScriptImpl
             }
             output = output.trim();
 
-            if (!isChecksum(output)) {//script returned normally, but output is not checksum
+            if (!Utils.isChecksum(output)) {//script returned normally, but output is not checksum
                 throw new CommunicationException(
                         "Script returned unrecognized blob" + " for checksum: '"
                                 + output + "' while uploading file '" + filename
@@ -321,7 +321,7 @@ public class BitstorageScriptImpl
                                     + file + "'", e);
                 }
             }
-            if (!isChecksum(output)) {//script returned normally, but output is not checksum
+            if (!Utils.isChecksum(output)) {//script returned normally, but output is not checksum
                 throw new CommunicationException(
                         "Script returned unrecognized blob for checksum: '"
                                 + output + "' while approving '" + file + "'");
@@ -359,7 +359,7 @@ public class BitstorageScriptImpl
                     index + FREE_SPACE_REPLY.length()).trim();
         }
 
-        if (isLong(longstring)) {
+        if (Utils.isLong(longstring)) {
             return Long.parseLong(longstring);
         } else {
             throw new CommunicationException(
@@ -497,7 +497,7 @@ public class BitstorageScriptImpl
             //this conditional prevents numberformat exceptions
             String longstring = output.substring(
                     index1 + MAX_FILE_SIZE_REPLY.length(), index2).trim();
-            if (isLong(longstring)) {
+            if (Utils.isLong(longstring)) {
                 return Long.parseLong(longstring);
             }
         }
@@ -617,29 +617,6 @@ public class BitstorageScriptImpl
                     "The provided filename '" + filename
                             + "' cannot be turned into a URL", e);
         }
-    }
-
-    /**
-     * Simple little method for checking if the message contain only 0-9 chars
-     *
-     * @param output the message
-     * @return true if only 0-9 chars
-     */
-    private boolean isLong(String output) {
-        log.trace("Entering isLong(" + output + ")");
-        return output != null && output.matches("[0-9]*");
-    }
-
-    /**
-     * Simple little method for checking if the message can be regarded as a
-     * checksum.
-     *
-     * @param output the message
-     * @return true if the message contain only a-f A-F and 0-9
-     */
-    private boolean isChecksum(String output) {
-        log.trace("Entering isChecksum(" + output + ")");
-        return output != null && output.matches("[a-fA-F0-9]*");
     }
 
 
