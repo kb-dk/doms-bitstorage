@@ -121,7 +121,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
 
             try {
                 HttpEntity entity =
-                        rest.getDatastreamContents(cmodel, "DS-COMPOSITE-MODEL");
+                        rest.getDatastreamContents(cmodel,
+                                "DS-COMPOSITE-MODEL");
                 InputStream stream = entity.getContent();
 
                 Object temp = null;
@@ -132,7 +133,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
                 }
                 if (temp instanceof DsCompositeModel) {
                     DsCompositeModel dsCompositeModel = (DsCompositeModel) temp;
-                    uris.addAll(extractFormatURIs(dsCompositeModel, datastream));
+                    uris.addAll(extractFormatURIs(dsCompositeModel,
+                            datastream));
                 }
                 entity.consumeContent();
             } catch (IOException e) {
@@ -143,7 +145,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
 
     }
 
-    private Set<String> extractFormatURIs(DsCompositeModel dsCompositeModel, String datastream) {
+    private Set<String> extractFormatURIs(DsCompositeModel dsCompositeModel,
+                                          String datastream) {
         Set<String> uris = new HashSet<String>();
         List<DsTypeModel> typemodels = dsCompositeModel.getDsTypeModel();
         for (DsTypeModel dsTypeModel : typemodels) {
@@ -201,7 +204,7 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
         rest.objectExists(pid);
 
         HttpRequest getDatastream = new HttpGet(
-                "fedora/objects/" + pid + "/datastreams/" + datastream);
+                "/fedora/objects/" + pid + "/datastreams/" + datastream);
         try {
             rest.isOK(getDatastream);
         } catch (ResourceNotFoundException e) {
@@ -229,13 +232,20 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException {
         HttpRequest getDatastreamContents = new HttpGet(
-                "fedora/objects/" + pid + "/datastreams/" +
+                "/fedora/objects/" + pid + "/datastreams/" +
                         datastream + "/contents");
         rest.objectExists(pid);
-        datastreamExists(pid, datastream);
+        if (!datastreamExists(pid, datastream)) {
+            return false;
+        }
 
         try {
-            rest.invoke(getDatastreamContents);
+            HttpEntity entity = rest.invoke(getDatastreamContents);
+            try {
+                entity.consumeContent();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
             throw new FedoraCommunicationException(e);
         }
@@ -252,10 +262,15 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
         rest.objectExists(pid);
         datastreamExists(pid, ds);
         HttpRequest delete =
-                new HttpPost("fedora/objects/" + pid + "/datastreams/" +
+                new HttpPost("/fedora/objects/" + pid + "/datastreams/" +
                         ds + "?dsState=D");
         try {
-            rest.invoke(delete);
+            HttpEntity entity = rest.invoke(delete);
+            try {
+                entity.consumeContent();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
             throw new FedoraCommunicationException(e);
         }
