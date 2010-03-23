@@ -553,7 +553,7 @@ public class BitstorageScriptImpl
 
         List<String> arrayList = new ArrayList<String>();
         String scriptblob = ConfigCollection.getProperties().getProperty(
-                "Script");
+                "dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script");
         String[] scriptlist = scriptblob.split(" ");
 
         arrayList.addAll(Arrays.asList(scriptlist));
