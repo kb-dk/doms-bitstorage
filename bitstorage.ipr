@@ -35,6 +35,8 @@
       <maximumHeapSize value="128" />
       <maximumStackSize value="32" />
       <properties />
+      <executeOn event="beforeRun" target="war" />
+      <executeOn event="beforeRun" target="war" runConfigurationType="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" runConfigurationName="BitstorageTest" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/modules/characteriser/characteriser_interface/build.xml">
       <additionalClassPath />
@@ -515,9 +517,10 @@
     <library name="domsutils-0.0.2#SNAPSHOT">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/jars/webservice-common.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/jars/status.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/apidocs/webservice-common-apidocs.zip!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/apidocs/domsutil-0.0.2#SNAPSHOT-doc.zip!/domsutil-0.0.2#SNAPSHOT" />
       </JAVADOC>
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.2#SNAPSHOT/src/domsutil-0.0.2#SNAPSHOT-src.zip!/domsutil-0.0.2#SNAPSHOT/modules/webservice-common/src" />
