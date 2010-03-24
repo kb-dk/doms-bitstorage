@@ -34,15 +34,11 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.*;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -88,30 +84,56 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             FedoraCommunicationException,
             FedoraChecksumFailedException {
 
-        rest.createExternalDatastream(pid,
-                contentDatastreamName,
-                url, checksum
-        );
+        rest.objectExists(pid);
+        try {
+            rest.datastreamExists(pid, contentDatastreamName);
+            throw new FedoraDatastreamAlreadyExistException(
+                    "Datastream already exists, cannot create");
+        } catch (FedoraDatastreamNotFoundException e) {
+            //this is good, continue
+        }
+        try {
+            rest.createExternalDatastream(pid,
+                    contentDatastreamName,
+                    url, checksum
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new FedoraCommunicationException("Should not fail");
+        }
+
+
+    }
+
+    public void updateContentDatastream(String pid,
+                                        String url,
+                                        String checksum)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraCommunicationException,
+            FedoraDatastreamNotFoundException {
+        rest.objectExists(pid);
+        rest.datastreamExists(pid, contentDatastreamName);
+        try {
+            rest.createExternalDatastream(pid,
+                    contentDatastreamName,
+                    url, checksum
+            );
+        } catch (ResourceNotFoundException e) {
+            throw new FedoraCommunicationException("Should not fail");
+        }
+
+
     }
 
 
-    /**
-     * Get the list of allowed format uris for this datastram
-     *
-     * @param pid
-     * @param datastream
-     * @return
-     * @throws FedoraObjectNotFoundException
-     * @throws FedoraDatastreamNotFoundException
-     *
-     * @throws FedoraCommunicationException
-     */
-    public Collection<String> getFormatURI(String pid,
-                                           String datastream)
+    public Collection<String> getAllowedFormatURIs(String pid,
+                                                   String datastream)
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException {
+
+        //not delegate
         ObjectProfile profile = rest.getObjectProfile(pid);
         List<String> cmodels = profile.getObjModels().getModel();
 
@@ -119,26 +141,20 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
         for (String cmodel : cmodels) {
 
 
-            try {
-                HttpEntity entity =
-                        rest.getDatastreamContents(cmodel,
-                                "DS-COMPOSITE-MODEL");
-                InputStream stream = entity.getContent();
+            String content = rest.getDatastreamContents(cmodel,
+                    "DS-COMPOSITE-MODEL");
 
-                Object temp = null;
-                try {
-                    temp = unmarshaller.unmarshal(stream);
-                } catch (JAXBException e) {
-                    throw new FedoraCommunicationException(e);
-                }
-                if (temp instanceof DsCompositeModel) {
-                    DsCompositeModel dsCompositeModel = (DsCompositeModel) temp;
-                    uris.addAll(extractFormatURIs(dsCompositeModel,
-                            datastream));
-                }
-                entity.consumeContent();
-            } catch (IOException e) {
+
+            Object temp = null;
+            try {
+                temp = unmarshaller.unmarshal(new StringReader(content));
+            } catch (JAXBException e) {
                 throw new FedoraCommunicationException(e);
+            }
+            if (temp instanceof DsCompositeModel) {
+                DsCompositeModel dsCompositeModel = (DsCompositeModel) temp;
+                uris.addAll(extractFormatURIs(dsCompositeModel,
+                        datastream));
             }
         }
         return uris;
@@ -169,12 +185,19 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraCommunicationException,
-            JAXBException {
+            FedoraDatastreamAlreadyExistException {
+
+
         //marshall the charac to a string or url
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         //marshall charac to inputstream
-        marshaller.marshal(characterisation, out);
+        try {
+            marshaller.marshal(characterisation, out);
+        } catch (JAXBException e) {
+            //TODO
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         InputStream blob = new ByteArrayInputStream(out.toByteArray());
 
 
@@ -189,25 +212,19 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
                     "Could not read from ByteArrayInputStream somehow",
                     e);
         }
-        rest.createInlineDatastream(pid,
+
+        rest.createInternalDatastream(pid,
                 characterisationDatastreamName,
-                characurl
-        );
+                characurl);
     }
 
 
     public boolean datastreamExists(String pid,
                                     String datastream)
             throws FedoraObjectNotFoundException, FedoraCommunicationException {
-        pid = FedoraBasicRestSpeaker.sanitize(pid);
-        datastream = FedoraBasicRestSpeaker.sanitize(datastream);
-        rest.objectExists(pid);
-
-        HttpRequest getDatastream = new HttpGet(
-                "/fedora/objects/" + pid + "/datastreams/" + datastream);
         try {
-            rest.isOK(getDatastream);
-        } catch (ResourceNotFoundException e) {
+            rest.datastreamExists(pid, datastream);
+        } catch (FedoraDatastreamNotFoundException e) {
             return false;
         }
         return true;
@@ -215,15 +232,16 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
 
 
     /**
-     * TODO what should this method actually do?
+     * Returns true if there is content in the datastream. The datastream has contet
+     * if we can read the content without getting an exception
      *
-     * @param pid
-     * @param datastream
-     * @return
-     * @throws FedoraObjectNotFoundException
+     * @param pid        the pid of the object
+     * @param datastream the datastream
+     * @return true if as much as one character can be read from the stream
+     * @throws FedoraObjectNotFoundException if the object was not found
      * @throws FedoraDatastreamNotFoundException
-     *
-     * @throws FedoraCommunicationException
+     *                                       if the datastream was not found
+     * @throws FedoraCommunicationException  on anything else
      */
     public boolean datastreamHasContent(String pid,
                                         String datastream)
@@ -231,25 +249,7 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException {
-        HttpRequest getDatastreamContents = new HttpGet(
-                "/fedora/objects/" + pid + "/datastreams/" +
-                        datastream + "/contents");
-        rest.objectExists(pid);
-        if (!datastreamExists(pid, datastream)) {
-            return false;
-        }
-
-        try {
-            HttpEntity entity = rest.invoke(getDatastreamContents);
-            try {
-                entity.consumeContent();
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
-            throw new FedoraCommunicationException(e);
-        }
-        return true;
+        return rest.datastreamHasContent(pid, datastream);
     }
 
     public void deleteDatastream(String pid,
@@ -258,30 +258,7 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException {
-
-        rest.objectExists(pid);
-        datastreamExists(pid, ds);
-        HttpRequest delete =
-                new HttpPost("/fedora/objects/" + pid + "/datastreams/" +
-                        ds + "?dsState=D");
-        try {
-            HttpEntity entity = rest.invoke(delete);
-            try {
-                entity.consumeContent();
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
-            throw new FedoraCommunicationException(e);
-        }
-    }
-
-    public String getContentDatastreamName() {
-        return contentDatastreamName;
-    }
-
-    public String getCharacterisationDatastreamName() {
-        return characterisationDatastreamName;
+        rest.deleteDatastream(pid, ds);
     }
 
     public String getFileUrl(String pid)

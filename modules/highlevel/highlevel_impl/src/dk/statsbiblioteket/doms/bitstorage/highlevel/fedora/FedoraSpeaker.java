@@ -29,20 +29,38 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
 
 import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
+import dk.statsbiblioteket.util.qa.QAInfo;
 
-import javax.xml.bind.JAXBException;
 import java.util.Collection;
 
 /**
- * Created by IntelliJ IDEA.
- * User: abr
- * Date: Dec 1, 2009
- * Time: 2:15:44 PM
- * To change this template use File | Settings | File Templates.
+ * This is the interface to the Fedora Commons Repository System. These methods
+ * are quite high level, and are meant to separate the concerns of the bitstorage
+ * system from the actual fedora integration.
+ * <p/>
+ * TODO explain how a Fedora file object works
  */
+@QAInfo(author = "abr",
+        reviewers = "",
+        level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.IN_DEVELOPMENT)
 public interface FedoraSpeaker {
 
 
+    /**
+     * Store the file content in the content datastream in an object
+     *
+     * @param pid      the pid of the object
+     * @param url      the URL of the content
+     * @param checksum the checksum for the ocntent
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraDatastreamAlreadyExistException
+     *                                       If the object already
+     *                                       has a content datastream
+     * @throws FedoraCommunicationException  if something else failed
+     * @throws FedoraChecksumFailedException if the checksum does not match
+     *                                       what fedora calculated
+     */
     public void createContentDatastream(String pid,
                                         String url,
                                         String checksum)
@@ -52,28 +70,94 @@ public interface FedoraSpeaker {
             FedoraCommunicationException,
             FedoraChecksumFailedException;
 
+    /**
+     * Updates a content datastream with new content.
+     *
+     * @param pid      the pid of the object
+     * @param url      the URL of the content
+     * @param checksum the checksum for the ocntent
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraCommunicationException  if something else failed
+     * @throws FedoraChecksumFailedException if the checksum does not match
+     *                                       what fedora calculated
+     */
+    public void updateContentDatastream(String pid,
+                                        String url,
+                                        String checksum)
+            throws
+            FedoraObjectNotFoundException,
+            FedoraCommunicationException,
+            FedoraDatastreamAlreadyExistException,
+            FedoraDatastreamNotFoundException;
 
-    public Collection<String> getFormatURI(String pid,
-                                           String datastream)
+
+    /**
+     * Get the allowed format URIs for a datastream, read from the content
+     * models of the object
+     *
+     * @param pid        the pid of the object
+     * @param datastream the name of the datastream
+     * @return The list of formats uris.
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraDatastreamNotFoundException
+     *                                       if the object does not have a
+     *                                       datastream with that name
+     * @throws FedoraCommunicationException  if something else failed
+     */
+    public Collection<String> getAllowedFormatURIs(String pid,
+                                                   String datastream)
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
 
+
+    /**
+     * Store the characterisation blob in the correct datastream in the object
+     *
+     * @param pid              the pid of the object
+     * @param characterisation the characterisation blob to store
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraCommunicationException  if something else failed
+     * @throws FedoraSerializationExcecption if the characterisation blob could
+     *                                       not be serialized into a storable format
+     */
     public void storeCharacterization(String pid,
                                       Characterisation characterisation)
             throws
             FedoraObjectNotFoundException,
+            FedoraSerializationExcecption,
 
-            FedoraCommunicationException,
-            JAXBException;
+            FedoraCommunicationException, FedoraDatastreamAlreadyExistException;
 
+    /**
+     * Check if the datastream exists in the object.
+     *
+     * @param pid        the pid of the object
+     * @param datastream the name of the datastream
+     * @return true if the datastream exists
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraCommunicationException  if something else failed
+     */
     public boolean datastreamExists(String pid,
                                     String datastream)
             throws
             FedoraObjectNotFoundException,
             FedoraCommunicationException;
 
+    /**
+     * TODO
+     * Odd method that checks if the datastream has content.
+     *
+     * @param pid        the pid of the object
+     * @param datastream the name of the datastream
+     * @return true if the datastream has content
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraDatastreamNotFoundException
+     *                                       if the object does not have a
+     *                                       datastream with that name
+     * @throws FedoraCommunicationException  if something else failed
+     */
     public boolean datastreamHasContent(String pid,
                                         String datastream)
             throws
@@ -81,28 +165,58 @@ public interface FedoraSpeaker {
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
 
+    /**
+     * Delete a datastream from an object
+     *
+     * @param pid        the pid of the object
+     * @param datastream the name of the datastream
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraDatastreamNotFoundException
+     *                                       if the object does not have a
+     *                                       datastream with that name
+     * @throws FedoraCommunicationException  if something else failed
+     */
     void deleteDatastream(String pid,
-                          String ds)
+                          String datastream)
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
 
-    public String getContentDatastreamName();
 
-    public String getCharacterisationDatastreamName();
-
-    String getFileUrl(String pid)
+    /**
+     * Get the URL to the content from a file object.
+     *
+     * @param pid the pid of the object
+     * @return the URL to the stored file
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraDatastreamNotFoundException
+     *                                       if the object does not have a
+     *                                       content datastream
+     * @throws FedoraCommunicationException  if something else failed
+     */
+    public String getFileUrl(String pid)
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
 
-    String getFileChecksum(String pid)
+    /**
+     * Get the checksum of the content from a file object
+     *
+     * @param pid the pid of the object
+     * @return the Fedora stored checksum
+     * @throws FedoraObjectNotFoundException if the object does not exist
+     * @throws FedoraDatastreamNotFoundException
+     *                                       if the object does not have a
+     *                                       content datastream
+     * @throws FedoraCommunicationException  if something else failed
+     */
+    public String getFileChecksum(String pid)
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
 
-    ;
+
 }

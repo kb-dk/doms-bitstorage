@@ -35,4 +35,7 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public class FedoraDatastreamAlreadyExistException extends FedoraException {
+    public FedoraDatastreamAlreadyExistException(String s) {
+        //To change body of created methods use File | Settings | File Templates.
+    }
 }

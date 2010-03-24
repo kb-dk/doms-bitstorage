@@ -25,24 +25,21 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
+package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
 
 /**
- * TODO ABR forgot to javadoc this class
+ * Created by IntelliJ IDEA.
+ * User: abr
+ * Date: Mar 24, 2010
+ * Time: 9:46:14 AM
+ * To change this template use File | Settings | File Templates.
  */
-class InternalException extends RuntimeException {
-    InternalException() {
-    }
-
-    InternalException(String message) {
+public class FedoraSerializationExcecption extends FedoraException {
+    public FedoraSerializationExcecption(String message) {
         super(message);
     }
 
-    InternalException(String message, Throwable cause) {
+    public FedoraSerializationExcecption(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    InternalException(Throwable cause) {
-        super(cause);
     }
 }
