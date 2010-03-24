@@ -27,26 +27,60 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: abr
  * Date: Jan 20, 2010
- * Time: 6:07:51 PM
+ * Time: 2:09:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FileObjectAlreadyInUseException extends HighlevelException{
-    public FileObjectAlreadyInUseException() {
+public class InternalException extends Exception {
+
+
+    public enum Type {
+        //general types
+        Communication,
+        ChecksumFailed,
+        Unknown,
+
+        //lowlevel types
+        FileAlreadyApproved,
+        FileIsLocked,
+        FileNotFound,
+        NotEnoughFreeSpace,
+        InvalidFilename,
+
+        //Fedora types
+        FileObjectAlreadyInUse,
+        NotAuthorized,
+        ObjectNotFound,
+
+        //Characteriser types
+        CharacterisationFailed,
+
     }
 
-    public FileObjectAlreadyInUseException(String message) {
+    private Type type;
+
+    public InternalException(String message, Type type) {
         super(message);
+        this.type = type;
     }
 
-    public FileObjectAlreadyInUseException(String message, Throwable cause) {
+    public InternalException(String message,
+                             Throwable cause,
+                             Type type) {
         super(message, cause);
+        this.type = type;
     }
 
-    public FileObjectAlreadyInUseException(Throwable cause) {
+    public InternalException(Throwable cause, Type type) {
         super(cause);
+        this.type = type;
+    }
+
+    public Type getType() {
+        return type;
     }
 }

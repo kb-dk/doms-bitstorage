@@ -25,28 +25,25 @@
  * under the License.
  */
 
-package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions;
+package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
+
+import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
+import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 
 /**
  * Created by IntelliJ IDEA.
  * User: abr
  * Date: Jan 20, 2010
- * Time: 2:33:07 PM
+ * Time: 5:54:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class NotEnoughFreeSpaceException extends HighlevelException{
-    public NotEnoughFreeSpaceException() {
-    }
+public class CharacteriseToInternalExceptionMapper
+        extends ExceptionMapper<InternalException, CharacteriseSoapException> {
 
-    public NotEnoughFreeSpaceException(String message) {
-        super(message);
-    }
-
-    public NotEnoughFreeSpaceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public NotEnoughFreeSpaceException(Throwable cause) {
-        super(cause);
+    public InternalException convert(CharacteriseSoapException ce) {
+        return new InternalException(ce.getMessage(),
+                ce,
+                InternalException.Type.CharacterisationFailed);
     }
 }

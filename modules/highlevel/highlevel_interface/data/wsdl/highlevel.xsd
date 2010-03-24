@@ -55,6 +55,8 @@
 
     <xs:element name="ObjectNotFoundException" type="xs:string"/>
 
+    <xs:element name="FileIsLockedException" type="xs:string"/>
+
     <!--<xs:complexType name="characterisation">
         <xs:sequence>
             <xs:element name="problem" type="xs:anyType"/>

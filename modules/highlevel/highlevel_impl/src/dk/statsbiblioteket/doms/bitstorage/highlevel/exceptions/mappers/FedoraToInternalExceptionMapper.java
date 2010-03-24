@@ -38,29 +38,40 @@ import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
  * Time: 6:00:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FedoraToHighlevelExceptionMapper extends ExceptionMapper<HighlevelException, FedoraException> {
+public class FedoraToInternalExceptionMapper
+        extends ExceptionMapper<InternalException, FedoraException> {
 
 
-    public HighlevelException convert(FedoraException e) {
-        return new HighlevelException(e);
+    public InternalException convert(FedoraException ce) {
+        return new InternalException(ce.getMessage(),
+                ce,
+                InternalException.Type.Unknown);
     }
 
-    public HighlevelException convert(FedoraAuthenticationException e) {
-        return new NotAuthorizedException(e);
-    }
-
-
-    public HighlevelException convert(FedoraChecksumFailedException e) {
-        return new ChecksumFailedException(e);
-    }
-
-    public HighlevelException convert(FedoraCommunicationException e) {
-        return new CommunicationException(e);
+    public InternalException convert(FedoraAuthenticationException ce) {
+        return new InternalException(ce.getMessage(),
+                ce,
+                InternalException.Type.NotAuthorized);
     }
 
 
-    public HighlevelException convert(FedoraObjectNotFoundException e) {
-        return new ObjectNotFoundException(e);
+    public InternalException convert(FedoraChecksumFailedException ce) {
+        return new InternalException(ce.getMessage(),
+                ce,
+                InternalException.Type.ChecksumFailed);
+    }
+
+    public InternalException convert(FedoraCommunicationException ce) {
+        return new InternalException(ce.getMessage(),
+                ce,
+                InternalException.Type.Communication);
+    }
+
+
+    public InternalException convert(FedoraObjectNotFoundException ce) {
+        return new InternalException(ce.getMessage(),
+                ce,
+                InternalException.Type.ObjectNotFound);
     }
 
 }

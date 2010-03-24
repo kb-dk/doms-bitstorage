@@ -42,7 +42,7 @@
     <message name="uploadFileToObject">
         <part name="parameters" element="tns:uploadFileToObject"/>
     </message>
-    <message name="uploadFileToObjectResponse">                                          
+    <message name="uploadFileToObjectResponse">
         <part name="parameters" element="tns:uploadFileToObjectResponse"/>
     </message>
     <message name="ChecksumFailedException">
@@ -69,6 +69,9 @@
     <message name="ObjectNotFoundException">
         <part name="fault" element="tns:ObjectNotFoundException"/>
     </message>
+    <message name="FileIsLockedException">
+        <part name="fault" element="tns:FileIsLockedException"/>
+    </message>
 
 
     <message name="delete">
@@ -92,7 +95,6 @@
     <message name="statusResponse">
         <part name="results" element="tns:statusResponse"/>
     </message>
-
 
 
     <portType name="HighlevelBitstorageSoapWebservice">
@@ -119,11 +121,13 @@
             <fault message="tns:NotEnoughFreeSpaceException"
                    name="NotEnoughFreeSpaceException"/>
             <fault message="tns:FileObjectAlreadyInUseException"
-                        name="FileObjectAlreadyInUseException"/>
+                   name="FileObjectAlreadyInUseException"/>
             <fault message="tns:CharacterisationFailedException"
-                        name="CharacterisationFailedException"/>
+                   name="CharacterisationFailedException"/>
             <fault message="tns:ObjectNotFoundException"
-                        name="ObjectNotFoundException"/>
+                   name="ObjectNotFoundException"/>
+            <fault name="FileIsLockedException"
+                   message="tns:FileIsLockedException"/>
 
         </operation>
         <operation name="delete">
@@ -137,10 +141,11 @@
             <fault message="tns:FileNotFoundException"
                    name="FileNotFoundException"/>
             <fault message="tns:ObjectNotFoundException"
-                        name="ObjectNotFoundException"/>
+                   name="ObjectNotFoundException"/>
             <fault message="tns:FileAlreadyApprovedException"
                    name="FileAlreadyApprovedException"/>
-
+            <fault name="FileIsLockedException"
+                   message="tns:FileIsLockedException"/>
         </operation>
         <operation name="publish">
             <documentation>Check the earlier uploaded file against the provided
@@ -148,7 +153,8 @@
                 met, move the file from the temporary area of bitstorage to the
                 permanent bitstorage.
 
-                If you call this method on an already approved file, with the correct
+                If you call this method on an already approved file, with the
+                correct
                 checksum, nothing happens. If the checksum is wrong, you get an
                 exception.
             </documentation>
@@ -163,10 +169,11 @@
             <fault message="tns:ChecksumFailedException"
                    name="ChecksumFailedException"/>
             <fault message="tns:ObjectNotFoundException"
-                        name="ObjectNotFoundException"/>
+                   name="ObjectNotFoundException"/>
             <fault message="tns:FileAlreadyApprovedException"
                    name="FileAlreadyApprovedException"/>
-
+            <fault name="FileIsLockedException"
+                   message="tns:FileIsLockedException"/>
         </operation>
         <operation name="status">
             <documentation>Gives the status of the bitstorage, including
@@ -207,13 +214,18 @@
                 <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
             </fault>
             <fault name="FileObjectAlreadyInUseException">
-                <soap:fault name="FileObjectAlreadyInUseException" use="literal"/>
+                <soap:fault name="FileObjectAlreadyInUseException"
+                            use="literal"/>
             </fault>
             <fault name="CharacterisationFailedException">
-                <soap:fault name="CharacterisationFailedException" use="literal"/>
+                <soap:fault name="CharacterisationFailedException"
+                            use="literal"/>
             </fault>
             <fault name="ObjectNotFoundException">
                 <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+            <fault name="FileIsLockedException">
+                <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
 
         </operation>
@@ -237,6 +249,9 @@
             </fault>
             <fault name="FileAlreadyApprovedException">
                 <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            <fault name="FileIsLockedException">
+                <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
 
 
@@ -268,7 +283,11 @@
             <fault name="FileAlreadyApprovedException">
                 <soap:fault name="FileAlreadyApprovedException" use="literal"/>
             </fault>
-            
+            <fault name="FileIsLockedException">
+                <soap:fault name="FileIsLockedException" use="literal"/>
+            </fault>
+
+
         </operation>
         <operation name="status">
             <soap:operation soapAction=""/>

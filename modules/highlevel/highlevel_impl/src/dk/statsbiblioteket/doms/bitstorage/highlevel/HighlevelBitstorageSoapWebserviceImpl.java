@@ -32,11 +32,11 @@ import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapException;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebserviceService;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.HighlevelException;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.CharacteriseToHighlevelExceptionMapper;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.FedoraToHighlevelExceptionMapper;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.HighlevelExceptionsToSoapFaultsMapper;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.LowlevelToHighlevelExceptionMapper;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.CharacteriseToInternalExceptionMapper;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.FedoraToInternalExceptionMapper;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.InternalExceptionsToSoapFaultsMapper;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.LowlevelToInternalExceptionMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.*;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
@@ -86,20 +86,20 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     private FedoraSpeaker fedora;
 
-    private HighlevelExceptionsToSoapFaultsMapper highlevelMapper;
-    private CharacteriseToHighlevelExceptionMapper
+    private InternalExceptionsToSoapFaultsMapper internalMapper;
+    private CharacteriseToInternalExceptionMapper
             characMapper;
-    private FedoraToHighlevelExceptionMapper fedoraMapper;
-    private LowlevelToHighlevelExceptionMapper lowlevelMapper;
+    private FedoraToInternalExceptionMapper fedoraMapper;
+    private LowlevelToInternalExceptionMapper lowlevelMapper;
 
 
     private static final String CONTENTS = "CONTENTS";
     private static final String GOOD = null;
     private static final String CHARACTERISATION = "CHARAC";
 
-    private Log log;
+    private Log log = LogFactory.getLog(HighlevelBitstorageSoapWebserviceImpl.class);
 
-    private List<Operation> threads;
+    private static List<Operation> threads = new ArrayList<Operation>();
     private DatatypeFactory dataTypeFactory;
 
     @Resource
@@ -114,12 +114,12 @@ public class HighlevelBitstorageSoapWebserviceImpl
         System.setProperty(
                 "com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
                 "true");
-        threads = new ArrayList<Operation>();
-        lowlevelMapper = new LowlevelToHighlevelExceptionMapper();
-        fedoraMapper = new FedoraToHighlevelExceptionMapper();
-        characMapper = new CharacteriseToHighlevelExceptionMapper();
-        highlevelMapper = new HighlevelExceptionsToSoapFaultsMapper();
-        log = LogFactory.getLog(HighlevelBitstorageSoapWebserviceImpl.class);
+
+        lowlevelMapper = new LowlevelToInternalExceptionMapper();
+        fedoraMapper = new FedoraToInternalExceptionMapper();
+        characMapper = new CharacteriseToInternalExceptionMapper();
+        internalMapper = new InternalExceptionsToSoapFaultsMapper();
+
 
         initialiseLowLevelConnector();
         initialiseCharacteriserConnector();
@@ -212,61 +212,53 @@ public class HighlevelBitstorageSoapWebserviceImpl
             @WebParam(name = "filelength", targetNamespace = "")
             long filelength) throws
             HighlevelSoapException {
-        initialise();
-        Operation op = initOperation("Upload");
-        String message;
-
+        String message = "Entered uploadFileToObject with params: '"
+                + pid + "', '"
+                + filename + "', '"
+                + md5String
+                + "', '"
+                + filelength + "'.";
+        log.trace(message);
+        int checkpoint = 0;
+        String uploadedURL = "";
+        Operation op = null;
         try {
-            String uploadedURL;
-            try {//No rollback here, we have not reached first checkpoint
+            op = initOperation("Upload");
+            try {
+                initialise();
+                event(op, message);
                 op.setFedoraPid(pid);
                 op.setFileSize(filelength);
 
 
-                message = "Entered uploadFileToObject with params: '" + pid + "', '" + filename + "', '" + md5String + "', '" + filelength + "'.";
-                log.trace(message);
-                event(op, message);
-
+                //No rollback here, we have not reached first checkpoint
                 uploadedURL = uploadFile(filename,
                         filedata,
                         md5String,
                         filelength,
                         op);
 
-            } catch (HighlevelException he) {
-                throw highlevelMapper.convertMostApplicable(he);
-            } catch (RuntimeException re) {//unexpected error
-                throw new WebServiceException(re);
-            }
-            //Checkpoint here
-            message = "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '" + uploadedURL + "'";
-            log.debug(message);
-            event(op, message);
-
-
-            try { //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, op);
-                message = "Fedora datastream created";
+                checkpoint = 1;
+                //Checkpoint here
+                message = "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '" + uploadedURL + "'";
                 log.debug(message);
                 event(op, message);
 
-            } catch (HighlevelException he) {
-                rollbackUploadToLowlevel(pid, uploadedURL, op);
-                throw highlevelMapper.convertMostApplicable(he);
-            } catch (RuntimeException re) {//unexpected error
-                rollbackUploadToLowlevel(pid, uploadedURL, op);
-                throw new WebServiceException(re);
-            }
-            message = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
-            log.debug(message);
-            event(op, message);
 
-            //checkpoint here, fedora updated
+                //Stuff put in bitstorage, so this must be rolled back
+                updateFedora(pid, md5String, uploadedURL, op);
+                //checkpoint here, fedora updated
+                checkpoint = 2;
 
-            try {
+                message = "Fedora datastream created";
+                log.debug(message);
+                event(op, message);
+                message = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
+                log.debug(message);
+                event(op, message);
+
 
                 Characterisation characterisation = characterise(pid, op);
-
                 message = "Get list of formatURIs from Fedora";
                 log.debug(message);
                 event(op, message);
@@ -278,23 +270,47 @@ public class HighlevelBitstorageSoapWebserviceImpl
                         characterisation,
                         formatURIs,
                         op);
-            } catch (HighlevelException he) {
-                rollbackObjectContentsUpdated(pid, uploadedURL, op);
-                throw highlevelMapper.convertMostApplicable(he);
-            } catch (RuntimeException re) {//unexpected error
-                rollbackObjectContentsUpdated(pid, uploadedURL, op);
-                throw new WebServiceException(re);
+                checkpoint = 3;
+                message = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
+                log.debug(message);
+                event(op, message);
 
+                //checkpoint here, charac info stored
+
+            } catch (Exception e) {//something unexpected failed down there
+                try {
+                    rollback(pid, uploadedURL, op, checkpoint);
+                } catch (Exception e2) {//failed in the rollback
+                    log.error("Failed in rollback", e2);//TODO more verbatim
+                }//e2 is logged and discarded, and we continue with the original exception
+                if (e instanceof InternalException) {//an exception we know about
+                    throw internalMapper.convertMostApplicable((InternalException) e);
+                } //something we do not know about
+                throw new WebServiceException(e);
             }
-            message = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
-            log.debug(message);
-            event(op, message);
-
-            //checkpoint here, charac info stored
-
-
-        } finally {
+        }
+        finally {
             endOperation(op);
+        }
+
+    }
+
+    private void rollback(String pid, String url, Operation op, int checkpoint)
+            throws
+            FedoraException,
+            LowlevelSoapException {
+        String message = "Rolling back for object '" + pid + "' and file '" + url + "'";
+        log.debug(message);
+        event(op, message);
+
+        if (checkpoint == 3) {//failed in the end, roll everything back
+            rollbackCharacAdded(pid, url, op);
+        } else if (checkpoint == 2) {
+            rollbackObjectContentsUpdated(pid, url, op);
+        } else if (checkpoint == 1) {
+            rollbackUploadToLowlevel(pid, url, op);
+        } else {//no checkpoint reached, no rollback nessesary
+
         }
 
     }
@@ -304,7 +320,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                           Characterisation characterisation,
                                           Collection<String> formatURIs,
                                           Operation op)
-            throws HighlevelException {
+            throws InternalException {
         String message;
         boolean goodfile = true;
         List<String> objectFormats = characterisation.getPronomID();
@@ -335,8 +351,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         if (!goodfile) {
             String error = "File not accepted by the characteriser. Characterisator output: '" + characterisation.toString() + "'";
-            throw new dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.CharacterisationFailedException(
-                    error);
+            throw new InternalException(error,
+                    InternalException.Type.CharacterisationFailed);
         } else {
             try {
                 message = "Storing characterisation of '" + uploadedURL + "' in '" + pid + "'";
@@ -359,7 +375,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                     String uploadedURL,
                                                     Operation op) throws
 
-            HighlevelException {
+            InternalException {
         String message = "Getting allowed Format URIs for '" + pid + "'";
         log.trace(message);
         event(op, message);
@@ -376,9 +392,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     private Characterisation characterise(String pid,
                                           Operation op)
-            throws HighlevelException {
-        Characterisation characterisation;
+            throws InternalException {
+
         try {
+            Characterisation characterisation;
             String message = "Begin characterisation";
             log.debug(message);
             event(op, message);
@@ -388,18 +405,19 @@ public class HighlevelBitstorageSoapWebserviceImpl
             message = "File characterised";
             log.debug(message);
             event(op, message);
+            return characterisation;
 
         } catch (CharacteriseSoapException e) {
             throw characMapper.convertMostApplicable(e);
         }
-        return characterisation;
+
     }
 
     private void updateFedora(String pid,
                               String md5String,
                               String uploadedURL,
                               Operation op)
-            throws HighlevelException {
+            throws InternalException {
         String message;
         try {
             try {
@@ -407,14 +425,14 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 fedora.createContentDatastream(pid, uploadedURL, md5String);
             } catch (FedoraDatastreamAlreadyExistException e) {
                 if (fedora.datastreamHasContent(pid, CONTENTS)) {
-                    message = "Fedora object '" + pid + "' already has a '" + CONTENTS + "' datastream with content. Aborting operation rolling back";
+                    message = "Fedora object '" + pid + "' already has a '" + CONTENTS + "' datastream with content. Aborting operation.";
                     log.error(message);
                     event(op, message);
 
-                    rollbackUploadToLowlevel(pid, uploadedURL, op);
-
-                    throw new dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.FileObjectAlreadyInUseException(
-                            "The file object '" + pid + "' is already in use. Pick another file object to upload a file for");
+                    throw new InternalException("The file object '" + pid + "' " +
+                            "is already in use. Pick another file object to " +
+                            "upload a file for",
+                            InternalException.Type.FileObjectAlreadyInUse);
                 } else {//no content
                     message = "Fedora object '" + pid + "' alreary has a '" + CONTENTS + "' datastream, but without content so it is replaced.";
                     log.debug(message);
@@ -432,7 +450,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                               DataHandler filedata,
                               String md5String, long filelength, Operation op)
             throws
-            HighlevelException {
+            InternalException {
         String message;
         String uploadedURL;
         try {
@@ -497,21 +515,21 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 message = "The file '" + url + "' is already approved. The object cannot be deleted";
                 log.warn(message);
                 event(op, message);
-                throw new dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.FileAlreadyApprovedException(
-                        message);
+                throw new InternalException(message,
+                        InternalException.Type.FileAlreadyApproved);
             }
         } catch (FedoraException e) {
-            throw highlevelMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(
+            throw internalMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(
                     e));
 
         } catch (LowlevelSoapException e) {
-            throw highlevelMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(
+            throw internalMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(
                     e));
 
         } catch (RuntimeException e) {
             throw new WebServiceException(e);
-        } catch (HighlevelException e) {
-            throw highlevelMapper.convertMostApplicable(e);
+        } catch (InternalException e) {
+            throw internalMapper.convertMostApplicable(e);
         }
         finally {
             endOperation(op);
@@ -554,11 +572,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         } catch (FedoraException e) {
 
-            throw highlevelMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(
+            throw internalMapper.convertMostApplicable(fedoraMapper.convertMostApplicable(
                     e));
 
         } catch (LowlevelSoapException e) {
-            throw highlevelMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(
+            throw internalMapper.convertMostApplicable(lowlevelMapper.convertMostApplicable(
                     e));
         }
         catch (RuntimeException e) {
@@ -597,43 +615,29 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private void rollbackUploadToLowlevel(String pid,
                                           String uploadedURL,
                                           Operation op
-    ) {
+    ) throws LowlevelSoapException {
         //disapprove file from lowlevel
         //TODO exception handling
         String message = "Rolling back file '" + uploadedURL + "' from lowlevel";
         event(op, message);
         log.debug(message);
-        try {
-            lowlevel.disapprove(uploadedURL);
-        } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (LowlevelSoapException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+
+        lowlevel.disapprove(uploadedURL);
     }
 
     private void rollbackObjectContentsUpdated(String pid,
                                                String uploadedURL,
-                                               Operation op) {
+                                               Operation op) throws
+            FedoraException, LowlevelSoapException {
         //TODO exception handling
         //mark content stream as deleted
         String message = "Rolling back content stream from  '" + pid + "' from fedora";
         event(op, message);
         log.debug(message);
 
-        try {
-            fedora.deleteDatastream(pid, CONTENTS);
-        } catch (FedoraObjectNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (FedoraDatastreamNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (FedoraCommunicationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+
+        fedora.deleteDatastream(pid, CONTENTS);
+
 
         rollbackUploadToLowlevel(pid, uploadedURL, op);
     }
@@ -642,22 +646,16 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private void rollbackCharacAdded(String pid,
                                      String uploadedURL,
                                      Operation op
-    ) {
+    ) throws
+            FedoraException, LowlevelSoapException {
         //TODO exception handling
         //remove charac stream
         String message = "Rolling back characterisation stream from  '" + pid + "' from fedora";
         event(op, message);
         log.debug(message);
 
-        try {
-            fedora.deleteDatastream(pid, CHARACTERISATION);
-        } catch (FedoraObjectNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (FedoraDatastreamNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (FedoraCommunicationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+
+        fedora.deleteDatastream(pid, CHARACTERISATION);
 
         rollbackObjectContentsUpdated(pid, uploadedURL, op);
 
@@ -676,8 +674,13 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
     private void endOperation(Operation op) {
-        log.trace(dumpOperation(op));
-        threads.remove(op);
+        try {
+            log.trace(dumpOperation(op));
+        } catch (Exception e) {
+            log.warn("Caught exception as we tried to dump operation", e);
+        } finally {
+            threads.remove(op);
+        }
     }
 
     private String dumpOperation(Operation op) {

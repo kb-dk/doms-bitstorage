@@ -223,14 +223,15 @@ public class FedoraBasicRestSpeaker {
             ResourceNotFoundException,
             FedoraAuthenticationException {
         HttpRequest create =
-                new HttpPost("/fedora/objects/" + pid +
-                        "/datastreams/" + ds +
-                        "?controlgroup=R" + //redirect
-                        "&dsLocation=" + url + //the content
-                        "&dsState=A" + //active state
-                        "&mimeType=application/octet-stream" + //mimetype
-                        "&checksumType=md5" + //checksum type
-                        "&checksum=" + checksum); //actual checksum
+                new HttpPost("/fedora/objects/" + pid
+                        + "/datastreams/" + ds
+                        + "?controlgroup=R"//redirect
+                        + "&dsLocation=" + url //the content
+                        + "&dsState=A" //active state
+                        + "&mimeType=application/octet-stream" //mimetype
+                        + "&checksumType=md5" //checksum type
+                        + "&checksum=" + checksum  //actual checksum
+                );
 
         objectExists(pid);
         try {
