@@ -56,7 +56,9 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOM;
+import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -149,10 +151,12 @@ public class HighlevelBitstorageSoapWebserviceImpl
         String contents = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.fedora.contentstream");
         Credentials creds;
-        try {
-            creds = ExtractCredentials.extract(context);
-        } catch (CredentialsException e) {//TODO
-            log.warn("Attempted call at Bitstorage without credentials", e);
+        HttpServletRequest request = (HttpServletRequest) context
+                .getMessageContext()
+                .get(MessageContext.SERVLET_REQUEST);
+        creds = (Credentials) request.getAttribute("Credentials");
+        if (creds == null) {
+            log.warn("Attempted call at Bitstorage without credentials");
             creds = new Credentials("", "");
         }
         fedora = new FedoraSpeakerRestImpl(contents,
