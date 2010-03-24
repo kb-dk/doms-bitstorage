@@ -134,7 +134,9 @@ public class FedoraBasicRestSpeaker {
 
     private HttpClient getClient(int port) {
 
-
+        if (client != null) {
+            return client;
+        }
         // Create and initialize HTTP parameters
         HttpParams params = new BasicHttpParams();
         ConnManagerParams.setMaxTotalConnections(params, 100);
