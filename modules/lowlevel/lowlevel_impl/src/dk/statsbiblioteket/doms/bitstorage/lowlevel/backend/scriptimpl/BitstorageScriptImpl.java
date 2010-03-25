@@ -125,7 +125,8 @@ public class BitstorageScriptImpl
     public BitstorageScriptImpl() {
         Properties props = ConfigCollection.getProperties();
 
-        this.bitfinder = props.getProperty("bitfinder");
+        this.bitfinder = props.getProperty(
+                "dk.statsbiblioteket.doms.bitstorage.lowlevel.bitfinder");
     }
 
 

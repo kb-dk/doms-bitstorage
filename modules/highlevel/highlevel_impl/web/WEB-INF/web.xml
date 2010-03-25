@@ -61,39 +61,57 @@
 
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.characteriser.location
+        <description>The location of the WSDL for the characterisation service
+            to be used by the highlevel service
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.characteriserlocation
         </param-name>
         <param-value>http://localhost:8080/characteriser/characterise/?wsdl
         </param-value>
     </context-param>
 
-
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location
+        <description>The location of the WSDL for the lowlevel service
+            to be used by the highlevel service
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.lowlevellocation
         </param-name>
         <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl
         </param-value>
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.server
+        <description>The fedora server host</description>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.server
         </param-name>
         <param-value>localhost</param-value>
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.port</param-name>
+        <description>The fedora server port</description>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.port
+        </param-name>
         <param-value>7910</param-value>
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.characstream
+        <description>The name of the datastream to store characterisation
+            information in
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.characstream
         </param-name>
         <param-value>CHARACTERISATION</param-value>
     </context-param>
 
     <context-param>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.fedora.contentstream
+        <description>The name of the datastream to store the reference to the
+            datafile in
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.contentstream
         </param-name>
         <param-value>CONTENTS</param-value>
     </context-param>

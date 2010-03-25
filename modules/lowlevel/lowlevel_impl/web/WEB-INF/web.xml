@@ -45,12 +45,37 @@
     </listener>
 
     <context-param>
-        <param-name>bitfinder</param-name>
+        <description>The prefix to add to the filename to get the URL
+        </description>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.bitfinder
+        </param-name>
         <param-value>http://bitfinder.statsbiblioteket.dk/</param-value>
     </context-param>
 
+    <context-param>
+        <description>
+            The interval in ms between checking if a file has become unlocked,
+            default 1 sec
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.pollInterval
+        </param-name>
+        <param-value>1000</param-value>
+    </context-param>
 
     <context-param>
+        <description>
+            The total time to wait for a file to become unlocked, in ms. Default
+            10 min
+        </description>
+        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.timeout
+        </param-name>
+        <param-value>600000</param-value>
+    </context-param>
+
+    <context-param>
+        <description>This is the command to invoke to use the script
+        </description>
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script
         </param-name>
@@ -59,12 +84,18 @@
     </context-param>
 
     <context-param>
+        <description>The surveilance system cannot read it's own location, so it
+            must have it as a parameter
+        </description>
         <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location
         </param-name>
         <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl
         </param-value>
     </context-param>
     <context-param>
+        <description>The preferred number of bytes that must be left in the
+            bitstorage
+        </description>
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.lowlevel.preferredBytesLeft
         </param-name>
@@ -72,6 +103,8 @@
         </param-value>
     </context-param>
     <context-param>
+        <description>The required number of bytes that must be left
+        </description>
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.lowlevel.requiredBytesLeft
         </param-name>

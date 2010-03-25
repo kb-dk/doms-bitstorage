@@ -143,13 +143,13 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private void initialiseFedoraSpeaker() {
 
         String server = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.fedora.server");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.server");
         int port = Integer.decode(ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.fedora.port"));
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.port"));
         String charac = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.fedora.characstream");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.characstream");
         String contents = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.fedora.contentstream");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.contentstream");
         Credentials creds;
         HttpServletRequest request = (HttpServletRequest) context
                 .getMessageContext()
@@ -171,7 +171,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
 
         String wsdlloc = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.lowlevel.location");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.lowlevellocation");
         try {
             lowlevel = new dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebserviceService(
                     new URL(wsdlloc),
@@ -188,7 +188,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private void initialiseCharacteriserConnector() throws ConfigException {
 
         String wsdlloc = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.characteriser.location");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.characteriserlocation");
         try {
             charac = new CharacteriseSoapWebserviceService(
                     new URL(wsdlloc),
