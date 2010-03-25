@@ -225,7 +225,7 @@ public class FedoraBasicRestSpeaker {
         HttpRequest create =
                 new HttpPost("/fedora/objects/" + pid
                         + "/datastreams/" + ds
-                        + "?controlgroup=R"//redirect
+                        + "?controlGroup=R"//redirect
                         + "&dsLocation=" + url //the content
                         + "&dsState=A" //active state
                         + "&mimeType=application/octet-stream" //mimetype

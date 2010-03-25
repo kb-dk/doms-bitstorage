@@ -53,7 +53,7 @@
     <!--These are the standard targets-->
     <target name="clean">
         <delete dir="classes"/>
-        <delete dir="*temp*"/>
+        <delete dir="tempsrc"/>
         <delete dir="dist"/>
     </target>
 
