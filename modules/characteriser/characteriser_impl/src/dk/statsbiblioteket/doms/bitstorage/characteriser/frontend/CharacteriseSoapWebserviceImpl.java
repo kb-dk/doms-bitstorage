@@ -27,13 +27,15 @@
 
 package dk.statsbiblioteket.doms.bitstorage.characteriser.frontend;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.FileNotAvailableException;
 import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 
-import javax.annotation.PostConstruct;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
@@ -42,8 +44,12 @@ import eu.planets_project.services.identify.Identify;
 import eu.planets_project.services.identify.IdentifyResult;
 import eu.planets_project.services.datatypes.DigitalObject;
 import eu.planets_project.ifr.core.storage.api.DigitalObjectManager;
+import eu.planets_project.fedora.FedoraObjectManager;
+import eu.planets_project.fedora.connector.FedoraConnectionException;
+
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /**
@@ -56,12 +62,19 @@ import java.util.*;
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice")
 public class CharacteriseSoapWebserviceImpl implements
         CharacteriseSoapWebservice {
-
-
+    /**
+     * The log for this class.
+     */
+    Log log = LogFactory.getLog(getClass());
+/*    String fedoraUrl = "";
+    String fedoraUser = "";
+    String fedoraUserPassword = "";
+*/
     private Identify identifier;
 
     private DigitalObjectManager fedora;
 
+    private List<Identify> identifiers; //TODO get identifiers from config file. Perhaps in the Initialization?
 
     private boolean initialised = false;
 
@@ -97,28 +110,54 @@ public class CharacteriseSoapWebserviceImpl implements
 //>>>>>>> .r190
     }
 
-
+    /**
+     *
+     * @param pid
+     * @return the characterisation of the object pertaining to the PID
+     * @throws CommunicationException
+     * @throws FileNotAvailableException if there is no file relating to the PID
+     */
     public Characterisation characterise(
             @WebParam(name = "pid",
                     targetNamespace = "http://characteriser.bitstorage.doms.statsbiblioteket.dk/",
-                    partName = "characteriseReturn")
-            String characteriseReturn)
+                    partName = "pid")
+            String pid)
             throws CommunicationException, FileNotAvailableException {
         initialise();
 
-/*
-        DigitalObject studiedItem;
-        URI uri = new URI(pid);
+        Characterisation returnCharacterisation = new Characterisation();
+        returnCharacterisation.setMd5CheckSum(""); // TODO Explain why; because it's not needed.
+        DigitalObject studiedObject = null;
+        URI uri = null;
+        List<IdentifyResult> results = new ArrayList<IdentifyResult>();
         try {
-            studiedItem = fedora.retrieve(uri);
+            uri = new URI(pid);
+            studiedObject = fedora.retrieve(uri);
+        } catch (URISyntaxException e) {
+            String message = "URISyntax failex with exception: "+e;
+            log.error(message, e);
+            // TODO Error Handling
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (DigitalObjectManager.DigitalObjectNotFoundException e) {
+            String message = "Digital object not found: "+e;
+            log.error(message, e);
+            // TODO Error Handling
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        IdentifyResult identifiedResult = identifier.identify(studiedItem, null);
+        for (Identify identifier : identifiers){
+                results.add(identifier.identify(studiedObject, null));
+        }
 
         Map<IdentifyResult.Method, List<IdentifyResult>> resultMap = null;
-        List<IdentifyResult> results = null;
+        for (IdentifyResult identifiedResult : results){
+            resultMap.put(identifiedResult.getMethod(), results);
+        }
+
+
+
+//TODO        results = identifiedResult
+
         for (IdentifyResult result: results){
             List<IdentifyResult> item = resultMap.get(result.getMethod());
             item.add(result);
@@ -159,14 +198,17 @@ public class CharacteriseSoapWebserviceImpl implements
             //here there be dragons
             //file is not identified
         }
-        //Characterisation character = new Characterisation();
-        List<String> character = outPutListAsStrings(pronomIDs);
+        //Characterisation characterization = new Characterisation();
+        List<String> characterization = outPutListAsStrings(pronomIDs);
 
 
         //characterise()
-
-*/
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        returnCharacterisation.getPronomID().addAll((Collection) pronomIDs);
+        if (returnCharacterisation.getPronomID().size() > 0){
+            // TODO omskriv denne OG characterization til at have en fornuftig validationStatus evt til en boolean og en liste af valideringer
+            returnCharacterisation.setValidationStatus("Validated");
+        }
+        return returnCharacterisation;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
 /*
