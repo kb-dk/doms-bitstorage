@@ -31,19 +31,11 @@ import com.sun.xml.ws.developer.StreamingDataHandler;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileIsLockedException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFileNameException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFilenameException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.NotEnoughFreeSpaceException;
+
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.BitstorageException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.*;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.activation.DataHandler;
@@ -103,7 +95,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
      *                                      underlying script.
      * @throws FileAlreadyApprovedException If a file with the given name is
      *                                      already in approved storage
-     * @throws InvalidFilenameException     If the given filename cannot be used
+     * @throws InvalidFileNameException     If the given filename cannot be used
      * @throws NotEnoughFreeSpaceException  If there is not enough space to store
      *                                      the file.
      * @throws FileIsLockedException        If the file is locked by another operation.
@@ -126,7 +118,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
                                      targetNamespace = "")
                              long filelength)
             throws ChecksumFailedException, CommunicationException,
-            FileAlreadyApprovedException, InvalidFilenameException,
+            FileAlreadyApprovedException, InvalidFileNameException,
             NotEnoughFreeSpaceException, FileIsLockedException,
             LowlevelSoapException, WebServiceException {
         LOG.trace("Enter uploadFile('" + filename + "','" + filedata + "','"
@@ -169,7 +161,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
      * @param fileurl The url of the file to disapprove.
      * @throws CommunicationException   On generic trouble communicating with the
      *                                  underlying script.
-     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * @throws InvalidFileNameException If the given fileurl is not a bitstorage
      *                                  url.
      * @throws FileIsLockedException    If the file is locked by another operation.
      * @throws LowlevelSoapException    On internal errors that are not correctly
@@ -181,7 +173,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
     public void disapprove(@WebParam(name = "fileurl",
             targetNamespace = "")
     String fileurl)
-            throws InvalidFilenameException, FileIsLockedException,
+            throws InvalidFileNameException, FileIsLockedException,
             CommunicationException, LowlevelSoapException, WebServiceException {
         LOG.trace("Enter disapprove('" + fileurl + "')");
         String errorMessage = "Trouble while disapproving file '" + fileurl
@@ -194,7 +186,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             LOG.error(errorMessage, e);
-            throw new InvalidFilenameException(
+            throw new InvalidFileNameException(
                     errorMessage + ": " + e,
                     errorMessage + ": " + e,
                     e);
@@ -222,7 +214,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
      *                                     the file.
      * @throws ChecksumFailedException     If the file on server has a different
      *                                     checksum than the given checksum
-     * @throws InvalidFilenameException    If the given fileurl is not a bitstorage
+     * @throws InvalidFileNameException    If the given fileurl is not a bitstorage
      *                                     url.
      * @throws FileIsLockedException       If the file is locked by another operation.
      * @throws LowlevelSoapException       On internal errors that are not correctly
@@ -249,7 +241,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             LOG.error(errorMessage, e);
-            throw new InvalidFilenameException(
+            throw new InvalidFileNameException(
                     errorMessage + ": " + e,
                     errorMessage + ": " + e,
                     e);
@@ -335,7 +327,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
      * @throws FileNotFoundException    If the file does not exist in any storage.
      * @throws CommunicationException   On generic trouble communicating with the
      *                                  underlying script.
-     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * @throws InvalidFileNameException If the given fileurl is not a bitstorage
      *                                  url.
      * @throws FileIsLockedException    If the file is locked by another operation.
      * @throws LowlevelSoapException    On internal errors that are not correctly
@@ -361,7 +353,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             LOG.error(errorMessage, e);
-            throw new InvalidFilenameException(
+            throw new InvalidFileNameException(
                     errorMessage + ": " + e,
                     errorMessage + ": " + e,
                     e);
@@ -384,7 +376,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
      * @throws FileNotFoundException    If the file does not exist in any storage.
      * @throws CommunicationException   On generic trouble communicating with the
      *                                  underlying script.
-     * @throws InvalidFilenameException If the given fileurl is not a bitstorage
+     * @throws InvalidFileNameException If the given fileurl is not a bitstorage
      *                                  url.
      * @throws FileIsLockedException    If the file is locked by another operation.
      * @throws LowlevelSoapException    On internal errors that are not correctly
@@ -410,7 +402,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
             throw bitstorageMapper.convertMostApplicable(e);
         } catch (MalformedURLException e) {
             LOG.error(errorMessage, e);
-            throw new InvalidFilenameException(
+            throw new InvalidFileNameException(
                     errorMessage + ": " + e,
                     errorMessage + ": " + e,
                     e);
