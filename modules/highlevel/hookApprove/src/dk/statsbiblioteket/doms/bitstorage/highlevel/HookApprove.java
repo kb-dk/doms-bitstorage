@@ -55,7 +55,7 @@ import fedora.common.Constants;
  * HighLevelBitstorage is invoked on the object, which moves the file from
  * temporary bitstorage to permanent.
  *
- * @see dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice#publish(String)
+ * @see HighlevelBitstorageSoapWebservice#publish(String)
  */
 public class HookApprove extends AbstractInvocationHandler {
 
@@ -65,8 +65,8 @@ public class HookApprove extends AbstractInvocationHandler {
     private static Log LOG = LogFactory.getLog(HookApprove.class);
 
     /**
-     * The service name of the bitstorage service. Necessary for soap operations.
-     * Should not ever change
+     * The service name of the bitstorage service. Nessesary for soap
+     * operations. Should not ever change
      */
     public static final QName SERVICENAME =
             new QName(
@@ -115,13 +115,14 @@ public class HookApprove extends AbstractInvocationHandler {
      * Synchronized, to avoid problems with dual inits.
      * Cannot be made as a constructor, as it depends on the presense of other
      * Fedora modules.
-     * Reads these parameters from management module section in fedora.fcfg. See
-     * the supplied insertToFedora.fcfg for how to set these parameters.
+     * Reads these parameters from management module section in fedora.fcfg.
+     * See the supplied insertToFedora.fcfg for how to set these parameters.
      * <ul>
      * <li>dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel
-     * The pid of the file content model. Only objects with this content model will be
-     * published when set to Active.
-     * <li>dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation
+     * The pid of the file content model. Only objects with this content model
+     * will be published when set to Active.
+     * <li>dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.
+     * webservicelocation
      * The location of the wsdl for the highlevel bitstorage service
      * </ul>
      *
@@ -133,7 +134,8 @@ public class HookApprove extends AbstractInvocationHandler {
      *                                       to an incorrect url
      * @throws FileCouldNotBePublishedException
      *                                       catchall exception of something
-     *                                       failed, but did not throw it's own exception
+     *                                       failed, but did not throw it's own
+     *                                       exception
      */
     public synchronized void init() throws
                                     ModuleInitializationException,
@@ -233,11 +235,11 @@ public class HookApprove extends AbstractInvocationHandler {
     }
 
     /**
-     * If the Method is modifyObject AND object to be modified has the specified
-     * content model AND is set to the Active state, then attempt to publish
-     * file via the bitstorage system. If the file cannot be published, the
-     * modification to the object is undone (but will leave a trail in the object
-     * log).
+     * If the Method is modifyObject AND object to be modified has the
+     * specified content model AND is set to the Active state, then attempt to
+     * publish file via the bitstorage system. If the file cannot be published,
+     * the modification to the object is undone (but will leave a trail in the
+     * object log).
      *
      * @param proxy  Unknown, probably this object
      * @param method The method to invoke
@@ -331,7 +333,8 @@ public class HookApprove extends AbstractInvocationHandler {
                         old_state,
                         old_label,
                         old_ownerid,
-                        "Undoing state change because file could not be published");
+                        "Undoing state change because file could not be"
+                        + " published");
                 //discard rollback returnvalue
                 throw new FileCouldNotBePublishedException(
                         "The file in '" + pid + "' could not be published. "
@@ -366,7 +369,8 @@ public class HookApprove extends AbstractInvocationHandler {
     }
 
     /**
-     * Utility method to remove info:fedora/ prefix from pids, if they have them
+     * Utility method to remove info:fedora/ prefix from pids, if they have
+     * them
      *
      * @param pid the pid to clean
      * @return if the pid starts with info:fedora/ return the pid without this
