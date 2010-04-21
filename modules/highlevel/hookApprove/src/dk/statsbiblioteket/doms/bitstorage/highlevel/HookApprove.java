@@ -136,59 +136,65 @@ public class HookApprove extends AbstractInvocationHandler {
      *                                       failed, but did not throw it's own exception
      */
     public synchronized void init() throws
-            ModuleInitializationException,
-            ServerInitializationException,
-            MalformedURLException, FileCouldNotBePublishedException {
+                                    ModuleInitializationException,
+                                    ServerInitializationException,
+                                    MalformedURLException,
+                                    FileCouldNotBePublishedException {
         if (initialised) {
             return;
         }
 
         serverModule = Server.getInstance(new File(Constants.FEDORA_HOME),
-                false);
+                                          false);
 
         filemodels = new LinkedList<String>();
 
         //get the management module
         managementModule = getManagement();
         if (managementModule == null) {
-            throw new FileCouldNotBePublishedException("Could not get the " +
-                    "management module from fedora");
+            throw new FileCouldNotBePublishedException("Could not get the "
+                                                       + "management module "
+                                                       + "from fedora");
         }
 
         //get the access module
         accessModule = getAccess();
         if (accessModule == null) {
-            throw new FileCouldNotBePublishedException("Could not get the " +
-                    "Access module from Fedora");
+            throw new FileCouldNotBePublishedException("Could not get the "
+                                                       + "Access module from "
+                                                       + "Fedora");
         }
 
         //read the parameters from the management module
         String filecmodel = managementModule.getParameter(
-                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove."
+                + "filecmodel");
         if (filecmodel != null) {
             filemodels.add(filecmodel);
         } else {
             LOG.warn(
-                    "No dk.statsbiblioteket.doms.bitstorage.highlevel." +
-                            "hookapprove.filecmodel specified," +
-                            " disabling hookapprove");
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel."
+                    + "hookapprove.filecmodel specified,"
+                    + " disabling hookapprove");
         }
 
         String webservicelocation = managementModule.getParameter(
-                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation");
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove."
+                + "webservicelocation");
         if (webservicelocation == null) {
             webservicelocation = "http://localhost:8080/ecm/validate/";//TODO
             LOG.info(
-                    "No dk.statsbiblioteket.doms.bitstorage.highlevel." +
-                            "hookapprove.webservicelocation specified," +
-                            " using default location: " + webservicelocation);
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel."
+                    + "hookapprove.webservicelocation specified,"
+                    + " using default location: " + webservicelocation);
         }
 
         //create the bitstorage client
         URL wsdl;
         wsdl = new URL(webservicelocation);
-        bitstorageClient = new HighlevelBitstorageSoapWebserviceService(wsdl,
-                SERVICENAME)
+        bitstorageClient
+                = new HighlevelBitstorageSoapWebserviceService(wsdl,
+                                                               SERVICENAME)
                 .getHighlevelBitstorageSoapWebservicePort();
 
         initialised = true;
@@ -278,8 +284,8 @@ public class HookApprove extends AbstractInvocationHandler {
             //Get profile to check it the object has the correct content model
             // and save the profile for rollback
             ObjectProfile profile = accessModule.getObjectProfile(context,
-                    pid,
-                    null);
+                                                                  pid,
+                                                                  null);
 
             //Do the change, to see if it was allowed
             Object returnValue = method.invoke(target, args);
@@ -318,7 +324,8 @@ public class HookApprove extends AbstractInvocationHandler {
                 }
                 //commit the rollback.
                 // TODO perform this directly on the Management, instead?
-                Object new_return = method.invoke(target,
+                Object new_return = method.invoke(
+                        target,
                         context,
                         pid,
                         old_state,
@@ -327,8 +334,8 @@ public class HookApprove extends AbstractInvocationHandler {
                         "Undoing state change because file could not be published");
                 //discard rollback returnvalue
                 throw new FileCouldNotBePublishedException(
-                        "The file in '" + pid + "' could not be published. " +
-                                "State change rolled back.",
+                        "The file in '" + pid + "' could not be published. "
+                        + "State change rolled back.",
                         e);
             }
         } catch (InvocationTargetException e) {
