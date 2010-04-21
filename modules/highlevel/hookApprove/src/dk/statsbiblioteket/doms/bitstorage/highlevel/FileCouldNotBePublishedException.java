@@ -28,8 +28,8 @@
 package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
 /**
- * The File in this file object could not be approved, and thus the operation has
- * been cancelled.
+ * The File in this file object could not be approved, and thus the operation
+ * has been cancelled.
  */
 public class FileCouldNotBePublishedException extends Exception {
 
