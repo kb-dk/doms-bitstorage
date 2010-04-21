@@ -27,7 +27,11 @@
 
 package dk.statsbiblioteket.doms.bitstorage.characteriser.frontend;
 
-import dk.statsbiblioteket.util.qa.QAInfo;
+import eu.planets_project.ifr.core.storage.api.DigitalObjectManager;
+import eu.planets_project.services.datatypes.DigitalObject;
+import eu.planets_project.services.datatypes.ServiceDescription;
+import eu.planets_project.services.identify.Identify;
+import eu.planets_project.services.identify.IdentifyResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,22 +40,17 @@ import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebserv
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.FileNotAvailableException;
 import dk.statsbiblioteket.doms.webservices.ConfigCollection;
-
+import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
-
-
-import eu.planets_project.services.identify.Identify;
-import eu.planets_project.services.identify.IdentifyResult;
-import eu.planets_project.services.datatypes.DigitalObject;
-import eu.planets_project.services.datatypes.ServiceDescription;
-import eu.planets_project.ifr.core.storage.api.DigitalObjectManager;
-
-
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *

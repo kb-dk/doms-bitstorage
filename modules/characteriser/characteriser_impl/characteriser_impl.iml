@@ -69,7 +69,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="domsutils-0.0.2#SNAPSHOT" level="project" />
     <orderEntry type="library" name="log4j-1.2.15" level="project" />
     <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
     <orderEntry type="module-library">
@@ -82,6 +81,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="sbutils-0.4.8" level="project" />
+    <orderEntry type="library" name="domsutil-0.0.3" level="project" />
   </component>
 </module>
 

@@ -27,27 +27,31 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.*;
-import dk.statsbiblioteket.doms.surveillance.status.Status;
-import dk.statsbiblioteket.doms.surveillance.status.StatusMessage;
-import dk.statsbiblioteket.doms.surveillance.status.StatusMessage.Severity;
-import dk.statsbiblioteket.doms.surveillance.status.Surveyable;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
-import dk.statsbiblioteket.util.qa.QAInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import dk.statsbiblioteket.doms.bitstorage.highlevel.CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebserviceService;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.Operation;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.StatusInformation;
+import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
+import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
+import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
+import dk.statsbiblioteket.doms.domsutil.surveyable.Surveyable;
+import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+import dk.statsbiblioteket.util.qa.QAInfo;
+
+import javax.annotation.PostConstruct;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
-import javax.annotation.PostConstruct;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -158,10 +162,9 @@ public class RealTimeService implements Surveyable {
         } catch (Exception e) {
             log.error("Exception caught by fault barrier", e);
             // Create status covering exception
-            status = new Status(SURVEYEE_NAME, Arrays.asList(new StatusMessage(
-                    "Exception caught by fault barrier: " + e.getMessage(),
-                    StatusMessage.Severity.RED, timeOfGetStatusCall,
-                    false)));
+            status = makeStatus(Severity.RED,
+                                "Exception caught by fault barrier: "
+                                        + e.getMessage());
         }
 
         return status;
@@ -182,7 +185,7 @@ public class RealTimeService implements Surveyable {
         HighlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
         URL wsdlLocation;
         HighlevelBitstorageSoapWebservice bitstorageService;
-        List<StatusMessage> messageList;
+        Status status;
         StatusInformation highlevelBitstorageStatus;
 
         try {
@@ -227,12 +230,11 @@ public class RealTimeService implements Surveyable {
         // Now collect status messages from different parts of the status
         // we can get from the highlevel bitstorage
 
-        messageList = new ArrayList<StatusMessage>();
-
-        messageList.add(makeStatusMessageForCurrentOperations(
+        status = new Status();
+        status.setName(SURVEYEE_NAME);
+        status.getMessages().add(makeStatusMessageForCurrentOperations(
                 highlevelBitstorageStatus));
-
-        return new Status(SURVEYEE_NAME, messageList);
+        return status;
     }
 
 
@@ -252,6 +254,7 @@ public class RealTimeService implements Surveyable {
                 = highlevelBitstorageStatus.getOperations();
         String message = "Currently running operations: ";
         Boolean atleastOneOperationListed = false;
+        StatusMessage statusMessage = new StatusMessage();
 
         for (Operation operation : runningOperations) {
             XMLGregorianCalendar whenOperationStarted
@@ -281,8 +284,11 @@ public class RealTimeService implements Surveyable {
             message += "(none)";
         }
 
-        return new StatusMessage(message, StatusMessage.Severity.GREEN,
-                                 timeOfGetStatusCall, false);
+        statusMessage.setMessage(message);
+        statusMessage.setSeverity(Severity.GREEN);
+        statusMessage.setTime(timeOfGetStatusCall);
+        statusMessage.setLogMessage(false);
+        return statusMessage;
     }
 
 
@@ -297,13 +303,16 @@ public class RealTimeService implements Surveyable {
     private Status makeStatus(Severity severity, String message) {
         log.trace("Entered method makeStatus('" + severity + "', '" + message
                   + "')");
-        List<StatusMessage> messageList = new ArrayList<StatusMessage>();
-        StatusMessage statusMessage;
+        StatusMessage statusMessage = new StatusMessage();
+        Status status = new Status();
 
-        statusMessage = new StatusMessage(message, severity,
-                                          timeOfGetStatusCall, false);
-        messageList.add(statusMessage);
-        return new Status(SURVEYEE_NAME, messageList);
+        statusMessage.setMessage(message);
+        statusMessage.setSeverity(severity);
+        statusMessage.setTime(timeOfGetStatusCall);
+
+        status.setName(SURVEYEE_NAME);
+        status.getMessages().add(statusMessage);
+        return status;
     }
 
 }
