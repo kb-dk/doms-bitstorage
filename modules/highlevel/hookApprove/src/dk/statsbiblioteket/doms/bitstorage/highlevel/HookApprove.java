@@ -65,7 +65,7 @@ public class HookApprove extends AbstractInvocationHandler {
     private static Log LOG = LogFactory.getLog(HookApprove.class);
 
     /**
-     * The service name of the bitstorage service. Nessesary for soap operations.
+     * The service name of the bitstorage service. Necessary for soap operations.
      * Should not ever change
      */
     public static final QName SERVICENAME =
@@ -275,13 +275,13 @@ public class HookApprove extends AbstractInvocationHandler {
                 return method.invoke(target, args);
             }
 
-            //so, we have a modify object that change state to A
+            //so, we have a modify object that changes state to A
 
             //Get at few relevant variables from the arguments
             Context context = (Context) args[0];//call context
             String pid = args[1].toString();
 
-            //Get profile to check it the object has the correct content model
+            //Get profile to check if the object has the correct content model
             // and save the profile for rollback
             ObjectProfile profile = accessModule.getObjectProfile(context,
                                                                   pid,
