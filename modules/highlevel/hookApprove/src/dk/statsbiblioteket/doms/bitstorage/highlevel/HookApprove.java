@@ -52,7 +52,8 @@ import fedora.common.Constants;
 /**
  * Hooks the modifyObject method, so that when a file object is set to Active
  * the file is published. Published means that the publish method from
- * HighLevelBitstorage is invoked on the object.
+ * HighLevelBitstorage is invoked on the object, which moves the file from
+ * temporary bitstorage to permanent.
  *
  * @see dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice#publish(String)
  */
@@ -111,10 +112,11 @@ public class HookApprove extends AbstractInvocationHandler {
 
     /**
      * The init method, called before the first invocation of the method.
-     * Synchronized, to avoud problems with dual inits.
+     * Synchronized, to avoid problems with dual inits.
      * Cannot be made as a constructor, as it depends on the presense of other
      * Fedora modules.
-     * Reads these parameters from management module section in fedora.fcfg.
+     * Reads these parameters from management module section in fedora.fcfg. See
+     * the supplied insertToFedora.fcfg for how to set these parameters.
      * <ul>
      * <li>dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel
      * The pid of the file content model. Only objects with this content model will be
@@ -123,15 +125,20 @@ public class HookApprove extends AbstractInvocationHandler {
      * The location of the wsdl for the highlevel bitstorage service
      * </ul>
      *
-     * @throws ModuleInitializationException If some Fedora module is not initiatialized yet
-     * @throws ServerInitializationException If the Fedora server is not initialized yet
-     * @throws MalformedURLException         If the webservice location is set to an
-     *                                       incorrect url
+     * @throws ModuleInitializationException If some Fedora module is not
+     *                                       initiatialized yet
+     * @throws ServerInitializationException If the Fedora server is not
+     *                                       initialized yet
+     * @throws MalformedURLException         If the webservice location is set
+     *                                       to an incorrect url
+     * @throws FileCouldNotBePublishedException
+     *                                       catchall exception of something
+     *                                       failed, but did not throw it's own exception
      */
     public synchronized void init() throws
             ModuleInitializationException,
             ServerInitializationException,
-            MalformedURLException {
+            MalformedURLException, FileCouldNotBePublishedException {
         if (initialised) {
             return;
         }
@@ -142,9 +149,17 @@ public class HookApprove extends AbstractInvocationHandler {
 
         //get the management module
         m_manager = getManagement();
+        if (m_manager == null) {
+            throw new FileCouldNotBePublishedException("Could not get the " +
+                    "management module from fedora");
+        }
 
         //get the access module
         m_access = getAccess();
+        if (m_access == null) {
+            throw new FileCouldNotBePublishedException("Could not get the " +
+                    "Access module from Fedora");
+        }
 
         //read the parameters from the management module
         String filecmodel = m_manager.getParameter(
@@ -153,7 +168,9 @@ public class HookApprove extends AbstractInvocationHandler {
             filemodels.add(filecmodel);
         } else {
             LOG.warn(
-                    "No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel specified, disabling hookapprove");
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel." +
+                            "hookapprove.filecmodel specified," +
+                            " disabling hookapprove");
         }
 
         String webservicelocation = m_manager.getParameter(
@@ -161,7 +178,9 @@ public class HookApprove extends AbstractInvocationHandler {
         if (webservicelocation == null) {
             webservicelocation = "http://localhost:8080/ecm/validate/";//TODO
             LOG.info(
-                    "No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation specified, using default location: " + webservicelocation);
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel." +
+                            "hookapprove.webservicelocation specified," +
+                            " using default location: " + webservicelocation);
         }
 
         //create the bitstorage client
@@ -217,13 +236,14 @@ public class HookApprove extends AbstractInvocationHandler {
      * @param args   the arguments to the method, the array depends on which
      *               method is invoked. For modifyObject, the list is
      *               <ul>
-     *               <li>0: Context context
-     *               <li>1: String pid
-     *               <li>2: String State
-     *               <li>3: String label
-     *               <li>4: String ownerID
-     *               <li>5: String logmessage
+     *               <li>0: Context context The calling context
+     *               <li>1: String pid the pid of the object
+     *               <li>2: String State the new state of the object
+     *               <li>3: String label the new label of the object
+     *               <li>4: String ownerID the new ownerID of the object
+     *               <li>5: String logmessage the logmessage of the change
      *               </ul>
+     *               Parameter 2-4 can be null, which means no change.
      * @return the method return type
      * @throws Throwable
      */
@@ -262,16 +282,19 @@ public class HookApprove extends AbstractInvocationHandler {
             //Do the change, to see if it was allowed
             Object returnValue = method.invoke(target, args);
 
+
             //If we are here, the change committed without exceptions thrown
-
-
             try {
                 if (isFileObject(profile)) {//is this a file object?
-                    bitstorageClient.publish(pid);
-                    //publish moves the file from temporary bitstorage to
-                    //permanent bitstorage
-                    //milestone, any fails beyound this must rollback
+                    if (!profile.objectState.startsWith("A")) {
+                        //object was not already active
 
+                        bitstorageClient.publish(pid);
+                        //publish moves the file from temporary bitstorage to
+                        //permanent bitstorage
+                        //milestone, any fails beyound this must rollback
+
+                    }
                 }
                 return returnValue;
 
