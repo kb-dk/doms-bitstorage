@@ -56,6 +56,9 @@ import fedora.common.Constants;
  * temporary bitstorage to permanent.
  *
  * @see HighlevelBitstorageSoapWebservice#publish(String)
+ *
+ *  author: abr
+ *  reviewer: jrg
  */
 public class HookApprove extends AbstractInvocationHandler {
 
@@ -168,11 +171,11 @@ public class HookApprove extends AbstractInvocationHandler {
         }
 
         //read the parameters from the management module
-        String filecmodel = managementModule.getParameter(
+        String fileContentModel = managementModule.getParameter(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove."
                 + "filecmodel");
-        if (filecmodel != null) {
-            filemodels.add(filecmodel);
+        if (fileContentModel != null) {
+            filemodels.add(fileContentModel);
         } else {
             LOG.warn(
                     "No dk.statsbiblioteket.doms.bitstorage.highlevel."
