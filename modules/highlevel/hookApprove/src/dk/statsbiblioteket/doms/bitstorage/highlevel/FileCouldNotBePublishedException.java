@@ -28,12 +28,10 @@
 package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
 /**
- * The File in this file object could not approved, and thus the operation has
- * been cancelled
+ * The File in this file object could not be approved, and thus the operation has
+ * been cancelled.
  */
 public class FileCouldNotBePublishedException extends Exception {
-    public FileCouldNotBePublishedException() {
-    }
 
     public FileCouldNotBePublishedException(String message) {
         super(message);
@@ -43,7 +41,4 @@ public class FileCouldNotBePublishedException extends Exception {
         super(message, cause);
     }
 
-    public FileCouldNotBePublishedException(Throwable cause) {
-        super(cause);
-    }
 }

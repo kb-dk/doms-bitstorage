@@ -50,8 +50,11 @@ import fedora.server.errors.ServerInitializationException;
 import fedora.common.Constants;
 
 /**
- * Hooks the ModifyObject method, so that when an file object is set to Active
- * the file is published.
+ * Hooks the modifyObject method, so that when a file object is set to Active
+ * the file is published. Published means that the publish method from
+ * HighLevelBitstorage is invoked on the object.
+ *
+ * @see dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice#publish(String)
  */
 public class HookApprove extends AbstractInvocationHandler {
 
@@ -59,27 +62,76 @@ public class HookApprove extends AbstractInvocationHandler {
      * Logger for this class.
      */
     private static Log LOG = LogFactory.getLog(HookApprove.class);
+
+    /**
+     * The service name of the bitstorage service. Nessesary for soap operations.
+     * Should not ever change
+     */
     public static final QName SERVICENAME =
             new QName(
                     "http://highlevel.bitstorage.doms.statsbiblioteket.dk/",
                     "HighlevelBitstorageSoapWebserviceService");
 
+    /**
+     * The name of the api method to hook
+     */
     public static final String HOOKEDMETHOD = "modifyObject";
 
+    /**
+     * The boolean stating if the initialization steps have been taken
+     */
     private boolean initialised = false;
 
-    private HighlevelBitstorageSoapWebservice bs;
+    /**
+     * The bitstorage client
+     */
+    private HighlevelBitstorageSoapWebservice bitstorageClient;
 
+    /**
+     * The Fedora Management module
+     */
     private ManagementModule m_manager;
+
+    /**
+     * The Fedora Access Module
+     */
     private Access m_access;
 
+    /**
+     * The Fedora Server module
+     */
     private Server s_server;
 
+    /**
+     * The list of content models that are hooked. An object must have
+     * one of these for the invoke method to attempt to publish the object
+     */
     private List<String> filemodels;
 
 
-    //synchronized to avoid problems with dual inits
-    public synchronized void init() throws ModuleInitializationException, ServerInitializationException, MalformedURLException {
+    /**
+     * The init method, called before the first invocation of the method.
+     * Synchronized, to avoud problems with dual inits.
+     * Cannot be made as a constructor, as it depends on the presense of other
+     * Fedora modules.
+     * Reads these parameters from management module section in fedora.fcfg.
+     * <ul>
+     * <li>dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel
+     * The pid of the file content model. Only objects with this content model will be
+     * published when set to Active.
+     * <li>dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation
+     * The location of the wsdl for the highlevel bitstorage service
+     * </ul>
+     *
+     * @throws ModuleInitializationException If some Fedora module is not initiatialized yet
+     * @throws ServerInitializationException If the Fedora server is not initialized yet
+     * @throws MalformedURLException         If the webservice location is set to an
+     *                                       incorrect url
+     */
+    public synchronized void init() throws
+            ModuleInitializationException,
+            ServerInitializationException,
+            MalformedURLException {
         if (initialised) {
             return;
         }
@@ -95,82 +147,117 @@ public class HookApprove extends AbstractInvocationHandler {
         m_access = getAccess();
 
         //read the parameters from the management module
-        String filecmodel = m_manager.getParameter("dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel");
+        String filecmodel = m_manager.getParameter(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel");
         if (filecmodel != null) {
             filemodels.add(filecmodel);
         } else {
-            LOG.warn("No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel specified, disabling hookapprove");
+            LOG.warn(
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel specified, disabling hookapprove");
         }
 
-        String webservicelocation = m_manager.getParameter("dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation");
+        String webservicelocation = m_manager.getParameter(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation");
         if (webservicelocation == null) {
             webservicelocation = "http://localhost:8080/ecm/validate/";//TODO
-            LOG.info("No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation specified, using default location: " + webservicelocation);
+            LOG.info(
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation specified, using default location: " + webservicelocation);
         }
 
         //create the bitstorage client
         URL wsdl;
         wsdl = new URL(webservicelocation);
-        bs = new HighlevelBitstorageSoapWebserviceService(wsdl, SERVICENAME)
+        bitstorageClient = new HighlevelBitstorageSoapWebserviceService(wsdl,
+                SERVICENAME)
                 .getHighlevelBitstorageSoapWebservicePort();
 
         initialised = true;
 
     }
 
+    /**
+     * Utility method to get the Access Module from the Server module
+     *
+     * @return the Access Module
+     */
     private Access getAccess() {
-        Access module = (Access) s_server.getModule("org.fcrepo.server.access.Access");
+        Access module = (Access) s_server.getModule(
+                "org.fcrepo.server.access.Access");
         if (module == null) {
             module = (Access) s_server.getModule("fedora.server.access.Access");
         }
         return module;
     }
 
+    /**
+     * Utility method to get the Management Module from the Server module
+     *
+     * @return the Management module
+     */
     private ManagementModule getManagement() {
-        ManagementModule module = (ManagementModule) s_server.getModule("org.fcrepo.server.management.Management");
+        ManagementModule module = (ManagementModule) s_server.getModule(
+                "org.fcrepo.server.management.Management");
         if (module == null) {
-            module = (ManagementModule) s_server.getModule("fedora.server.management.Management");
+            module = (ManagementModule) s_server.getModule(
+                    "fedora.server.management.Management");
         }
         return module;
 
     }
 
     /**
-     * If the Method is ModifyObject AND object to me modified has the specified
+     * If the Method is modifyObject AND object to be modified has the specified
      * content model AND is set to the Active state, then attempt to publish
      * file via the bitstorage system. If the file cannot be published, the
      * modification to the object is undone (but will leave a trail in the object
      * log).
      *
-     * @param proxy  ?
+     * @param proxy  Unknown, probably this object
      * @param method The method to invoke
-     * @param args   the arguments to the method
+     * @param args   the arguments to the method, the array depends on which
+     *               method is invoked. For modifyObject, the list is
+     *               <ul>
+     *               <li>0: Context context
+     *               <li>1: String pid
+     *               <li>2: String State
+     *               <li>3: String label
+     *               <li>4: String ownerID
+     *               <li>5: String logmessage
+     *               </ul>
      * @return the method return type
      * @throws Throwable
      */
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
 
         try {
             init();
-            //what should happen before change is committed
 
             if (!HOOKEDMETHOD.equals(method.getName())) {
+                //this calls the next proxy in the chain, and does nothing
+                // here
+                //target is a magical variable set to the next proxy
                 return method.invoke(target, args);
             }
 
             //If the call does not change the state to active, pass through
             String state = (String) args[2];
             if (!(state != null && state.startsWith("A"))) {
+                //startsWith to catch both "A" and "Active"
                 return method.invoke(target, args);
             }
 
             //so, we have a modify object that change state to A
 
+            //Get at few relevant variables from the arguments
             Context context = (Context) args[0];//call context
             String pid = args[1].toString();
 
-            //save profile for rollback
-            ObjectProfile profile = m_access.getObjectProfile(context, pid, null);
+            //Get profile to check it the object has the correct content model
+            // and save the profile for rollback
+            ObjectProfile profile = m_access.getObjectProfile(context,
+                    pid,
+                    null);
 
             //Do the change, to see if it was allowed
             Object returnValue = method.invoke(target, args);
@@ -180,27 +267,32 @@ public class HookApprove extends AbstractInvocationHandler {
 
             try {
                 if (isFileObject(profile)) {//is this a file object?
-                    bs.publish(pid);//milestone, any fails beyound this must rollback
+                    bitstorageClient.publish(pid);
+                    //publish moves the file from temporary bitstorage to
+                    //permanent bitstorage
+                    //milestone, any fails beyound this must rollback
 
                 }
                 return returnValue;
 
-            } catch (Exception e) {//something broke in publishing, so undo the state operation
+            } catch (Exception e) {
+                //something broke in publishing, so undo the state operation
 
 
                 //rollback
                 String old_state = profile.objectState;
                 String old_label = null;
-                if (args[3] != null) {
+                if (args[3] != null) {//label
                     //label changed
                     old_label = profile.objectLabel;
                 }
                 String old_ownerid = null;
-                if (args[4] != null) {
+                if (args[4] != null) {//ownerid
                     //ownerid changed
                     old_ownerid = profile.objectOwnerId;
                 }
-                //commit the rollback. TODO perform this directly on the Management, instead?
+                //commit the rollback.
+                // TODO perform this directly on the Management, instead?
                 Object new_return = method.invoke(target,
                         context,
                         pid,
@@ -209,7 +301,10 @@ public class HookApprove extends AbstractInvocationHandler {
                         old_ownerid,
                         "Undoing state change because file could not be published");
                 //discard rollback returnvalue
-                throw new FileCouldNotBePublishedException("The file in '" + pid + "' could not be published. State change rolled back.", e);
+                throw new FileCouldNotBePublishedException(
+                        "The file in '" + pid + "' could not be published. " +
+                                "State change rolled back.",
+                        e);
             }
         } catch (InvocationTargetException e) {
             //if the invoke method failed, throw the original exception on
@@ -217,6 +312,13 @@ public class HookApprove extends AbstractInvocationHandler {
         }//if anything else failed, let it pass
     }
 
+    /**
+     * Utility method to determine if the object is a file object
+     *
+     * @param profile the object profile
+     * @return true if the object has the specified content model
+     * @see #filemodels
+     */
     private boolean isFileObject(ObjectProfile profile) {
         for (String model : profile.objectModels) {
             if (model == null) {
@@ -231,11 +333,18 @@ public class HookApprove extends AbstractInvocationHandler {
 
     }
 
-    private String ensurePid(String model) {
-        if (model.startsWith("info:fedora/")) {
-            return model.substring("info:fedora/".length());
+    /**
+     * Utility method to remove info:fedora/ prefix from pids, if they have them
+     *
+     * @param pid the pid to clean
+     * @return if the pid starts with info:fedora/ return the pid without this
+     *         prefix, otherwise just return the unchanged pid
+     */
+    private String ensurePid(String pid) {
+        if (pid.startsWith("info:fedora/")) {
+            return pid.substring("info:fedora/".length());
         }
-        return model;
+        return pid;
     }
 
 }
