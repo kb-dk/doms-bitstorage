@@ -91,17 +91,17 @@ public class HookApprove extends AbstractInvocationHandler {
     /**
      * The Fedora Management module
      */
-    private ManagementModule m_manager;
+    private ManagementModule managementModule;
 
     /**
      * The Fedora Access Module
      */
-    private Access m_access;
+    private Access accessModule;
 
     /**
      * The Fedora Server module
      */
-    private Server s_server;
+    private Server serverModule;
 
     /**
      * The list of content models that are hooked. An object must have
@@ -143,26 +143,27 @@ public class HookApprove extends AbstractInvocationHandler {
             return;
         }
 
-        s_server = Server.getInstance(new File(Constants.FEDORA_HOME), false);
+        serverModule = Server.getInstance(new File(Constants.FEDORA_HOME),
+                false);
 
         filemodels = new LinkedList<String>();
 
         //get the management module
-        m_manager = getManagement();
-        if (m_manager == null) {
+        managementModule = getManagement();
+        if (managementModule == null) {
             throw new FileCouldNotBePublishedException("Could not get the " +
                     "management module from fedora");
         }
 
         //get the access module
-        m_access = getAccess();
-        if (m_access == null) {
+        accessModule = getAccess();
+        if (accessModule == null) {
             throw new FileCouldNotBePublishedException("Could not get the " +
                     "Access module from Fedora");
         }
 
         //read the parameters from the management module
-        String filecmodel = m_manager.getParameter(
+        String filecmodel = managementModule.getParameter(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel");
         if (filecmodel != null) {
             filemodels.add(filecmodel);
@@ -173,7 +174,7 @@ public class HookApprove extends AbstractInvocationHandler {
                             " disabling hookapprove");
         }
 
-        String webservicelocation = m_manager.getParameter(
+        String webservicelocation = managementModule.getParameter(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation");
         if (webservicelocation == null) {
             webservicelocation = "http://localhost:8080/ecm/validate/";//TODO
@@ -200,10 +201,11 @@ public class HookApprove extends AbstractInvocationHandler {
      * @return the Access Module
      */
     private Access getAccess() {
-        Access module = (Access) s_server.getModule(
+        Access module = (Access) serverModule.getModule(
                 "org.fcrepo.server.access.Access");
         if (module == null) {
-            module = (Access) s_server.getModule("fedora.server.access.Access");
+            module = (Access) serverModule.getModule(
+                    "fedora.server.access.Access");
         }
         return module;
     }
@@ -214,10 +216,10 @@ public class HookApprove extends AbstractInvocationHandler {
      * @return the Management module
      */
     private ManagementModule getManagement() {
-        ManagementModule module = (ManagementModule) s_server.getModule(
+        ManagementModule module = (ManagementModule) serverModule.getModule(
                 "org.fcrepo.server.management.Management");
         if (module == null) {
-            module = (ManagementModule) s_server.getModule(
+            module = (ManagementModule) serverModule.getModule(
                     "fedora.server.management.Management");
         }
         return module;
@@ -275,7 +277,7 @@ public class HookApprove extends AbstractInvocationHandler {
 
             //Get profile to check it the object has the correct content model
             // and save the profile for rollback
-            ObjectProfile profile = m_access.getObjectProfile(context,
+            ObjectProfile profile = accessModule.getObjectProfile(context,
                     pid,
                     null);
 
