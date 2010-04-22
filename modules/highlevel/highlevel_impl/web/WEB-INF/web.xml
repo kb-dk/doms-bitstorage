@@ -59,7 +59,6 @@
         <servlet-name>WSServlet</servlet-name>
     </filter-mapping>
 
-
     <context-param>
         <description>The location of the WSDL for the characterisation service
             to be used by the highlevel service
@@ -116,6 +115,16 @@
         <param-value>CONTENTS</param-value>
     </context-param>
 
+    <context-param>
+        <description>The class that will be exposed for surveillance
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.domsutil.surveyable.surveyables
+        </param-name>
+        <param-value>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance.RealTimeService
+        </param-value>
+    </context-param>
 
     <servlet>
         <description>JAX-WS endpoint</description>
@@ -129,7 +138,6 @@
         <servlet-name>WSServlet</servlet-name>
         <url-pattern>/highlevel/*</url-pattern>
     </servlet-mapping>
-
 
     <servlet>
         <servlet-name>URL provider</servlet-name>
@@ -146,61 +154,4 @@
         <servlet-name>URL provider</servlet-name>
         <url-pattern>/URLprovider/*</url-pattern>
     </servlet-mapping>
-
-
-    <!--Below here is the surveilance-->
-
-    <servlet>
-        <servlet-name>Highlevel Bitstorage Log Surveillance</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
-        </servlet-class>
-        <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>dk.statsbiblioteket.doms.surveillance.rest
-            </param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Highlevel Bitstorage Log Surveillance</servlet-name>
-        <url-pattern>/highlevelbitstoragelogsurveillanceservice/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Highlevel Bitstorage Real Time Surveillance</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
-        </servlet-class>
-        <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>
-                dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance
-            </param-value>
-        </init-param>
-        <init-param>
-            <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.location
-            </param-name>
-            <param-value>
-                http://localhost:8080/highlevelbitstorage/highlevel/?wsdl
-            </param-value>
-        </init-param>
-        <init-param>
-            <param-name>
-                dk.statsbiblioteket.doms.bitstorage.highlevel.preferredBytesLeft
-            </param-name>
-            <param-value>1000000
-            </param-value>
-        </init-param>
-        <init-param>
-            <param-name>
-                dk.statsbiblioteket.doms.bitstorage.highlevel.requiredBytesLeft
-            </param-name>
-            <param-value>100000
-            </param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Highlevel Bitstorage Real Time Surveillance</servlet-name>
-        <url-pattern>/highlevelbitstoragerealtimesurveillanceservice/*
-        </url-pattern>
-    </servlet-mapping>
-
 </web-app>

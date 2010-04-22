@@ -112,6 +112,16 @@
         </param-value>
     </context-param>
 
+    <context-param>
+        <description>The class that will be exposed for surveillance
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.domsutil.surveyable.surveyables
+        </param-name>
+        <param-value>
+            dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance.RealTimeService
+        </param-value>
+    </context-param>
 
     <servlet>
         <description>JAX-WS endpoint</description>
@@ -125,43 +135,4 @@
         <servlet-name>WSServlet</servlet-name>
         <url-pattern>/lowlevel/*</url-pattern>
     </servlet-mapping>
-
-
-    <!--Below here is the surveilance-->
-
-    <servlet>
-        <servlet-name>Lowlevel Bitstorage Log Surveillance</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
-        </servlet-class>
-        <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>dk.statsbiblioteket.doms.surveillance.rest
-            </param-value>
-        </init-param>
-
-
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Lowlevel Bitstorage Log Surveillance</servlet-name>
-        <url-pattern>/lowlevelbitstoragelogsurveillanceservice/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>Lowlevel Bitstorage Real Time Surveillance</servlet-name>
-        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
-        </servlet-class>
-        <init-param>
-            <param-name>com.sun.jersey.config.property.packages</param-name>
-            <param-value>
-                dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance
-            </param-value>
-        </init-param>
-
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Lowlevel Bitstorage Real Time Surveillance</servlet-name>
-        <url-pattern>/lowlevelbitstoragerealtimesurveillanceservice/*
-        </url-pattern>
-    </servlet-mapping>
-
 </web-app>

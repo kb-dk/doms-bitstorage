@@ -38,4 +38,14 @@
             port="{http://highlevel.bitstorage.doms.statsbiblioteket.dk/}HighlevelBitstorageSoapWebservicePort"
             url-pattern='/highlevel/'
             />
+
+    <endpoint
+            name='SurveyableService'
+            interface='dk.statsbiblioteket.doms.domsutil.surveyable.Surveyable'
+            implementation='dk.statsbiblioteket.doms.domsutil.surveyable.SurveyableWebservice'
+            wsdl='WEB-INF/wsdl/surveyable.wsdl'
+            service="{http://surveyable.domsutil.doms.statsbiblioteket.dk/}SurveyableService"
+            port="{http://surveyable.domsutil.doms.statsbiblioteket.dk/}SurveyablePort"
+            url-pattern='/highlevelsurveyable/'
+            />
 </endpoints>
