@@ -512,18 +512,6 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/lib/domsutil-0.0.3/jars" recursive="false" />
     </library>
-    <library name="log4j-1.2.15">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/lib/log4j-1.2.15/jars" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.15/apidocs/log4j-1.2.15-apidocs.zip!/" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.15/src/log4j-1.2.15-src.zip!/" />
-      </SOURCES>
-      <jarDirectory url="file://$PROJECT_DIR$/lib/log4j-1.2.15/jars" recursive="false" />
-    </library>
     <library name="commons-logging-1.1.1">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/commons-logging-1.1.1/jars" />
