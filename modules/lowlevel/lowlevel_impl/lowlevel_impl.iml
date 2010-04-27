@@ -41,7 +41,7 @@
     <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
     <orderEntry type="library" name="log4j-1.2.15" level="project" />
     <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
-    <orderEntry type="library" name="domsutil-0.0.3" level="project" />
+    <orderEntry type="library" name="domsutil-0.0.4" level="project" />
   </component>
 </module>
 
