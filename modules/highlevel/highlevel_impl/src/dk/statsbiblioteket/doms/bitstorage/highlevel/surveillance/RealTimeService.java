@@ -30,12 +30,10 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebserviceService;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.Operation;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.StatusInformation;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.*;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StatusInformation;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StaticStatus;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.status.Operation;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
@@ -55,7 +53,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-/** Class that exposes real time system info for high-level bitstorage as
+/**
+ * Class that exposes real time system info for high-level bitstorage as
  * surveyable messages over REST.
  */
 @QAInfo(level = QAInfo.Level.NORMAL,
@@ -63,40 +62,59 @@ import java.util.Properties;
         author = "jrg",
         reviewers = {"kfc"})
 
-@Path("/RealTimeService/")  // Part of the url to this webservice, inserted at
+@Path("/RealTimeService/")
+// Part of the url to this webservice, inserted at
 //                             * in the relevant url-pattern in web.xml
 public class RealTimeService implements Surveyable {
-    /** Logger for this class. */
+    /**
+     * Logger for this class.
+     */
     private Log log = LogFactory.getLog(getClass());
 
-    /** The time when the getStatus method of this class is called. */
+    /**
+     * The time when the getStatus method of this class is called.
+     */
     private long timeOfGetStatusCall;
 
-    /** The name of the system being surveyed by through this class. */
+    /**
+     * The name of the system being surveyed by through this class.
+     */
     private static final String SURVEYEE_NAME = "High-level bitstorage";
 
-    /** Common prefix of those parameters in web.xml which are used in this
-     * class.*/
+    /**
+     * Common prefix of those parameters in web.xml which are used in this
+     * class.
+     */
     private static final String PACKAGE_NAME
             = "dk.statsbiblioteket.doms.bitstorage.highlevel";
 
-    /** Parameter in web.xml describing where the wsdl file for the surveyee is
-     * located.  */
+    /**
+     * Parameter in web.xml describing where the wsdl file for the surveyee is
+     * located.
+     */
     private static final String PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL
             = PACKAGE_NAME + ".location";
 
-    /** The URL describing where the wsdl file for the surveyee is located. */
+    /**
+     * The URL describing where the wsdl file for the surveyee is located.
+     */
     private String location;
 
-    /** The namespace of the service */
+    /**
+     * The namespace of the service
+     */
     private static final String SERVICE_NAMESPACE_URI
             = "http://highlevel.bitstorage.doms.statsbiblioteket.dk/";
 
-    /** The name of the service */
+    /**
+     * The name of the service
+     */
     private static final String SERVICE_NAME =
             "HighlevelBitstorageSoapWebserviceService";
 
-    /** The fully qualified name of the service to monitor
+    /**
+     * The fully qualified name of the service to monitor
+     *
      * @see #SERVICE_NAME
      * @see #SERVICE_NAMESPACE_URI
      */
@@ -104,12 +122,14 @@ public class RealTimeService implements Surveyable {
             = new QName(SERVICE_NAMESPACE_URI, SERVICE_NAME);
 
 
-    /** Will be called by the webservice framework after the call of the
+    /**
+     * Will be called by the webservice framework after the call of the
      * constructor. Reads parameters from web.xml.
      * This method serves as fault barrier. All exceptions are caught and
      * logged.
      */
-    @PostConstruct // Will be called after the call of the constructor
+    @PostConstruct
+    // Will be called after the call of the constructor
     private void initialize() {
         log.trace("Entered method initialize()");
         Properties props;
@@ -120,14 +140,15 @@ public class RealTimeService implements Surveyable {
             location = props.getProperty(
                     PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
             log.info("Location of wsdl for surveyee now set to '"
-                    + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
+                     + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
         } catch (Exception e) {
             log.error("Exception caught by fault barrier", e);
         }
     }
 
 
-    /** Returns only the current real time info.
+    /**
+     * Returns only the current real time info.
      *
      * @param time This given date is ignored.
      * @return A status containing list of status messages.
@@ -141,7 +162,8 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    /** Returns real time info about the current state of the highlevel
+    /**
+     * Returns real time info about the current state of the highlevel
      * bitstorage webservice.
      * This method serves as fault barrier. All exceptions are caught and turned
      * into a status message.
@@ -164,22 +186,23 @@ public class RealTimeService implements Surveyable {
             // Create status covering exception
             status = makeStatus(Severity.RED,
                                 "Exception caught by fault barrier: "
-                                        + e.getMessage());
+                                + e.getMessage());
         }
 
         return status;
     }
 
 
-    /** Tries to connect to highlevel-bitstorage and calls the status method
+    /**
+     * Tries to connect to highlevel-bitstorage and calls the status method
      * there.
      *
      * @return A status containing list of status messages.
-     *
      */
     private Status checkHighlevelBitstorageForCurrentState()
             throws BrokenURLException, HighlevelBitstorageUnreachableException,
-            BitstorageCommunicationException, BitstorageHighlevelSoapException {
+                   BitstorageCommunicationException,
+                   BitstorageHighlevelSoapException {
         log.trace("Entered method checkHighlevelBitstorageForCurrentState()");
 
         HighlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
@@ -193,13 +216,14 @@ public class RealTimeService implements Surveyable {
             wsdlLocation = new URL(location);
         } catch (MalformedURLException e) {
             throw new BrokenURLException("URL to highlevel bitstorage WSDL is"
-                    + " broken. URL is: '" + location + "'", e);
+                                         + " broken. URL is: '" + location
+                                         + "'", e);
         }
 
         try {
             bitstorageWebserviceFactory
                     = new HighlevelBitstorageSoapWebserviceService(wsdlLocation,
-                    SERVICE_QNAME);
+                                                                   SERVICE_QNAME);
 
             bitstorageService = bitstorageWebserviceFactory
                     .getHighlevelBitstorageSoapWebservicePort();
@@ -210,21 +234,23 @@ public class RealTimeService implements Surveyable {
         }
 
         try {
-            highlevelBitstorageStatus = bitstorageService.status();
+            highlevelBitstorageStatus = StaticStatus.status();
         } catch (CommunicationException e) {
             /* No comms with highlevel bitstorage. Throwing fault exception to
             be caught by fault barrier.*/
             throw new BitstorageCommunicationException("Trying to call method "
-                    + "'status' of the highlevel"
-                    + " bitstorage webservice"
-                    + " gave a CommunicationException.", e);
+                                                       + "'status' of the highlevel"
+                                                       + " bitstorage webservice"
+                                                       + " gave a CommunicationException.",
+                                                       e);
         } catch (HighlevelSoapException e) {
             /* No comms with highlevel bitstorage. Throwing fault exception to
             be caught by fault barrier.*/
             throw new BitstorageHighlevelSoapException("Trying to call method "
-                    + "'status' of the highlevel"
-                    + " bitstorage webservice"
-                    + " gave a HighlevelSoapException.", e);
+                                                       + "'status' of the highlevel"
+                                                       + " bitstorage webservice"
+                                                       + " gave a HighlevelSoapException.",
+                                                       e);
         }
 
         // Now collect status messages from different parts of the status
@@ -238,18 +264,19 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    /** Constructs a status message listing the currently running operations
+    /**
+     * Constructs a status message listing the currently running operations
      * in highlevel bitstorage.
      *
      * @param highlevelBitstorageStatus A StatusInformation object as returned
-     * by method 'status' of the highlevel bitstorage web service
+     *                                  by method 'status' of the highlevel bitstorage web service
      * @return A status message listing the currently running operations in
-     * highlevel bitstorage.
+     *         highlevel bitstorage.
      */
     private StatusMessage makeStatusMessageForCurrentOperations(
             StatusInformation highlevelBitstorageStatus) {
         log.trace("Entered method makeStatusMessageForCurrentOperations('"
-                + highlevelBitstorageStatus.toString() + "')");
+                  + highlevelBitstorageStatus.toString() + "')");
         List<Operation> runningOperations
                 = highlevelBitstorageStatus.getOperations();
         String message = "Currently running operations: ";
@@ -265,17 +292,17 @@ public class RealTimeService implements Surveyable {
             }
 
             message += "Operation '" + operation.getHighlevelMethod()
-                    + "'<br />"
-                    + "with ID '" + operation.getID() + "'<br />"
-                    + "started at '"
-                    + whenOperationStarted.toGregorianCalendar().getTime()
+                       + "'<br />"
+                       + "with ID '" + operation.getID() + "'<br />"
+                       + "started at '"
+                       + whenOperationStarted.toGregorianCalendar().getTime()
                     .toString()
-                    + "'.<br />"
-                    + "Acting on "
-                    + "Fedora PID '" + operation.getFedoraPid() + "',<br />"
-                    + "Fedora datastream '" + operation.getFedoraDatastream()
-                    + "',<br />"
-                    + "File size '" + operation.getFileSize() + "'";
+                       + "'.<br />"
+                       + "Acting on "
+                       + "Fedora PID '" + operation.getFedoraPid() + "',<br />"
+                       + "Fedora datastream '" + operation.getFedoraDatastream()
+                       + "',<br />"
+                       + "File size '" + operation.getFileSize() + "'";
 
             atleastOneOperationListed = true;
         }
@@ -292,13 +319,14 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    /** Constructs a status containing a status message with the input severity,
+    /**
+     * Constructs a status containing a status message with the input severity,
      * input message, and the current system time.
      *
      * @param severity The severity to be given to the returned status
-     * @param message The message to be entered in the returned status
+     * @param message  The message to be entered in the returned status
      * @return A status containing a message with the given severity and message
-     * text
+     *         text
      */
     private Status makeStatus(Severity severity, String message) {
         log.trace("Entered method makeStatus('" + severity + "', '" + message

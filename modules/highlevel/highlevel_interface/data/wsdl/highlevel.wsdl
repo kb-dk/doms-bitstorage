@@ -89,13 +89,15 @@
     <message name="publishResponse">
         <part name="parameters" element="tns:publishResponse"/>
     </message>
-    <message name="status">
-        <part name="parameters" element="tns:status"/>
-    </message>
-    <message name="statusResponse">
-        <part name="results" element="tns:statusResponse"/>
-    </message>
+    <!--
+        <message name="status">
+            <part name="parameters" element="tns:status"/>
+        </message>
+        <message name="statusResponse">
+            <part name="results" element="tns:statusResponse"/>
+        </message>
 
+    -->
 
     <portType name="HighlevelBitstorageSoapWebservice">
         <documentation>Java interface the bitstorage system.
@@ -175,15 +177,17 @@
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
         </operation>
-        <operation name="status">
-            <documentation>Gives the status of the bitstorage, including
-                running jobs and free space.
-            </documentation>
-            <input message="tns:status"/>
-            <output message="tns:statusResponse"/>
-            <fault message="tns:CommunicationException"
-                   name="CommunicationException"/>
-        </operation>
+        <!--
+                <operation name="status">
+                    <documentation>Gives the status of the bitstorage, including
+                        running jobs and free space.
+                    </documentation>
+                    <input message="tns:status"/>
+                    <output message="tns:statusResponse"/>
+                    <fault message="tns:CommunicationException"
+                           name="CommunicationException"/>
+                </operation>
+        -->
 
     </portType>
     <binding name="HighlevelBitstorageSoapWebservicePortBinding"
@@ -289,18 +293,20 @@
 
 
         </operation>
-        <operation name="status">
-            <soap:operation soapAction=""/>
-            <input>
-                <soap:body use="literal"/>
-            </input>
-            <output>
-                <soap:body use="literal"/>
-            </output>
-            <fault name="CommunicationException">
-                <soap:fault name="CommunicationException" use="literal"/>
-            </fault>
-        </operation>
+        <!--
+                <operation name="status">
+                    <soap:operation soapAction=""/>
+                    <input>
+                        <soap:body use="literal"/>
+                    </input>
+                    <output>
+                        <soap:body use="literal"/>
+                    </output>
+                    <fault name="CommunicationException">
+                        <soap:fault name="CommunicationException" use="literal"/>
+                    </fault>
+                </operation>
+        -->
 
     </binding>
     <service name="HighlevelBitstorageSoapWebserviceService">
