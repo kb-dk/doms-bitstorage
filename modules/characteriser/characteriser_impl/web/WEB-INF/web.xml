@@ -44,9 +44,16 @@
     </listener>
 
     <context-param>
-        <param-name>testParam</param-name>
-        <param-value>testValue</param-value>
+        <description>The class that will be exposed for surveillance
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.domsutil.surveyable.surveyables
+        </param-name>
+        <param-value>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.frontend.CharacteriserSurveyable
+        </param-value>
     </context-param>
+
     <servlet>
         <description>JAX-WS endpoint</description>
         <display-name>WSServlet</display-name>
