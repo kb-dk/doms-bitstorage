@@ -26,7 +26,19 @@
   ~ under the License.
   -->
 
-<xs:schema version="1.0" targetNamespace="http://surveyable.domsutil.doms.statsbiblioteket.dk/" xmlns:tns="http://surveyable.domsutil.doms.statsbiblioteket.dk/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema version="1.0"
+           targetNamespace="http://surveyable.domsutil.doms.statsbiblioteket.dk/" xmlns:tns="http://surveyable.domsutil.doms.statsbiblioteket.dk/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc">
+    <xs:annotation>
+      <xs:appinfo>
+        <jaxb:globalBindings>
+          <xjc:simple />
+        </jaxb:globalBindings>
+      </xs:appinfo>
+    </xs:annotation>
 
   <xs:element name="getStatus" type="tns:getStatus"/>
 

@@ -140,6 +140,19 @@
     </servlet-mapping>
 
     <servlet>
+        <description>JAX-WS endpoint</description>
+        <display-name>WSServletSurveyable</display-name>
+        <servlet-name>WSServletSurveyable</servlet-name>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet
+        </servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>WSServletSurveyable</servlet-name>
+        <url-pattern>/highlevelsurveyable/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>URL provider</servlet-name>
         <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer
         </servlet-class>
