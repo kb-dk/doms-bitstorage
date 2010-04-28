@@ -57,6 +57,6 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>WSServlet</servlet-name>
-        <url-pattern>/characterise/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </servlet-mapping>
 </web-app>
