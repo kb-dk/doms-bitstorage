@@ -81,7 +81,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="sbutils-0.4.8" level="project" />
-    <orderEntry type="library" name="domsutil-0.0.4" level="project" />
+    <orderEntry type="library" name="domsutil-0.0.5" level="project" />
   </component>
 </module>
 
