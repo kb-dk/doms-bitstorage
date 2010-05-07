@@ -28,7 +28,20 @@
 
 <xs:schema xmlns:tns="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
-           targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/">
+           targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc">
+
+    <xs:annotation>
+        <xs:appinfo>
+            <jaxb:globalBindings>
+                <xjc:simple/>
+            </jaxb:globalBindings>
+        </xs:appinfo>
+    </xs:annotation>
 
 
     <!--Exceptions-->
@@ -58,9 +71,9 @@
     <xs:element name="FileIsLockedException" type="xs:string"/>
 
     <!--<xs:complexType name="characterisation">
-        <xs:sequence>
-            <xs:element name="problem" type="xs:anyType"/>
---><!--            <xs:any minOccurs="0"/>--><!--
+            <xs:sequence>
+                <xs:element name="problem" type="xs:anyType"/>
+    --><!--            <xs:any minOccurs="0"/>--><!--
         </xs:sequence>
     </xs:complexType>
 -->
