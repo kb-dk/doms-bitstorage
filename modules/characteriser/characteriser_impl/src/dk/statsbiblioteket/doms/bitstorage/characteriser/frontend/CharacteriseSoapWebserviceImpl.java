@@ -45,8 +45,12 @@ import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.jws.WebParam;
 import javax.jws.WebService;
+import javax.xml.ws.Service;
+import javax.xml.namespace.QName;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.*;
 
 /**
@@ -64,9 +68,9 @@ public class CharacteriseSoapWebserviceImpl implements
     //TODO get identificationMethods from config file. Perhaps in the Initialization?
 
 
-    private List<Identify> identifiers;
+    private List<Identify> identifiers = new ArrayList<Identify>();
     private boolean initialised = false;
-    private List<Validate> validators;
+    private List<Validate> validators = new ArrayList<Validate>();
     private Map<URI, List<Validate>> validateMap;
 
     private void initialise() {
@@ -74,11 +78,47 @@ public class CharacteriseSoapWebserviceImpl implements
             return;
         }
 
-        // TODO actual implementation of getting setup and tools.
-        String testparam = ConfigCollection.getProperties().getProperty(
-                "testParam");
 
-        //TODO read a list of validators from a config file
+        Set<Object> keys = ConfigCollection.getProperties().keySet();
+
+
+        for (Object key : keys) {
+            if (key.toString().startsWith(
+                    "dk.statsbiblioteket.doms.bitstorage.characteriser.validatorservice")) {
+                String validatorwsdl
+                        = ConfigCollection.getProperties().getProperty(key.toString());
+                try {
+                    Validate service = Service.create(new URL(validatorwsdl),
+                                                      new QName(
+                                                              "http://lowlevel.bitstorage.doms.statsbiblioteket.dk/",
+                                                              "LowlevelBitstorageSoapWebserviceService")).getPort(
+                            Validate.class);//TODO QNAME, MTOM PROPERTIES
+                    validators.add(service);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+            }
+        }
+
+        for (Object key : keys) {
+            if (key.toString().startsWith(
+                    "dk.statsbiblioteket.doms.bitstorage.characteriser.identifierservice")) {
+                String validatorwsdl
+                        = ConfigCollection.getProperties().getProperty(key.toString());
+                try {
+                    Identify service = Service.create(new URL(validatorwsdl),
+                                                      new QName(
+                                                              "http://lowlevel.bitstorage.doms.statsbiblioteket.dk/",
+                                                              "LowlevelBitstorageSoapWebserviceService")).getPort(
+                            Identify.class);//TODO QNAME, MTOM PROPERTIES
+                    identifiers.add(service);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
+            }
+        }
 
         //populate validateMap
         for (Validate validator : validators) {
