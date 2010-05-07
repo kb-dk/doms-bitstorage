@@ -28,7 +28,20 @@
 
 <xs:schema xmlns:tns="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
-           targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/">
+           targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc">
+
+    <xs:annotation>
+        <xs:appinfo>
+            <jaxb:globalBindings>
+                <xjc:simple/>
+            </jaxb:globalBindings>
+        </xs:appinfo>
+    </xs:annotation>
 
 
     <xs:element name="CommunicationException"
@@ -36,24 +49,39 @@
 
     <xs:element name="FileNotAvailableException" type="xs:string"/>
 
-    <xs:element name="characteriseResponse" type="tns:characterisation"/>
-    <xs:element name="pid" type="tns:fedoraPid"/>
+    <xs:element name="characteriseResponse" type="tns:characteriseResponse"/>
+
+
+    <xs:element name="characterise" type="tns:characterise"/>
+
+    <xs:element name="pid" type="xs:string"/>
+    <xs:element name="acceptedFormats" type="xs:anyURI"/>
 
     <!--
         <xs:element name="characterizationOutput" nillable="true" type="xs:base64Binary"/>
     -->
 
+    <xs:complexType name="characteriseResponse">
+        <xs:sequence>
+            <xs:element name="characterisation" type="tns:characterisation"/>
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="characterisation">
         <xs:sequence>
             <xs:element name="md5CheckSum" type="xs:string"/>
-            <xs:element name="pronomID"  type="xs:anyURI" maxOccurs="unbounded" />
-            <xs:element name="validationStatus"  type="xs:string"/>
+            <xs:element name="pronomID" type="xs:anyURI" maxOccurs="unbounded"/>
+            <xs:element name="validationStatus" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
 
-    <xs:simpleType name="fedoraPid">
-        <xs:restriction base="xs:string"/>
-    </xs:simpleType>
+    <xs:complexType name="characterise">
+        <xs:sequence>
+            <xs:element ref="tns:pid"/>
+            <xs:element ref="tns:acceptedFormats" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
 
+    </xs:complexType>
 </xs:schema>

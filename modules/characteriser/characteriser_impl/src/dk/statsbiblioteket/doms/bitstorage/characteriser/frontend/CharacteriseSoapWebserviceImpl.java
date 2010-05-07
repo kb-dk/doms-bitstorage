@@ -32,13 +32,14 @@ import eu.planets_project.services.datatypes.DigitalObject;
 import eu.planets_project.services.datatypes.ServiceDescription;
 import eu.planets_project.services.identify.Identify;
 import eu.planets_project.services.identify.IdentifyResult;
+import eu.planets_project.services.validate.Validate;
+import eu.planets_project.services.validate.ValidateResult;
+import eu.planets_project.fedora.FedoraObjectManager;
+import eu.planets_project.fedora.connector.FedoraConnectionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
-import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice;
-import dk.statsbiblioteket.doms.bitstorage.characteriser.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.characteriser.FileNotAvailableException;
+import dk.statsbiblioteket.doms.bitstorage.characteriser.*;
 import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
@@ -46,11 +47,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -59,21 +56,46 @@ import java.util.Map;
         state = QAInfo.State.QA_OK)
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice")
 public class CharacteriseSoapWebserviceImpl implements
-        CharacteriseSoapWebservice {
+                                            CharacteriseSoapWebservice {
 
     Log log = LogFactory.getLog(getClass());    // Log for the class
     private DigitalObjectManager fedora;
-    private Map<IdentifyResult.Method, List<Identify>> identificationMethods; //TODO get identificationMethods from config file. Perhaps in the Initialization?
-    private boolean initialised = false;
+    private Map<IdentifyResult.Method, List<Identify>> identificationMethods;
+    //TODO get identificationMethods from config file. Perhaps in the Initialization?
 
+
+    private List<Identify> identifiers;
+    private boolean initialised = false;
+    private List<Validate> validators;
+    private Map<URI, List<Validate>> validateMap;
 
     private void initialise() {
         if (initialised) {
             return;
         }
-        
+
         // TODO actual implementation of getting setup and tools.
-        String testparam = ConfigCollection.getProperties().getProperty("testParam");
+        String testparam = ConfigCollection.getProperties().getProperty(
+                "testParam");
+
+        //TODO read a list of validators from a config file
+
+        //populate validateMap
+        for (Validate validator : validators) {
+            ServiceDescription description = validator.describe();
+            List<URI> inputformats = description.getInputFormats();
+            for (URI informat : inputformats) {
+                List<Validate> list = validateMap.get(informat);
+                if (list == null) {
+                    list = new ArrayList<Validate>();
+                    list.add(validator);
+                    validateMap.put(informat, list);
+                } else {
+                    list.add(validator);
+                }
+            }
+        }
+
 
         initialised = true;
     }
@@ -83,131 +105,166 @@ public class CharacteriseSoapWebserviceImpl implements
      * This method degrades on which identification method is used, the
      * following is the ordering that is used, the best method with a result has
      * its result returned.
-     *
+     * <p/>
      * The order of identification methods are:
      * 1)  Full Parse
      * 2)  Partial Parse
      * 3)  Magic
      * 4)  Metadata
      * 5)  Extension
-     * 6)  Other 
-     *  
+     * 6)  Other
+     *
      * @param pid of the object being identified
      * @return the characterisation of the object pertaining to the PID
      * @throws CommunicationException
      * @throws FileNotAvailableException if there is no file relating to the PID
      */
+
+
     public Characterisation characterise(
-            @WebParam(name = "pid",
-                    targetNamespace = "http://characteriser.bitstorage.doms.statsbiblioteket.dk/",
-                    partName = "pid")
-            String pid)
-            throws CommunicationException, FileNotAvailableException {
+            @WebParam(name = "pid", targetNamespace = "")
+            String pid,
+            @WebParam(name = "acceptedFormats",
+                      targetNamespace = "")
+            List<String> acceptedFormats)
+            throws
+            CommunicationException,
+            FileNotAvailableException,
+            CharacteriseSoapException {
+        //To change body of implemented methods use File | Settings | File Templates.
+        //Design
+        // 0. Upon startup, query all validate services about their inputformats
+        //Upon invocation
+        // 1. Gotten accepted formats as part of invocation
+        // 2. Indentify with all identify services.
+        // 3. If the file did not identify to one of the accepted formats, return
+        // 4. combine the three lists, to a list of validators
+        // 5. Validate with the validators
+        // 6. return
+
+        // 0. Upon startup, query all validate services about their inputformats
         initialise();
 
-        Characterisation returnCharacterisation = new Characterisation();
-        returnCharacterisation.setMd5CheckSum(""); // MD5sum is not needed.
-        DigitalObject studiedObject = null;
-        URI uri = null;
+        ArrayList<URI> acceptedFormatsURIs = new ArrayList<URI>();
 
-        try {
-            uri = new URI(pid);
-            studiedObject = fedora.retrieve(uri);
-        } catch (URISyntaxException e) {
-            String message = "URISyntax failex with exception: " + e;
-            log.error(message, e);
-            // TODO Error Handling
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (DigitalObjectManager.DigitalObjectNotFoundException e) {
-            String message = "Digital object not found: " + e;
-            log.error(message, e);
-            // TODO Error Handling
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-
-        Map<ServiceDescription, IdentifyResult> identificationResult;
-        identificationResult = new HashMap();
-        Map<IdentifyResult.Method, Map<ServiceDescription, IdentifyResult>>
-                identificationMethodResult = new HashMap();
-        Map<IdentifyResult.Method, List<URI>> resultMap = new HashMap();
-        Collection methods = identificationMethods.keySet();
-
-        for (Object method : methods) {
-            List<Identify> identificationTools
-                    = identificationMethods.get((IdentifyResult.Method) method);
-
-            for (Identify identifier : identificationTools) {
-                IdentifyResult objectIdentity
-                        = identifier.identify(studiedObject, null);
-                ServiceDescription toolDescription = identifier.describe();
-                identificationResult.put(toolDescription,
-                        objectIdentity);
-                resultMap.put(objectIdentity.getMethod(),
-                              objectIdentity.getTypes());
+        for (String acceptedFormat : acceptedFormats) {
+            try {
+                acceptedFormatsURIs.add(new URI(acceptedFormat));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-            identificationMethodResult.put((IdentifyResult.Method) method,
-                    identificationResult);
         }
 
-        List<String> pronomIDs;
-        String validationStatus;
-        /**
-         * Use the higest valued method, returning results, to set the values
-         * that make up the returnCharacterisation values.
-         */
-        if (resultMap.get(IdentifyResult.Method.FULL_PARSE).size()>0){
-            pronomIDs = convertURI(resultMap.get(
-                    IdentifyResult.Method.FULL_PARSE));
-            validationStatus = "FULL_PARSE";
-            identificationResult = identificationMethodResult.get(
-                    IdentifyResult.Method.FULL_PARSE);
-        } else if (resultMap.get(IdentifyResult.Method.PARTIAL_PARSE).size()>0){
-            pronomIDs = convertURI(resultMap.get(
-                    IdentifyResult.Method.PARTIAL_PARSE));
-            validationStatus = "PARTIAL_PARSE";
-            identificationResult = identificationMethodResult.get(
-                    IdentifyResult.Method.PARTIAL_PARSE);
-        } else if (resultMap.get(IdentifyResult.Method.MAGIC).size()>0){
-            pronomIDs = convertURI(resultMap.get(IdentifyResult.Method.MAGIC));
-            validationStatus = "MAGIC";
-            identificationResult = identificationMethodResult.get(
-                    IdentifyResult.Method.MAGIC);
-        } else if (resultMap.get(IdentifyResult.Method.METADATA).size()>0){
-            pronomIDs = convertURI(resultMap.get(
-                    IdentifyResult.Method.METADATA));
-            validationStatus = "METADATA";
-            identificationResult = identificationMethodResult.get(
-                    IdentifyResult.Method.METADATA);
-        } else if (resultMap.get(IdentifyResult.Method.EXTENSION).size()>0){
-            pronomIDs = convertURI(resultMap.get(
-                    IdentifyResult.Method.EXTENSION));
-            validationStatus = "EXTENSION";
-            identificationResult = identificationMethodResult.get(
-                    IdentifyResult.Method.EXTENSION);
-        } else if (resultMap.get(IdentifyResult.Method.OTHER).size()>0){
-            pronomIDs = convertURI(resultMap.get(IdentifyResult.Method.OTHER));
-            validationStatus = "OTHER";
-            identificationResult = identificationMethodResult.get(
-                    IdentifyResult.Method.OTHER);
+        String username = null, password = null, server = null;
+
+        FedoraObjectManager fedora = null;
+        try {
+            fedora = new FedoraObjectManager(username,
+                                             password,
+                                             server);
+        } catch (FedoraConnectionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        DigitalObject planetsObject = null;
+        try {
+            planetsObject = fedora.retrieve(pidToURI(pid));
+        } catch (DigitalObjectManager.DigitalObjectNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (URISyntaxException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        // 2. Indentify with all identify services.
+        List<IdentifyResult> identifyResults = new ArrayList<IdentifyResult>();
+        for (Identify identifier : identifiers) {
+            IdentifyResult identifyResult = identifier.identify(planetsObject,
+                                                                null);
+            identifyResults.add(identifyResult);
+        }
+
+        // 3. If the file did not identify to one of the accepted formats, return
+        Set<URI> formats = new HashSet<URI>();
+        for (IdentifyResult result : identifyResults) {
+            formats.addAll(result.getTypes());
+        }
+
+        formats.retainAll(acceptedFormats);
+
+        if (formats.size() > 0) {//good
+
         } else {
-            pronomIDs = null;
-            validationStatus = "VALIDATION_FAILED"; // TODO verify that this will at the very least throw an error
-            identificationResult = null;
+            return null;
+            //TODO return error
         }
-        
-        returnCharacterisation.getPronomID().addAll(pronomIDs);
-        returnCharacterisation.setValidationStatus(validationStatus);
-// TODO adapt Characterisation.java to reflect below line 
-//        returnCharacterisation.getIdentificationToolResults().putAll(identificationResult);
-        return returnCharacterisation;
+
+
+        // Get most specific format
+        Map<URI, Integer> votesForFormat = null;//TODO
+
+        for (IdentifyResult identifyResult : identifyResults) {
+            int increment = identifyResult.getMethod().ordinal() + 1;
+            List<URI> identifiedFormats = identifyResult.getTypes();
+            for (URI identifiedFormat : identifiedFormats) {
+                if (acceptedFormats.contains(identifiedFormat)) {
+                    Integer votes = votesForFormat.get(identifiedFormat);
+                    if (votes == null) {
+                        votes = increment;
+                    } else {
+                        votes = votes + increment;
+                    }
+                    votesForFormat.put(identifiedFormat, votes);
+                }
+            }
+        }
+
+        URI bestFormat = null;
+        int votes = 0;
+
+        for (Map.Entry<URI, Integer> uriIntegerEntry : votesForFormat.entrySet()) {
+            if (uriIntegerEntry.getValue() > votes) {
+                votes = uriIntegerEntry.getValue();
+                bestFormat = uriIntegerEntry.getKey();
+            }
+        }
+
+
+        // 4. combine the three lists, to a list of validators
+        // 5. Validate with the validators
+        List<ValidateResult> validateResults = new ArrayList<ValidateResult>();
+        List<ValidateResult> validateResultsForBestFormat
+                = new ArrayList<ValidateResult>();
+        for (URI format : formats) {
+            List<Validate> validatorsForFormat = validateMap.get(format);
+            for (Validate validator : validatorsForFormat) {
+                ValidateResult validateResult
+                        = validator.validate(planetsObject, format, null);
+                validateResults.add(validateResult);
+                if (format.equals(bestFormat)) {
+                    validateResultsForBestFormat.add(validateResult);
+                }
+            }
+        }
+
+
+        //Combine results for some return value.
+
+        //1. ServiceDescription from all identify Services
+        //2. IdenfifyResults from all identify calls
+        //3. ServiceDescription from all Validate services
+        //4. ValidateResults from all validate services
+        // BestFormat
+        // Validate status in regards to this format
+
+        return null;
+
     }
 
-    private List<String> convertURI(Collection<URI> uris) {
-        List<String> retList = new ArrayList<String>();
-        for (URI tmpUri : uris){
-            retList.add(tmpUri.toString());
+    private URI pidToURI(String pid) throws URISyntaxException {
+        if (pid.startsWith("info:fedora/")) {
+            return new URI(pid);
+        } else {
+            return new URI("info:fedora/" + pid);
         }
-        return retList;
     }
-
 }

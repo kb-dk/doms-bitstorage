@@ -55,21 +55,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="characteriser_interface" />
     <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
-    <orderEntry type="module-library">
-      <library name="Planets">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/pserv/jars/pserv-if-common.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/if_storage/jars/pserv-if-storage-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/fedora/jars/pserv-common-fedora.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/if_storage/jars/pserv-if-storage.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="library" name="log4j-1.2.15" level="project" />
     <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
     <orderEntry type="module-library">
       <library>
@@ -82,6 +68,30 @@
     </orderEntry>
     <orderEntry type="library" name="sbutils-0.4.8" level="project" />
     <orderEntry type="library" name="domsutil-0.0.6" level="project" />
+    <orderEntry type="module-library">
+      <library name="FedoraDOM">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/jars/pserv-if-storage-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/jars/FedoraDOM.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/jars/pserv-if-common.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/src/FedoraDOM-1.0.0-src.zip!/src/java" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="characterisation interface module">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../characteriser_interface/dist/characteriser_interface.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/../characteriser_interface/dist/characteriser_interface-src.zip!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
 

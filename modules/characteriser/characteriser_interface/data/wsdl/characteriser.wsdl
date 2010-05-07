@@ -39,18 +39,19 @@
                     schemaLocation="characteriser.xsd"/>
         </xsd:schema>
     </types>
+    <message name="characterise">
+        <part name="parameters" element="tns:characterise"/>
+    </message>
+    <message name="characteriseResponse">
+        <part name="parameters" element="tns:characteriseResponse"/>
+    </message>
+
 
     <message name="FileNotAvailableException">
         <part name="fault" element="tns:FileNotAvailableException"/>
     </message>
     <message name="CommunicationException">
         <part name="fault" element="tns:CommunicationException"/>
-    </message>
-    <message name="characteriseRequest">
-        <part name="pid" element="tns:pid"/>
-    </message>
-    <message name="characteriseResponse">
-        <part name="characteriseReturn" element="tns:characteriseResponse"/>
     </message>
 
     <portType name="CharacteriseSoapWebservice">
@@ -64,7 +65,7 @@
                 calling approveFile before it is actually moved to the permanent
                 bitstorage.
             </documentation>
-            <input message="tns:characteriseRequest"/>
+            <input message="tns:characterise"/>
             <output message="tns:characteriseResponse"/>
             <fault message="tns:FileNotAvailableException"
                    name="FileNotAvailableException"/>
