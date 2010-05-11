@@ -54,6 +54,11 @@
         <part name="fault" element="tns:CommunicationException"/>
     </message>
 
+    <message name="ObjectNotFoundException">
+        <part name="fault" element="tns:ObjectNotFoundException"/>
+    </message>
+
+
     <portType name="CharacteriseSoapWebservice">
         <documentation>Java interface the bitstorage system.
         </documentation>
@@ -71,6 +76,8 @@
                    name="FileNotAvailableException"/>
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
+            <fault message="tns:ObjectNotFoundException"
+                   name="ObjectNotFoundException"/>
         </operation>
     </portType>
     <binding name="CharacteriseSoapWebservicePortBinding"
@@ -91,6 +98,10 @@
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
             </fault>
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+
         </operation>
     </binding>
     <service name="CharacteriseSoapWebserviceService">

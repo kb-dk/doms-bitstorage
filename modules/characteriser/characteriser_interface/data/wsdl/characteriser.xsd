@@ -48,6 +48,7 @@
                 type="xs:string"/>
 
     <xs:element name="FileNotAvailableException" type="xs:string"/>
+    <xs:element name="ObjectNotFoundException" type="xs:string"/>
 
     <xs:element name="characteriseResponse" type="tns:characteriseResponse"/>
 
@@ -69,9 +70,18 @@
 
     <xs:complexType name="characterisation">
         <xs:sequence>
-            <xs:element name="md5CheckSum" type="xs:string"/>
-            <xs:element name="pronomID" type="xs:anyURI" maxOccurs="unbounded"/>
+            <xs:element name="formatURI" type="xs:anyURI"
+                        maxOccurs="unbounded"/>
+            <xs:element name="bestFormat" type="xs:anyURI"/>
             <xs:element name="validationStatus" type="xs:string"/>
+            <xs:element name="identifyServiceDescriptions" type="xs:string"
+                        minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="identifyServiceReports" type="xs:string"
+                        minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="validateServiceDescriptions" type="xs:string"
+                        minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="validateServiceReports" type="xs:string"
+                        minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

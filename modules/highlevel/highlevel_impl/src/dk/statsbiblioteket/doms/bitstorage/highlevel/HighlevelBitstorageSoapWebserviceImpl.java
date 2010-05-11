@@ -315,7 +315,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throws InternalException {
         String message;
         boolean goodfile = true;
-        List<String> objectFormats = characterisation.getPronomIDs();
+        List<String> objectFormats = characterisation.getFormatURIs();
         if (formatURIs != null) {
             if (formatURIs.containsAll(objectFormats)) {
                 //good, allowed type
