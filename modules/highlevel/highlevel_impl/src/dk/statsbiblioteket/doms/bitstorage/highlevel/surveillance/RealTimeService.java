@@ -50,13 +50,12 @@ import java.util.List;
 import java.util.Properties;
 
 /** Class that exposes real time system info for high-level bitstorage as
- * surveyable messages over REST.
+ * surveyable messages.
  */
 @QAInfo(level = QAInfo.Level.NORMAL,
         state = QAInfo.State.QA_OK,
         author = "jrg",
         reviewers = {"kfc"})
-
 public class RealTimeService implements Surveyable {
     /** Logger for this class. */
     private Log log = LogFactory.getLog(getClass());

@@ -30,9 +30,10 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebservice;
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelBitstorageSoapWebserviceService;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions
+        .CommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
@@ -40,10 +41,6 @@ import dk.statsbiblioteket.doms.domsutil.surveyable.Surveyable;
 import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.xml.namespace.QName;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -52,15 +49,12 @@ import java.util.Properties;
 
 /**
  * Class that exposes real time system info for low-level bitstorage as
- * surveyable messages over REST.
+ * surveyable messages.
  */
 @QAInfo(level = QAInfo.Level.NORMAL,
         state = QAInfo.State.QA_NEEDED,
         author = "jrg",
         reviewers = {"kfc"})
-@Path("/RealTimeService/")
-// Part of the url to this webservice, inserted
-// at * in the relevant url-pattern in web.xml
 public class RealTimeService implements Surveyable {
     private Log log = LogFactory.getLog(getClass());
 
@@ -118,14 +112,6 @@ public class RealTimeService implements Surveyable {
     private int requiredSpaceInBitstorage;
 
     /**
-     * The fully qualified name of the service to monitor
-     *
-     * @see #SERVICE_NAME
-     * @see #SERVICE_NAMESPACE_URI
-     */
-    private final QName serviceName;
-
-    /**
      * The namespace of the service
      */
     private static final String SERVICE_NAMESPACE_URI = "http://"
@@ -140,7 +126,6 @@ public class RealTimeService implements Surveyable {
 
     public RealTimeService() {
         log.trace("Entered constructor RealTimeService()");
-        serviceName = new QName(SERVICE_NAMESPACE_URI, SERVICE_NAME);
         log.trace("Entered method initialize()");
         Properties props = ConfigCollection.getProperties();
 
@@ -177,23 +162,17 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    @GET
-    @Path("getStatusSince/{date}")
-    @Produces("application/xml")
     /** Returns only the current real time info.
      *
      * @param time This given date is ignored.
      * @return A status containing list of status messages.
      */
-    public Status getStatusSince(@PathParam("date") long time) {
+    public Status getStatusSince(long time) {
         log.trace("Entered method getStatusSince('" + time + "')");
         return getStatus();
     }
 
 
-    @GET
-    @Path("getStatus")
-    @Produces("application/xml")
     /** Returns real time info about the current state of the lowlevel
      * bitstorage webservice.
      * This method serves as fault barrier. All exceptions are caught and turned
@@ -228,48 +207,15 @@ public class RealTimeService implements Surveyable {
     private Status checkLowlevelBitstorageForCurrentState() {
         log.trace("Entered method checkLowlevelBitstorageForCurrentState()");
 
-        LowlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
-        URL wsdlLocation;
-        LowlevelBitstorageSoapWebservice bitstorageService;
         Long spaceLeftInBitstorage; // In bytes.
 
 
         try {
-            log.debug("Making URL from location: '" + location + "'");
-            wsdlLocation = new URL(location);
-        } catch (MalformedURLException e) {
-            log.error("URL to lowlevel bitstorage WSDL is"
-                    + " broken. URL is: '" + location + "'", e);
-            throw new BrokenURLException("URL to lowlevel bitstorage WSDL is"
-                    + " broken. URL is: '" + location + "'", e);
-        }
+            Bitstorage singeltonBitstorageInstance
+                    = BitstorageFactory.getInstance();
+            spaceLeftInBitstorage = singeltonBitstorageInstance.spaceLeft();
 
-        try {
-            bitstorageWebserviceFactory
-                    = new LowlevelBitstorageSoapWebserviceService(wsdlLocation,
-                    serviceName);
-
-            bitstorageService = bitstorageWebserviceFactory
-                    .getLowlevelBitstorageSoapWebservicePort();
-        } catch (Exception e) {
-            // For some reason, lowlevel bitstorage webservice is unreachable
-            log.error("Lowlevel bitstorage webservice is unreachable.", e);
-            throw new LowlevelBitstorageUnreachableException(
-                    "Lowlevel bitstorage webservice is unreachable.", e);
-        }
-
-        try {
-            spaceLeftInBitstorage = bitstorageService.spaceLeft();
         } catch (CommunicationException e) {
-            /*
-            // Development note: Have tried to find out how to get the
-            // exception which is wrapped in the SOAPFaultException, to no
-            // avail. A googling found several people asking about the same
-            // problem, but no useful answer.
-            if (e.getMessage().startsWith("dk.statsbiblioteket.doms.bitstorage"
-                    + ".lowlevel.backend.exceptions.CommunicationException:")) {
-            */
-
             log.error("Lowlevel bitstorage webservice"
                     + " was called but it couldn't communicate with"
                     + " backend ssh-server.", e);
@@ -286,11 +232,11 @@ public class RealTimeService implements Surveyable {
             );
         } catch (Exception e) {
             log.error("Something went wrong calling"
-                    + " the lowlevel bitstorage webservice.", e);
+                    + " the lowlevel bitstorage.", e);
             // Report something unknown went wrong
             return makeStatus(Severity.RED,
                     "Something went wrong calling"
-                            + " the lowlevel bitstorage webservice."
+                            + " the lowlevel bitstorage."
                             + " Exception thrown with name: '"
                             + e.getClass().getName()
                             + "' and message: ["
