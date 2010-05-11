@@ -81,17 +81,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="characterisation interface module">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/../characteriser_interface/dist/characteriser_interface.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="jar://$MODULE_DIR$/../characteriser_interface/dist/characteriser_interface-src.zip!/" />
-        </SOURCES>
-      </library>
-    </orderEntry>
+    <orderEntry type="module" module-name="characteriser_interface" />
   </component>
 </module>
 

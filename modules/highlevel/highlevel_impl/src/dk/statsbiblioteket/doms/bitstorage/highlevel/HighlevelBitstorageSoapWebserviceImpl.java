@@ -315,7 +315,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throws InternalException {
         String message;
         boolean goodfile = true;
-        List<String> objectFormats = characterisation.getPronomID();
+        List<String> objectFormats = characterisation.getPronomIDs();
         if (formatURIs != null) {
             if (formatURIs.containsAll(objectFormats)) {
                 //good, allowed type
@@ -398,7 +398,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
             StaticStatus.event(op, message);
 
 
-            characterisation = charac.characterise(pid);
+            characterisation = charac.characterise(pid,
+                                                   null);//TODO not fricking null
             message = "File characterised";
             log.debug(message);
             StaticStatus.event(op, message);
