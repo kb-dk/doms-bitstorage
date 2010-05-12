@@ -66,8 +66,8 @@ import com.sun.xml.ws.developer.JAXWSProperties;
 /**
  *
  */
-@QAInfo(author = "eab", reviewers = "", level = QAInfo.Level.NORMAL,
-        state = QAInfo.State.QA_OK)
+@QAInfo(author = "abr", reviewers = "", level = QAInfo.Level.NORMAL,
+        state = QAInfo.State.IN_DEVELOPMENT)
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice")
 public class CharacteriseSoapWebserviceImpl implements
                                             CharacteriseSoapWebservice {
@@ -84,12 +84,13 @@ public class CharacteriseSoapWebserviceImpl implements
     private List<Identify> identifiers = new ArrayList<Identify>();
     private boolean initialised = false;
     private List<Validate> validators = new ArrayList<Validate>();
-    private Map<URI, List<Validate>> validateMap;
+    private Map<URI, List<Validate>> validateMap
+            = new TreeMap<URI, List<Validate>>();
 
 
-    private List<String> identifyServiceDescription;
+    private List<String> identifyServiceDescription = new ArrayList<String>();
 
-    private List<String> validateServiceDescription;
+    private List<String> validateServiceDescription = new ArrayList<String>();
     private JAXBContext jaxbcontext;
 
     private static final String PROPERTIES_PREFIX
@@ -99,6 +100,7 @@ public class CharacteriseSoapWebserviceImpl implements
         if (initialised) {
             return;
         }
+
 
         try {
 
@@ -203,27 +205,6 @@ public class CharacteriseSoapWebserviceImpl implements
 
         initialised = true;
     }
-
-    /**
-     * Retrieve an object and use all available tools in order to identify it.
-     * This method degrades on which identification method is used, the
-     * following is the ordering that is used, the best method with a result has
-     * its result returned.
-     * <p/>
-     * The order of identification methods are:
-     * 1)  Full Parse
-     * 2)  Partial Parse
-     * 3)  Magic
-     * 4)  Metadata
-     * 5)  Extension
-     * 6)  Other
-     *
-     * @param pid of the object being identified
-     * @return the characterisation of the object pertaining to the PID
-     * @throws CommunicationException
-     * @throws FileNotAvailableException if there is no file relating to the PID
-     */
-
 
     public Characterisation characterise(
             @WebParam(name = "pid", targetNamespace = "")
