@@ -54,6 +54,79 @@
         </param-value>
     </context-param>
 
+
+    <context-param>
+        <description>The username for the Fedora server
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.fedora.username
+        </param-name>
+        <param-value>fedoraAdmin
+        </param-value>
+    </context-param>
+    <context-param>
+        <description>The username for the Fedora server
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.fedora.password
+        </param-name>
+        <param-value>fedoraAdminPass
+        </param-value>
+    </context-param>
+    <context-param>
+        <description>The Address of the Fedora server
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.fedora.server
+        </param-name>
+        <param-value>http://localhost:8080/fedora
+        </param-value>
+    </context-param>
+
+
+    <context-param>
+        <description>
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.identifierservice1
+        </param-name>
+        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.identifierservice2
+        </param-name>
+        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <description>
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.characteriser.validatorservice1
+        </param-name>
+        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        </param-value>
+    </context-param>
+
+
+    <context-param>
+        <description>The location of the WSDL for the characterisation service
+            to be used by the highlevel service
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.characteriserlocation
+        </param-name>
+        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        </param-value>
+    </context-param>
+
+
     <servlet>
         <description>JAX-WS endpoint</description>
         <display-name>WSServlet</display-name>
