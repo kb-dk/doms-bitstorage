@@ -79,7 +79,7 @@
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script
         </param-name>
-        <param-value>ssh domstest@halley bin/server.sh
+        <param-value>ssh doms@stage01 bin/server.sh
         </param-value>
     </context-param>
 
