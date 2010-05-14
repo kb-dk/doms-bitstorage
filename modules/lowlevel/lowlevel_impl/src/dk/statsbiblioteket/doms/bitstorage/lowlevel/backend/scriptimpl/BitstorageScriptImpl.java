@@ -136,7 +136,7 @@ public class BitstorageScriptImpl
      * bitstorage.
      * <p/>
      * This method is supposed to use file locking. It delegates this task
-     * to the script, which at the moment, does not do it.
+     * to the script, which at the moment, does not do it. Ok now?
      *
      * @param filename   The filename to store the file by
      * @param data       the inputstream with the file contents
