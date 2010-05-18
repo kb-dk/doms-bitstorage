@@ -71,13 +71,13 @@
     <orderEntry type="module-library">
       <library name="FedoraDOM">
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/jars/pserv-if-storage-api.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/jars/FedoraDOM.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/jars/pserv-if-common.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.3/jars/pserv-if-common.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.3/jars/FedoraDOM.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.3/jars/pserv-if-storage-api.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.0/src/FedoraDOM-1.0.0-src.zip!/src/java" />
+          <root url="jar://$MODULE_DIR$/lib/FedoraDOM-1.0.3/src/FedoraDOM-1.0.2-src.zip!/src/java" />
         </SOURCES>
       </library>
     </orderEntry>
