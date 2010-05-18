@@ -30,6 +30,7 @@ package dk.statsbiblioteket.doms.bitstorage.characteriser.frontend;
 import eu.planets_project.ifr.core.storage.api.DigitalObjectManager;
 import eu.planets_project.services.datatypes.DigitalObject;
 import eu.planets_project.services.datatypes.ServiceDescription;
+import eu.planets_project.services.datatypes.ServiceReport;
 import eu.planets_project.services.identify.Identify;
 import eu.planets_project.services.identify.IdentifyResult;
 import eu.planets_project.services.validate.Validate;
@@ -130,7 +131,7 @@ public class CharacteriseSoapWebserviceImpl implements
                         Service service;
                         service = Service.create(new URL(validatorwsdl),
                                                  new QName(
-                                                         "http://planets-project.eu/services/",
+                                                         "http://planets-project.eu/services",
                                                          "Validate"));
 
                         Validate port = service.getPort(Validate.class,
@@ -162,7 +163,7 @@ public class CharacteriseSoapWebserviceImpl implements
                         Service service;
                         service = Service.create(new URL(indentifyWSDL),
                                                  new QName(
-                                                         "http://planets-project.eu/services/",
+                                                         "http://planets-project.eu/services",
                                                          "Identify"));
 
                         Identify port = service.getPort(Identify.class,
@@ -218,7 +219,7 @@ public class CharacteriseSoapWebserviceImpl implements
         String errorMessage = "Trouble while characterising object '" + pid
                               + "'";
         try {
-
+            initialise();
             Characterisation characterisation = new Characterisation();
             characterisation.getIdentifyServiceDescriptions().addAll(
                     identifyServiceDescription);
@@ -229,15 +230,15 @@ public class CharacteriseSoapWebserviceImpl implements
             //Design
             // 0. Upon startup, query all validate services about their inputformats
             //Upon invocation
-            // 1. Gotten accepted formats as part of invocation
+            // 1. Gotten accepted formatUris as part of invocation
             // 2. Indentify with all identify services.
-            // 3. If the file did not identify to one of the accepted formats, return
+            // 3. If the file did not identify to one of the accepted formatUris, return
             // 4. combine the three lists, to a list of validators
             // 5. Validate with the validators
             // 6. return
 
             // 0. Upon startup, query all validate services about their inputformats
-            initialise();
+
 
             ArrayList<URI> acceptedFormatsURIs = new ArrayList<URI>();
 
@@ -283,19 +284,21 @@ public class CharacteriseSoapWebserviceImpl implements
                 characterisation.getIdentifyServiceReports().add(writer.toString());
             }
 
-            // 3. If the file did not identify to one of the accepted formats, return
-            Set<URI> formats = new HashSet<URI>();
+            // 3. If the file did not identify to one of the accepted formatUris, return
+            Set<URI> formatUris = new HashSet<URI>();
             for (IdentifyResult result : identifyResults) {
-                formats.addAll(result.getTypes());
+                formatUris.addAll(result.getTypes());
             }
 
-            for (URI format : formats) {
-                characterisation.getFormatURIs().add(format.toString());
+            for (URI formatUri : formatUris) {
+                characterisation.getFormatURIs().add(formatUri.toString());
             }
 
-            formats.retainAll(acceptedFormats);
+            List<String> formatStrings = new ArrayList<String>();
+            formatStrings.addAll(characterisation.getFormatURIs());
+            formatStrings.retainAll(acceptedFormats);
 
-            if (formats.size() > 0) {//good
+            if (formatStrings.size() > 0) {//good
 
             } else {
                 characterisation.setValidationStatus(
@@ -308,17 +311,26 @@ public class CharacteriseSoapWebserviceImpl implements
             Map<URI, Integer> votesForFormat = new HashMap<URI, Integer>();
 
             for (IdentifyResult identifyResult : identifyResults) {
-                int increment = identifyResult.getMethod().ordinal() + 1;
-                List<URI> identifiedFormats = identifyResult.getTypes();
-                for (URI identifiedFormat : identifiedFormats) {
-                    if (acceptedFormats.contains(identifiedFormat)) {
-                        Integer votes = votesForFormat.get(identifiedFormat);
-                        if (votes == null) {
-                            votes = increment;
-                        } else {
-                            votes = votes + increment;
+                if (identifyResult.getReport().getStatus().equals(ServiceReport.Status.SUCCESS)) {
+                    IdentifyResult.Method method = identifyResult.getMethod();
+                    int increment;
+                    if (method != null) {
+                        increment = identifyResult.getMethod().ordinal() + 1;
+                    } else {
+                        increment = 1;
+                    }
+                    List<URI> identifiedFormats = identifyResult.getTypes();
+                    for (URI identifiedFormat : identifiedFormats) {
+                        if (acceptedFormats.contains(identifiedFormat.toString())) {
+                            Integer votes
+                                    = votesForFormat.get(identifiedFormat);
+                            if (votes == null) {
+                                votes = increment;
+                            } else {
+                                votes = votes + increment;
+                            }
+                            votesForFormat.put(identifiedFormat, votes);
                         }
-                        votesForFormat.put(identifiedFormat, votes);
                     }
                 }
             }
@@ -342,18 +354,22 @@ public class CharacteriseSoapWebserviceImpl implements
                     = new ArrayList<ValidateResult>();
             List<ValidateResult> validateResultsForBestFormat
                     = new ArrayList<ValidateResult>();
-            for (URI format : formats) {
+            for (URI format : formatUris) {
                 List<Validate> validatorsForFormat = validateMap.get(format);
-                for (Validate validator : validatorsForFormat) {
-                    ValidateResult validateResult
-                            = validator.validate(planetsObject, format, null);
-                    validateResults.add(validateResult);
-                    StringWriter writer = new StringWriter();
-                    marshaller.marshal(validateResult, writer);
-                    writer.flush();
-                    characterisation.getValidateServiceReports().add(writer.toString());
-                    if (format.equals(bestFormat)) {
-                        validateResultsForBestFormat.add(validateResult);
+                if (validatorsForFormat != null) {
+                    for (Validate validator : validatorsForFormat) {
+                        ValidateResult validateResult
+                                = validator.validate(planetsObject,
+                                                     format,
+                                                     null);
+                        validateResults.add(validateResult);
+                        StringWriter writer = new StringWriter();
+                        marshaller.marshal(validateResult, writer);
+                        writer.flush();
+                        characterisation.getValidateServiceReports().add(writer.toString());
+                        if (format.equals(bestFormat)) {
+                            validateResultsForBestFormat.add(validateResult);
+                        }
                     }
                 }
             }
