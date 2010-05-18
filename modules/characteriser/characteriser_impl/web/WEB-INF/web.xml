@@ -90,7 +90,8 @@
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.characteriser.identifierservice1
         </param-name>
-        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        <param-value>
+            http://127.0.0.1:18080/pserv-pc-jhove/JhoveIdentification?wsdl
         </param-value>
     </context-param>
 
@@ -100,7 +101,7 @@
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.characteriser.identifierservice2
         </param-name>
-        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        <param-value>http://127.0.0.1:18080/pserv-pc-droid/Droid?wsdl
         </param-value>
     </context-param>
 
@@ -110,7 +111,7 @@
         <param-name>
             dk.statsbiblioteket.doms.bitstorage.characteriser.validatorservice1
         </param-name>
-        <param-value>http://localhost:8080/characteriser/characterise/?wsdl
+        <param-value>http://127.0.0.1:18080/pserv-pc-jhove/JhoveValidation?wsdl
         </param-value>
     </context-param>
 
