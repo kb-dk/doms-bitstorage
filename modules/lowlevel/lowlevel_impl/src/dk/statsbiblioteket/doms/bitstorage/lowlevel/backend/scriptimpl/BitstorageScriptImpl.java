@@ -288,7 +288,7 @@ public class BitstorageScriptImpl
             FileIsLockedException,
             FileNotFoundException,
             ChecksumFailedException {
-        log.trace("Entering approve(" + file + ", " + md5 + ")");
+        log.trace("Entering approve(" + md5 + ", " + file + ")");
 
         try {
             if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
@@ -297,13 +297,13 @@ public class BitstorageScriptImpl
 
 
             //TODO remove this when/if the scripts take checksums on approve
-            String serverchecksum = getMd5(file);
-            if (!serverchecksum.equalsIgnoreCase(md5)) {//checksums don't match
-                throw new ChecksumFailedException(
-                        "The provided checksum for file '" + file + "' was '"
-                                + md5 + "' but the server calculated '"
-                                + serverchecksum + "'");
-            }
+//            String serverchecksum = getMd5(file);
+//            if (!serverchecksum.equalsIgnoreCase(md5)) {//checksums don't match
+//                throw new ChecksumFailedException(
+//                        "The provided checksum for file '" + file + "' was '"
+//                                + md5 + "' but the server calculated '"
+//                                + serverchecksum + "'");
+//            }
 
             String datafile = getFileNameFromURL(file);
             String output;
