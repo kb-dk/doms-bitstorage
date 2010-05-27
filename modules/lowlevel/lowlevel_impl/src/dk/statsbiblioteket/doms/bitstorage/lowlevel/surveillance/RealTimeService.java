@@ -30,10 +30,9 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions
-        .CommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
+import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
@@ -41,9 +40,6 @@ import dk.statsbiblioteket.doms.domsutil.surveyable.Surveyable;
 import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
-import javax.xml.namespace.QName;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Properties;
 
 
@@ -62,7 +58,7 @@ public class RealTimeService implements Surveyable {
     /**
      * The name of the system being surveyed by through this class.
      */
-    private static final String SURVEYEE_NAME = "Low-level bitstorage";
+    private static final String SURVEYEE_NAME = "LowlevelBitstorage";
 
     /**
      * Common prefix of those parameters in web.xml which are used in this
@@ -70,13 +66,6 @@ public class RealTimeService implements Surveyable {
      */
     private static final String PACKAGE_NAME
             = "dk.statsbiblioteket.doms.bitstorage.lowlevel";
-
-    /**
-     * Parameter in web.xml describing where the wsdl file for the surveyee is
-     * located.
-     */
-    private static final String PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL
-            = PACKAGE_NAME + ".location";
 
     /**
      * Parameter in web.xml telling the number of free bytes preferred in
@@ -93,11 +82,6 @@ public class RealTimeService implements Surveyable {
             = PACKAGE_NAME + ".requiredBytesLeft";
 
     /**
-     * The URL describing where the wsdl file for the surveyee is located.
-     */
-    private String location;
-
-    /**
      * The number of free bytes preferred in bitstorage. If less than this
      * amount is left, surveillance will report it with a yellow stop-light
      * severity.
@@ -111,19 +95,6 @@ public class RealTimeService implements Surveyable {
      */
     private int requiredSpaceInBitstorage;
 
-    /**
-     * The namespace of the service
-     */
-    private static final String SERVICE_NAMESPACE_URI = "http://"
-            + "lowlevel.bitstorage.doms.statsbiblioteket.dk/";
-
-    /**
-     * The name of the service
-     */
-    private static final String SERVICE_NAME =
-            "LowlevelBitstorageSoapWebserviceService";
-
-
     public RealTimeService() {
         log.trace("Entered constructor RealTimeService()");
         log.trace("Entered method initialize()");
@@ -131,11 +102,6 @@ public class RealTimeService implements Surveyable {
 
         String preferredBytesLeft;
         String requiredBytesLeft;
-
-        location = props.getProperty(
-                PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
-        log.debug("Location of wsdl for surveyee now set to '"
-                + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
 
         preferredBytesLeft = props.getProperty(
                 PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT);

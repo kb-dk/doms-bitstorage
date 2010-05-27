@@ -84,15 +84,6 @@
     </context-param>
 
     <context-param>
-        <description>The surveilance system cannot read it's own location, so it
-            must have it as a parameter
-        </description>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.location
-        </param-name>
-        <param-value>http://localhost:8080/lowlevelbitstorage/lowlevel/?wsdl
-        </param-value>
-    </context-param>
-    <context-param>
         <description>The preferred number of bytes that must be left in the
             bitstorage
         </description>

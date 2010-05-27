@@ -30,10 +30,10 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.surveillance;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.*;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StatusInformation;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StaticStatus;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelSoapException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.status.Operation;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StaticStatus;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StatusInformation;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
@@ -43,11 +43,7 @@ import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.annotation.PostConstruct;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Properties;
 
 /** Class that exposes real time system info for high-level bitstorage as
  * surveyable messages.
@@ -64,36 +60,7 @@ public class RealTimeService implements Surveyable {
     private long timeOfGetStatusCall;
 
     /** The name of the system being surveyed by through this class. */
-    private static final String SURVEYEE_NAME = "High-level bitstorage";
-
-    /** Common prefix of those parameters in web.xml which are used in this
-     * class.*/
-    private static final String PACKAGE_NAME
-            = "dk.statsbiblioteket.doms.bitstorage.highlevel";
-
-    /** Parameter in web.xml describing where the wsdl file for the surveyee is
-     * located.  */
-    private static final String PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL
-            = PACKAGE_NAME + ".location";
-
-    /** The URL describing where the wsdl file for the surveyee is located. */
-    private String location;
-
-    /** The namespace of the service */
-    private static final String SERVICE_NAMESPACE_URI
-            = "http://highlevel.bitstorage.doms.statsbiblioteket.dk/";
-
-    /** The name of the service */
-    private static final String SERVICE_NAME =
-            "HighlevelBitstorageSoapWebserviceService";
-
-    /** The fully qualified name of the service to monitor
-     * @see #SERVICE_NAME
-     * @see #SERVICE_NAMESPACE_URI
-     */
-    private final QName SERVICE_QNAME
-            = new QName(SERVICE_NAMESPACE_URI, SERVICE_NAME);
-
+    private static final String SURVEYEE_NAME = "HighlevelBitstorage";
 
     /** Will be called by the webservice framework after the call of the
      * constructor. Reads parameters from web.xml.
@@ -103,15 +70,8 @@ public class RealTimeService implements Surveyable {
     @PostConstruct // Will be called after the call of the constructor
     private void initialize() {
         log.trace("Entered method initialize()");
-        Properties props;
-
         try {
-            props = ConfigCollection.getProperties();
-
-            location = props.getProperty(
-                    PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
-            log.info("Location of wsdl for surveyee now set to '"
-                    + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
+            ConfigCollection.getProperties();
         } catch (Exception e) {
             log.error("Exception caught by fault barrier", e);
         }
@@ -161,27 +121,18 @@ public class RealTimeService implements Surveyable {
      *
      * @return A status containing list of status messages.
      *
+     * @throws BitstorageHighlevelSoapException on trouble calling status
+     * message.
      */
     private Status checkHighlevelBitstorageForCurrentState()
-            throws BrokenURLException, HighlevelBitstorageUnreachableException,
-            BitstorageCommunicationException, BitstorageHighlevelSoapException {
+            throws BitstorageHighlevelSoapException {
         log.trace("Entered method checkHighlevelBitstorageForCurrentState()");
 
-        HighlevelBitstorageSoapWebserviceService bitstorageWebserviceFactory;
-        URL wsdlLocation;
-        HighlevelBitstorageSoapWebservice bitstorageService;
         Status status;
         StatusInformation highlevelBitstorageStatus;
 
         try {
             highlevelBitstorageStatus = StaticStatus.status();
-        } catch (CommunicationException e) {
-            /* No comms with highlevel bitstorage. Throwing fault exception to
-            be caught by fault barrier.*/
-            throw new BitstorageCommunicationException("Trying to call method "
-                    + "'status' of the highlevel"
-                    + " bitstorage webservice"
-                    + " gave a CommunicationException.", e);
         } catch (HighlevelSoapException e) {
             /* No comms with highlevel bitstorage. Throwing fault exception to
             be caught by fault barrier.*/
