@@ -111,8 +111,8 @@ public class BitstorageScriptImpl
      * These are patterns to match for, for parsing output.
      */
     private static final String ALREADY_STORED_REPLY = "was stored!";
-    private static final String FILE_NOT_FOUND_REPLY = "not found";
-    private static final String NO_SPACE_LEFT_REPLY = "No space left for file";
+    private static final String FILE_NOT_FOUND_REPLY = "file not found";
+    private static final String NO_SPACE_LEFT_REPLY = "No space left";
     private static final String FREE_SPACE_REPLY = "Free space: ";
     private static final String MAX_FILE_SIZE_REPLY = "Max file size: ";
 
@@ -146,6 +146,7 @@ public class BitstorageScriptImpl
      * @return the URL to the file
      * @throws CommunicationException       If the script failed in an unexpected way,
      *                                      or returned something that could not be parsed as an checksum
+   //  * @throws NoSpaceLeftOnDeviceException
      * @throws ChecksumFailedException      If the calculated checksum does not
      *                                      match the provided checksum
      * @throws FileAlreadyApprovedException If the filename is already used
@@ -159,6 +160,7 @@ public class BitstorageScriptImpl
                       String md5,
                       long filelength)
             throws CommunicationException,
+     //       NoSpaceLeftOnDeviceException,
             ChecksumFailedException,
             FileAlreadyApprovedException,
             InvalidFileNameException,
@@ -177,7 +179,7 @@ public class BitstorageScriptImpl
                 log.debug("Starting upload script command");
                 output = runcommand(data,
                         ScriptCommand.UPLOAD_COMMAND,
-                        filename);
+                        filelength + " " + md5 + " " + filename);
                 log.debug("Upload script command exited normally");
             } catch (ContingencyException e) {//something went wrong
                 String stdout = e.getStdout();
@@ -185,6 +187,8 @@ public class BitstorageScriptImpl
                     throw new FileAlreadyApprovedException(
                             "File '" + filename + "' has already been approved,"
                                     + "and so cannot be uploaded again.");
+//                } else if(stdout.contains(NO_SPACE_LEFT_REPLY)) {
+//                    throw new NoSpaceLeftOnDeviceException();
                 } else {
                     throw new CommunicationException(
                             "Unrecognized script failure"
@@ -308,7 +312,7 @@ public class BitstorageScriptImpl
             String datafile = getFileNameFromURL(file);
             String output;
             try {
-                output = runcommand(ScriptCommand.APPROVE_COMMAND, datafile);
+                output = runcommand(ScriptCommand.APPROVE_COMMAND, md5, datafile);
             } catch (ContingencyException e) {
                 output = e.getStdout();
                 if (output.contains(FILE_NOT_FOUND_REPLY)) {
