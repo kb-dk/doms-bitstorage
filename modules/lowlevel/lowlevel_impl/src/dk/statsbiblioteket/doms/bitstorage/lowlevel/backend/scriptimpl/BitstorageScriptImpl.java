@@ -68,7 +68,8 @@ import java.util.Properties;
        reviewers = "kfc",
        level = QAInfo.Level.NORMAL,
        state = QAInfo.State.QA_OK)
-public class BitstorageScriptImpl implements Bitstorage {
+public abstract class BitstorageScriptImpl
+       implements Bitstorage {
 
 
    private Log log = LogFactory.getLog(BitstorageScriptImpl.class);
@@ -84,7 +85,7 @@ public class BitstorageScriptImpl implements Bitstorage {
        GETMD5_COMMAND("get-md5"),
        GETSTATE_COMMAND("get-state");
 
-     private String command;
+       private String command;
 
        ScriptCommand(String command) {
            this.command = command;
@@ -115,11 +116,12 @@ public class BitstorageScriptImpl implements Bitstorage {
    private static final String FILE_IN_STORAGE = "File in storage";
    private static final String FILE_NOT_FOUND = "File not found";
 
-   /* */
-   private static final String FILE_LOCKED = "file locked";
-   private static final String FILE_SAVED_OTHER_MD5 =
-           "file was saved with an other checksum";
-   private static final String WRONG_MD5 = "checksum error";
+
+    /* */
+    private static final String FILE_LOCKED = "file locked";
+    private static final String FILE_SAVED_OTHER_MD5 =
+            "file was saved with an other checksum";
+    private static final String WRONG_MD5 = "checksum error";
 
 
    public BitstorageScriptImpl() {
@@ -220,8 +222,7 @@ is already being
            }
        } finally {
            log.debug("Releasing lock on file '" + url + "'");
-           LockRegistry.getInstance().release(url);//however we got
-here, release the lock
+           LockRegistry.getInstance().release(url);//however we got here, release the lock
        }
    }
 
@@ -247,10 +248,9 @@ already being
        log.trace("Entering disapprove(" + file + ")");
 
        try {
-           if (!LockRegistry.getInstance().lockFile(file)) {//could
-not lock the file
-               throw new FileIsLockedException("The file " + file + "
-is locked by another process");
+           if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+               throw new FileIsLockedException("The file " + file +
+                       "is locked by another process");
            }
 
 
@@ -261,8 +261,8 @@ is locked by another process");
            } catch (ContingencyException e) {
                output = e.getStdout();
                if (output.contains(FILE_NOT_FOUND_REPLY)) {
-                   log.debug("File to disapprove '" + file + "' not
-found. Not a problem");
+                   log.debug("File to disapprove '" + file + "" +
+                           "' not found. Not a problem");
                    //ok, not a problem
                } else {
                    throw new CommunicationException(
@@ -310,17 +310,15 @@ is already being
        log.trace("Entering approve(" + md5 + ", " + file + ")");
 
        try {
-           if (!LockRegistry.getInstance().lockFile(file)) {//could
-not lock the file
-               throw new FileIsLockedException("The file " + file + "
-is locked by another process");
+           if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+               throw new FileIsLockedException("The file " + file +
+                       "is locked by another process");
            }
 
 
            //TODO remove this when/if the scripts take checksums on approve
 //            String serverchecksum = getMd5(file);
-//            if (!serverchecksum.equalsIgnoreCase(md5)) {//checksums
-don't match
+//            if (!serverchecksum.equalsIgnoreCase(md5)) {//checksums don't match
 //                throw new ChecksumFailedException(
 //                        "The provided checksum for file '" + file + "' was '"
 //                                + md5 + "' but the server calculated '"
@@ -335,9 +333,8 @@ md5, datafile);
            } catch (ContingencyException e) {
                output = e.getStdout();
                if (output.contains(FILE_NOT_FOUND_REPLY)) {
-                   log.debug("File to approve '" + file + "' not
-found in temp, so must be in permanent storage already. Not a
-problem");
+                   log.debug("File to approve '" + file + "" +
+                           "' not found in temp, so must be in permanent storage already. Not a problem");
                } else if (output.contains(NO_SPACE_LEFT_REPLY)) {
                    throw new NotEnoughFreeSpaceException(
                            "Not enough free space for file '" + file + "'");
@@ -347,8 +344,7 @@ problem");
                                    + file + "'", e);
                }
            }
-           if (!Utils.isChecksum(output)) {//script returned
-normally, but output is not checksum
+           if (!Utils.isChecksum(output)) {//script returned normally, but output is not checksum
                throw new CommunicationException(
                        "Script returned unrecognized blob for checksum: '"
                                + output + "' while approving '" + file + "'");
@@ -422,10 +418,9 @@ already being
        log.trace("Entering getMd5(" + file + ")");
 
        try {
-           if (!LockRegistry.getInstance().lockFile(file)) {//could
-not lock the file
-               throw new FileIsLockedException("The file " + file + "
-is locked by another process");
+           if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+               throw new FileIsLockedException("The file " + file +
+                       "is locked by another process");
            }
 
            String datafile = getFileNameFromURL(file);
@@ -472,10 +467,9 @@ already being
        log.trace("Entering isApproved(" + file + ")");
 
        try {
-           if (!LockRegistry.getInstance().lockFile(file)) {//could
-not lock the file
-               throw new FileIsLockedException("The file " + file + "
-is locked by another process");
+           if (!LockRegistry.getInstance().lockFile(file)) {//could not lock the file
+               throw new FileIsLockedException("The file " + file +
+                       "is locked by another process");
            }
 
 
@@ -497,8 +491,7 @@ is locked by another process");
                if (output.contains(FILE_NOT_FOUND)) {
                    throw new FileNotFoundException(
                            "File not found '" + file + "'"
-                                   + "while checking whether it was
-approved.");
+                                   + "while checking whether it was approved.");
                } else {
                    throw new CommunicationException(
                            "Unrecognized script failure "
