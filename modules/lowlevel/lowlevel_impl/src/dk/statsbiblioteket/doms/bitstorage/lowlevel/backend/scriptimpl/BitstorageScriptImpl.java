@@ -68,8 +68,7 @@ import java.util.Properties;
        reviewers = "kfc",
        level = QAInfo.Level.NORMAL,
        state = QAInfo.State.QA_OK)
-public abstract class BitstorageScriptImpl
-       implements Bitstorage {
+public class BitstorageScriptImpl implements Bitstorage {
 
 
    private Log log = LogFactory.getLog(BitstorageScriptImpl.class);
@@ -78,7 +77,7 @@ public abstract class BitstorageScriptImpl
     * These are the commands the shell script understands.
     */
    private static enum ScriptCommand {
-       UPLOAD_COMMAND("save-md5"),
+       UPLOAD_COMMAND("save"),
        APPROVE_COMMAND("approve"),
        DISAPPROVE_COMMAND("delete"),
        SPACELEFT_COMMAND("space-left"),
@@ -146,6 +145,8 @@ public abstract class BitstorageScriptImpl
     * @param filelength The length of the file. The size to reserve before
     *                   before starting upload.
     * @return the URL to the file
+    * @throws NotEnoughFreeSpaceException  Disk is full
+    * @throws InvalidFileNameException     If the filename is not valid
     * @throws CommunicationException       If the script failed in an
 unexpected way,
     *                                      or returned something that
@@ -155,31 +156,33 @@ could not be parsed as an checksum
     *                                      match the provided checksum
     * @throws FileAlreadyApprovedException If the filename is already used
     *                                      by an already approved file
-    * @throws InvalidFileNameException     If the filename is not valid
     * @throws FileIsLockedException        If the file in bitstorage
 is already being
     *                                      processed by another process.
     */
    public URL upload(String filename,
-                     Base64.InputStream data,
+//                     Base64.InputStream data,
+                     InputStream data,
                      String md5,
                      long filelength)
-           throws CommunicationException,
+           throws NotEnoughFreeSpaceException,
+           InvalidFileNameException,
+           CommunicationException,
     //       NoSpaceLeftOnDeviceException,
            ChecksumFailedException,
            FileAlreadyApprovedException,
-           InvalidFileNameException,
-           FileSavedException,
            FileIsLockedException {
-       log.trace("Entering upload(" + filename + ", data, " + md5 +
-", " + filelength + ")");
+       log.trace("Entering upload(" + filename + ", data, " + md5
+               + ", " + filelength + ")");
        String output;
        URL url = createURL(filename);
        log.debug("Locking file '" + url + "'");
 
        try {
-           if (!LockRegistry.getInstance().lockFile(url)) {//could not lock the file
-               throw new FileIsLockedException("The file " + url + "is locked by another process");
+           if (!LockRegistry.getInstance().lockFile(url)) {
+               //could not lock the file
+               throw new FileIsLockedException("The file " + url + "is locked "
+                       + "by another process");
            }
 
            try {
@@ -189,23 +192,31 @@ is already being
                        filelength + " " + md5 + " " + filename);
                log.debug("Upload script command exited normally");
            } catch (ContingencyException e) {//something went wrong
-               String stdout = e.getStdout();
-               if (stdout.contains(ALREADY_STORED_REPLY)) {
-                   throw new FileAlreadyApprovedException(
-                           "File '" + filename + "' has already been approved,"
-                                   + "and so cannot be uploaded again.");
-                } else if(stdout.contains(FILE_LOCKED)) {
-                    throw new FileSavedException("File" + filename + "was saved succesfully");
-               } else {
-                   throw new CommunicationException(
-                           "Unrecognized script failure"
-                                   + " during upload of '" + filename + "'",
-                           e);
+               int exitstatus = e.getReturncode();
+
+               switch (exitstatus) {
+                   case 1:
+                       throw new NotEnoughFreeSpaceException("No space, file "
+                               + "was not saved");
+                       //break;
+                   case 2:
+                       throw new ChecksumFailedException("Wrong Checksum, file"
+                               + " not saved");
+                       //break;
+                   case 3:
+                       throw new FileIsLockedException("File locked");
+                       //break;
+                   default:
+                       throw new CommunicationException("Unknown exit status "
+                               + "from bitstorage server script.");
+                       //break;
                }
+
            }
            output = output.trim();
 
-           if (!Utils.isChecksum(output)) {//script returned normally, but output is not checksum
+           if (!Utils.isChecksum(output)) {//script returned normally,
+               // but output is not checksum
                throw new CommunicationException(
                        "Script returned unrecognized blob" + " for checksum: '"
                                + output + "' while uploading file '" + filename
@@ -222,7 +233,8 @@ is already being
            }
        } finally {
            log.debug("Releasing lock on file '" + url + "'");
-           LockRegistry.getInstance().release(url);//however we got here, release the lock
+           LockRegistry.getInstance().release(url);//however we got here,
+           // release the lock
        }
    }
 
@@ -588,8 +600,7 @@ standard out and the standard error.
 
        List<String> arrayList = new ArrayList<String>();
        String scriptblob = ConfigCollection.getProperties().getProperty(
-
-"dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script");
+              "dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script");
        String[] scriptlist = scriptblob.split(" ");
 
        arrayList.addAll(Arrays.asList(scriptlist));
@@ -662,6 +673,8 @@ Arrays.deepToString(arrayList.toArray()) + "' terminated");
     * This is the contingency exception, used by the runcommand
 method to indicate
     * that the command did not terminate with error code 0.
+    *
+    * TODO: Factor out exception in its own file..
     */
    public static class ContingencyException extends Exception {
 

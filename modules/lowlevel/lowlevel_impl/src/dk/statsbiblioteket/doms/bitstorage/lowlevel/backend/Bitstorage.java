@@ -101,9 +101,12 @@ public interface Bitstorage {
                       InputStream data,
                       String md5,
                       long filelength)
-            throws InvalidFileNameException, CommunicationException,
-            NotEnoughFreeSpaceException, ChecksumFailedException,
-            FileAlreadyApprovedException, FileIsLockedException;
+            throws NotEnoughFreeSpaceException, 
+            InvalidFileNameException, CommunicationException,
+            //NotEnoughFreeSpaceException,
+            ChecksumFailedException,
+            FileAlreadyApprovedException,
+            FileIsLockedException;
 
 
     /**
