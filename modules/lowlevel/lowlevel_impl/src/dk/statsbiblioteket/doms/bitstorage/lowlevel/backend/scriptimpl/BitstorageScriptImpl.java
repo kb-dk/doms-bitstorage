@@ -116,10 +116,7 @@ public class BitstorageScriptImpl implements Bitstorage {
    private static final String FILE_NOT_FOUND = "File not found";
 
 
-    /* */
-    private static final String FILE_LOCKED = "file locked";
-    private static final String FILE_SAVED_OTHER_MD5 =
-            "file was saved with an other checksum";
+    /*Used in approve */
     private static final String WRONG_MD5 = "checksum error";
 
 
@@ -350,6 +347,10 @@ md5, datafile);
                } else if (output.contains(NO_SPACE_LEFT_REPLY)) {
                    throw new NotEnoughFreeSpaceException(
                            "Not enough free space for file '" + file + "'");
+               } else if (output.contains(WRONG_MD5)) {
+                   throw new ChecksumFailedException("Checksum for file" + file
+                           + "does not match the given md5 checksum");
+
                } else {
                    throw new CommunicationException(
                            "Unrecognized script failure for approve of '"
