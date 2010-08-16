@@ -56,10 +56,17 @@ import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOM;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.io.StringWriter;
+import java.io.StringReader;
+
+import com.sun.xml.ws.api.streaming.XMLStreamWriterFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -189,7 +196,105 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
 
-    public void uploadFileToObject(
+    public void uploadFileToObjectFromPermanentURLWithCharacterisation(
+            @WebParam(name = "pid", targetNamespace = "") String pid,
+            @WebParam(name = "filename", targetNamespace = "") String filename,
+            @WebParam(name = "permanentURL", targetNamespace = "")
+            String permanentURL,
+            @WebParam(name = "md5string", targetNamespace = "")
+            String md5String,
+            @WebParam(name = "filelength", targetNamespace = "")
+            long filelength,
+            @WebParam(name = "characterisation", targetNamespace = "")
+            dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation)
+            throws
+            CharacterisationFailedException,
+            ChecksumFailedException,
+            CommunicationException,
+            FileAlreadyApprovedException,
+            FileIsLockedException,
+            FileObjectAlreadyInUseException,
+            InvalidFilenameException,
+            NotEnoughFreeSpaceException,
+            ObjectNotFoundException,
+            HighlevelSoapException {
+        String message =
+                "Entered uploadFileToObjectFromPermanentURLWithCharacterisation with params: '"
+                + pid + "', '"
+                + filename + "', '"
+                + permanentURL + ", "
+                + md5String
+                + "', '"
+                + filelength + "', "
+                + characterisation.toString() + ".";
+        log.trace(message);
+        boolean[] checkpoints = {false, false, false};
+        String uploadedURL = "";
+        Operation op = null;
+        try {
+            op = StaticStatus.initOperation("Upload");
+            try {
+                initialise();
+                StaticStatus.event(op, message);
+                op.setFedoraPid(pid);
+                op.setFileSize(filelength);
+
+
+                //Stuff put in bitstorage, so this must be rolled back
+                updateFedora(pid, md5String, uploadedURL, op);
+                //checkpoint here, fedora updated
+                checkpoints[1] = true;
+
+                message = "Fedora datastream created";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                message
+                        = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+
+                message = "Get list of formatURIs from Fedora";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                Collection<String> formatURIs =
+                        getAllowedFormatURIs(pid, uploadedURL, op);
+
+                Characterisation localisedCharac
+                        = convertCharac(
+                        characterisation);
+                evaluateCharacterisationAndStore(pid,
+                                                 uploadedURL,
+                                                 localisedCharac,
+                                                 formatURIs,
+                                                 op);
+                checkpoints[2] = true;
+                message
+                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+                //checkpoint here, charac info stored
+
+            } catch (Exception e) {//something unexpected failed down there
+                try {
+                    rollback(pid, uploadedURL, op, checkpoints);
+                } catch (Exception e2) {//failed in the rollback
+                    log.error("Failed in rollback", e2);//TODO more verbatim
+                }//e2 is logged and discarded, and we continue with the original exception
+                if (e instanceof InternalException) {//an exception we know about
+                    throw internalMapper.convertMostApplicable((InternalException) e);
+                } //something we do not know about
+                throw new WebServiceException(e);
+            }
+        }
+        finally {
+            StaticStatus.endOperation(op);
+        }
+
+    }
+
+    public void uploadFileToObjectWithCharacterisation(
             @WebParam(name = "pid", targetNamespace = "") String pid,
             @WebParam(name = "filename", targetNamespace = "") String filename,
             @WebParam(name = "filedata", targetNamespace = "")
@@ -197,16 +302,30 @@ public class HighlevelBitstorageSoapWebserviceImpl
             @WebParam(name = "md5string", targetNamespace = "")
             String md5String,
             @WebParam(name = "filelength", targetNamespace = "")
-            long filelength) throws
-                             HighlevelSoapException {
-        String message = "Entered uploadFileToObject with params: '"
-                         + pid + "', '"
-                         + filename + "', '"
-                         + md5String
-                         + "', '"
-                         + filelength + "'.";
+            long filelength,
+            @WebParam(name = "characterisation", targetNamespace = "")
+            dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation)
+            throws
+            CharacterisationFailedException,
+            ChecksumFailedException,
+            CommunicationException,
+            FileAlreadyApprovedException,
+            FileIsLockedException,
+            FileObjectAlreadyInUseException,
+            InvalidFilenameException,
+            NotEnoughFreeSpaceException,
+            ObjectNotFoundException,
+            HighlevelSoapException {
+        String message =
+                "Entered uploadFileToObjectWithCharacterisation with params: '"
+                + pid + "', '"
+                + filename + "', '"
+                + md5String
+                + "', '"
+                + filelength + "', "
+                + characterisation.toString() + ".";
         log.trace(message);
-        int checkpoint = 0;
+        boolean[] checkpoints = {false, false, false};
         String uploadedURL = "";
         Operation op = null;
         try {
@@ -225,7 +344,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                          filelength,
                                          op);
 
-                checkpoint = 1;
+                checkpoints[0] = true;
                 //Checkpoint here
                 message =
                         "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '"
@@ -237,7 +356,221 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 //Stuff put in bitstorage, so this must be rolled back
                 updateFedora(pid, md5String, uploadedURL, op);
                 //checkpoint here, fedora updated
-                checkpoint = 2;
+                checkpoints[1] = true;
+
+                message = "Fedora datastream created";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                message
+                        = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+
+                message = "Get list of formatURIs from Fedora";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                Collection<String> formatURIs =
+                        getAllowedFormatURIs(pid, uploadedURL, op);
+
+                Characterisation localisedCharac
+                        = convertCharac(
+                        characterisation);
+                evaluateCharacterisationAndStore(pid,
+                                                 uploadedURL,
+                                                 localisedCharac,
+                                                 formatURIs,
+                                                 op);
+                checkpoints[2] = true;
+                message
+                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+                //checkpoint here, charac info stored
+
+            } catch (Exception e) {//something unexpected failed down there
+                try {
+                    rollback(pid, uploadedURL, op, checkpoints);
+                } catch (Exception e2) {//failed in the rollback
+                    log.error("Failed in rollback", e2);//TODO more verbatim
+                }//e2 is logged and discarded, and we continue with the original exception
+                if (e instanceof InternalException) {//an exception we know about
+                    throw internalMapper.convertMostApplicable((InternalException) e);
+                } //something we do not know about
+                throw new WebServiceException(e);
+            }
+        }
+        finally {
+            StaticStatus.endOperation(op);
+        }
+
+
+    }
+
+    private Characterisation convertCharac(dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation)
+            throws InternalException {
+        try {
+            JAXBContext context1
+                    = JAXBContext.newInstance(Characterisation.class);
+            JAXBContext context2
+                    = JAXBContext.newInstance(dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation.class);
+            StringWriter writer = new StringWriter();
+            context2.createMarshaller().marshal(characterisation, writer);
+            writer.flush();
+            StringReader charstring = new StringReader(writer.toString());
+            Object convertecChar = context1.createUnmarshaller().unmarshal(
+                    charstring);
+            return (Characterisation) convertecChar;
+        } catch (JAXBException e) {
+            throw new InternalException(e,
+                                        InternalException.Type.CharacterisationFailed);
+
+        }
+
+    }
+
+    public void uploadFileToObjectFromPermanentURL(
+            @WebParam(name = "pid", targetNamespace = "") String pid,
+            @WebParam(name = "filename", targetNamespace = "") String filename,
+            @WebParam(name = "permanentURL", targetNamespace = "")
+            String permanentURL,
+            @WebParam(name = "md5string", targetNamespace = "")
+            String md5String,
+            @WebParam(name = "filelength", targetNamespace = "")
+            long filelength)
+            throws
+            CharacterisationFailedException,
+            ChecksumFailedException,
+            CommunicationException,
+            FileAlreadyApprovedException,
+            FileIsLockedException,
+            FileObjectAlreadyInUseException,
+            InvalidFilenameException,
+            NotEnoughFreeSpaceException,
+            ObjectNotFoundException,
+            HighlevelSoapException {
+        String message =
+                "Entered uploadFileToObjectFromPermanentURL with params: '"
+                + pid + "', \n'"
+                + filename + "', \n'"
+                + permanentURL + "', \n'"
+                + md5String + "', \n'"
+                + filelength + "'.\n";
+        log.trace(message);
+        boolean[] checkpoints = {false, false, false};
+        String uploadedURL = permanentURL;
+        Operation op = null;
+        try {
+            op = StaticStatus.initOperation("Upload");//TODO?
+            try {
+                initialise();
+                StaticStatus.event(op, message);
+                op.setFedoraPid(pid);
+                op.setFileSize(filelength);
+
+                //bypass checkpoint 1
+
+
+                updateFedora(pid, md5String, uploadedURL, op);
+                //checkpoint here, fedora updated
+                checkpoints[1] = true;
+
+                message = "Fedora datastream created";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                message
+                        = "First checkpoint reached. File in on permament adress and the datastream is in fedora";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+
+                Characterisation characterisation = characterise(pid, op);
+                message = "Get list of formatURIs from Fedora";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                Collection<String> formatURIs =
+                        getAllowedFormatURIs(pid, uploadedURL, op);
+
+                evaluateCharacterisationAndStore(pid,
+                                                 uploadedURL,
+                                                 characterisation,
+                                                 formatURIs,
+                                                 op);
+                checkpoints[2] = true;
+                message
+                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+                //checkpoint here, charac info stored
+
+            } catch (Exception e) {//something unexpected failed down there
+                try {
+                    rollback(pid, uploadedURL, op, checkpoints);
+                } catch (Exception e2) {//failed in the rollback
+                    log.error("Failed in rollback", e2);//TODO more verbatim
+                }//e2 is logged and discarded, and we continue with the original exception
+                if (e instanceof InternalException) {//an exception we know about
+                    throw internalMapper.convertMostApplicable((InternalException) e);
+                } //something we do not know about
+                throw new WebServiceException(e);
+            }
+        }
+        finally {
+            StaticStatus.endOperation(op);
+        }
+    }
+
+    public void uploadFileToObject(
+            @WebParam(name = "pid", targetNamespace = "") String pid,
+            @WebParam(name = "filename", targetNamespace = "") String filename,
+            @WebParam(name = "filedata", targetNamespace = "")
+            DataHandler filedata,
+            @WebParam(name = "md5string", targetNamespace = "")
+            String md5String,
+            @WebParam(name = "filelength", targetNamespace = "")
+            long filelength) throws
+                             HighlevelSoapException {
+        String message = "Entered uploadFileToObject with params: '"
+                         + pid + "', '"
+                         + filename + "', '"
+                         + md5String
+                         + "', '"
+                         + filelength + "'.";
+        log.trace(message);
+        boolean[] checkpoints = {false, false, false};
+        String uploadedURL = "";
+        Operation op = null;
+        try {
+            op = StaticStatus.initOperation("Upload");
+            try {
+                initialise();
+                StaticStatus.event(op, message);
+                op.setFedoraPid(pid);
+                op.setFileSize(filelength);
+
+
+                //No rollback here, we have not reached first checkpoint
+                uploadedURL = uploadFile(filename,
+                                         filedata,
+                                         md5String,
+                                         filelength,
+                                         op);
+
+                checkpoints[0] = true;
+                //Checkpoint here
+                message =
+                        "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '"
+                        + uploadedURL + "'";
+                log.debug(message);
+                StaticStatus.event(op, message);
+
+
+                //Stuff put in bitstorage, so this must be rolled back
+                updateFedora(pid, md5String, uploadedURL, op);
+                //checkpoint here, fedora updated
+                checkpoints[1] = true;
 
                 message = "Fedora datastream created";
                 log.debug(message);
@@ -255,12 +588,12 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 Collection<String> formatURIs =
                         getAllowedFormatURIs(pid, uploadedURL, op);
 
-                evaluateCharacterisation(pid,
-                                         uploadedURL,
-                                         characterisation,
-                                         formatURIs,
-                                         op);
-                checkpoint = 3;
+                evaluateCharacterisationAndStore(pid,
+                                                 uploadedURL,
+                                                 characterisation,
+                                                 formatURIs,
+                                                 op);
+                checkpoints[2] = true;
                 message
                         = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
                 log.debug(message);
@@ -270,7 +603,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
-                    rollback(pid, uploadedURL, op, checkpoint);
+                    rollback(pid, uploadedURL, op, checkpoints);
                 } catch (Exception e2) {//failed in the rollback
                     log.error("Failed in rollback", e2);//TODO more verbatim
                 }//e2 is logged and discarded, and we continue with the original exception
@@ -286,7 +619,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     }
 
-    private void rollback(String pid, String url, Operation op, int checkpoint)
+    private void rollback(String pid,
+                          String url,
+                          Operation op,
+                          boolean[] checkpoint)
             throws
             FedoraException,
             LowlevelSoapException {
@@ -295,23 +631,26 @@ public class HighlevelBitstorageSoapWebserviceImpl
         log.debug(message);
         StaticStatus.event(op, message);
 
-        if (checkpoint == 3) {//failed in the end, roll everything back
-            rollbackCharacAdded(pid, url, op);
-        } else if (checkpoint == 2) {
-            rollbackObjectContentsUpdated(pid, url, op);
-        } else if (checkpoint == 1) {
-            rollbackUploadToLowlevel(pid, url, op);
-        } else {//no checkpoint reached, no rollback nessesary
 
+        if (checkpoint[2] == true) {
+            rollbackCharacAdded(pid, url, op);
         }
+        if (checkpoint[1] == true) {
+            rollbackObjectContentsUpdated(pid, url, op);
+        }
+        if (checkpoint[0] == true) {
+            rollbackUploadToLowlevel(pid, url, op);
+        }
+        //no checkpoint reached, no rollback nessesary
+
 
     }
 
-    private void evaluateCharacterisation(String pid,
-                                          String uploadedURL,
-                                          Characterisation characterisation,
-                                          Collection<String> formatURIs,
-                                          Operation op)
+    private void evaluateCharacterisationAndStore(String pid,
+                                                  String uploadedURL,
+                                                  Characterisation characterisation,
+                                                  Collection<String> formatURIs,
+                                                  Operation op)
             throws InternalException {
         String message;
         boolean goodfile = true;
@@ -625,8 +964,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         fedora.deleteDatastream(pid, CONTENTS);
 
-
-        rollbackUploadToLowlevel(pid, uploadedURL, op);
     }
 
 
@@ -645,7 +982,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         fedora.deleteDatastream(pid, CHARACTERISATION);
 
-        rollbackObjectContentsUpdated(pid, uploadedURL, op);
 
     }
 

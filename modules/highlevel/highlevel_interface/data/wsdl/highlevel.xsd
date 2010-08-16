@@ -29,11 +29,16 @@
 <xs:schema xmlns:tns="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
            targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
-
+           xmlns:char="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
            jaxb:version="1.0"
            xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
            jaxb:extensionBindingPrefixes="xjc">
+
+    <xs:import
+            namespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+            schemaLocation="characteriser.xsd">
+    </xs:import>
 
     <xs:annotation>
         <xs:appinfo>
@@ -91,6 +96,15 @@
 
     <xs:element name="uploadFileToObjectResponse"
                 type="tns:uploadFileToObjectResponse"/>
+
+    <xs:element name="uploadFileToObjectFromPermanentURL"
+                type="tns:uploadFileToObjectFromPermanentURL"/>
+
+    <xs:element name="uploadFileToObjectWithCharacterisation"
+                type="tns:uploadFileToObjectWithCharacterisation"/>
+
+    <xs:element name="uploadFileToObjectFromPermanentURLWithCharacterisation"
+                type="tns:uploadFileToObjectFromPermanentURLWithCharacterisation"/>
 
     <!--
 
@@ -166,6 +180,45 @@
 
     <xs:complexType name="publishResponse">
         <xs:sequence/>
+    </xs:complexType>
+
+
+    <xs:complexType
+            name="uploadFileToObjectFromPermanentURLWithCharacterisation">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element name="permanentURL" type="xs:anyURI"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+            <xs:element name="characterisation" type="char:characterisation"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="uploadFileToObjectFromPermanentURL">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element name="permanentURL" type="xs:anyURI"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="uploadFileToObjectWithCharacterisation">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element xmlns:ns1="http://www.w3.org/2005/05/xmlmime"
+                        name="filedata"
+                        ns1:expectedContentTypes="application/octet-stream"
+                        type="xs:base64Binary"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+            <xs:element name="characterisation" type="char:characterisation"/>
+        </xs:sequence>
     </xs:complexType>
 
 

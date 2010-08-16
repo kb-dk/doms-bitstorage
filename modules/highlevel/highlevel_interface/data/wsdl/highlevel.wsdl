@@ -39,6 +39,18 @@
                     schemaLocation="highlevel.xsd"/>
         </xsd:schema>
     </types>
+    <message name="uploadFileToObjectFromPermanentURLWithCharacterisation">
+        <part name="parameters"
+              element="tns:uploadFileToObjectFromPermanentURLWithCharacterisation"/>
+    </message>
+    <message name="uploadFileToObjectFromPermanentURL">
+        <part name="parameters"
+              element="tns:uploadFileToObjectFromPermanentURL"/>
+    </message>
+    <message name="uploadFileToObjectWithCharacterisation">
+        <part name="parameters"
+              element="tns:uploadFileToObjectWithCharacterisation"/>
+    </message>
     <message name="uploadFileToObject">
         <part name="parameters" element="tns:uploadFileToObject"/>
     </message>
@@ -102,13 +114,104 @@
     <portType name="HighlevelBitstorageSoapWebservice">
         <documentation>Java interface the bitstorage system.
         </documentation>
+        <operation
+                name="uploadFileToObjectFromPermanentURLWithCharacterisation">
+            <documentation>Attaches the provided permanent url to the given
+                fedora
+                file object. The provided characterisation is stored in the
+                fedora object. This method basically short-circuit any checks we
+                have in place.
+            </documentation>
+            <input message="tns:uploadFileToObjectFromPermanentURLWithCharacterisation"/>
+            <output message="tns:uploadFileToObjectResponse"/>
+            <fault message="tns:InvalidFilenameException"
+                   name="InvalidFilenameException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+            <fault message="tns:ChecksumFailedException"
+                   name="ChecksumFailedException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+            <fault message="tns:FileObjectAlreadyInUseException"
+                   name="FileObjectAlreadyInUseException"/>
+            <fault message="tns:ObjectNotFoundException"
+                   name="ObjectNotFoundException"/>
+            <fault message="tns:CharacterisationFailedException"
+                   name="CharacterisationFailedException"/>
+            <fault name="FileIsLockedException"
+                   message="tns:FileIsLockedException"/>
+        </operation>
+
+
+        <operation name="uploadFileToObjectFromPermanentURL">
+            <documentation>Attaches the provided permanent url to the given
+                fedora
+                file object. The fedora object is then characterised by the
+                characteriser.
+            </documentation>
+            <input message="tns:uploadFileToObjectFromPermanentURL"/>
+            <output message="tns:uploadFileToObjectResponse"/>
+            <fault message="tns:InvalidFilenameException"
+                   name="InvalidFilenameException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+            <fault message="tns:ChecksumFailedException"
+                   name="ChecksumFailedException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+            <fault message="tns:FileObjectAlreadyInUseException"
+                   name="FileObjectAlreadyInUseException"/>
+            <fault message="tns:ObjectNotFoundException"
+                   name="ObjectNotFoundException"/>
+            <fault message="tns:CharacterisationFailedException"
+                   name="CharacterisationFailedException"/>
+            <fault name="FileIsLockedException"
+                   message="tns:FileIsLockedException"/>
+        </operation>
+
+
+        <operation name="uploadFileToObjectWithCharacterisation">
+            <documentation>Upload the provided file to the temporary area of
+                bitstorage, giving it the provided file name. Return the MD5
+                checksum of the file. The file is only uploaded to a temporary
+                approve-area of the bitstorage, and needs to be approved by
+                calling approveFile before it is actually moved to the permanent
+                bitstorage. The object is not characterised, rather the provided
+                characterisation is used.
+            </documentation>
+            <input message="tns:uploadFileToObjectWithCharacterisation"/>
+            <output message="tns:uploadFileToObjectResponse"/>
+            <fault message="tns:InvalidFilenameException"
+                   name="InvalidFilenameException"/>
+            <fault message="tns:FileAlreadyApprovedException"
+                   name="FileAlreadyApprovedException"/>
+            <fault message="tns:ChecksumFailedException"
+                   name="ChecksumFailedException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:NotEnoughFreeSpaceException"
+                   name="NotEnoughFreeSpaceException"/>
+            <fault message="tns:FileObjectAlreadyInUseException"
+                   name="FileObjectAlreadyInUseException"/>
+            <fault message="tns:CharacterisationFailedException"
+                   name="CharacterisationFailedException"/>
+
+            <fault message="tns:ObjectNotFoundException"
+                   name="ObjectNotFoundException"/>
+            <fault name="FileIsLockedException"
+                   message="tns:FileIsLockedException"/>
+        </operation>
         <operation name="uploadFileToObject">
             <documentation>Upload the provided file to the temporary area of
                 bitstorage, giving it the provided file name. Return the MD5
                 checksum of the file. The file is only uploaded to a temporary
                 approve-area of the bitstorage, and needs to be approved by
                 calling approveFile before it is actually moved to the permanent
-                bitstorage.
+                bitstorage. The object is characterised by the characteriser.
             </documentation>
             <input message="tns:uploadFileToObject"/>
             <output message="tns:uploadFileToObjectResponse"/>
@@ -194,6 +297,128 @@
              type="tns:HighlevelBitstorageSoapWebservice">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
                       style="document"/>
+        <operation
+                name="uploadFileToObjectFromPermanentURLWithCharacterisation">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            <fault name="ChecksumFailedException">
+                <soap:fault name="ChecksumFailedException" use="literal"/>
+            </fault>
+            <fault name="InvalidFilenameException">
+                <soap:fault name="InvalidFilenameException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+            <fault name="FileObjectAlreadyInUseException">
+                <soap:fault name="FileObjectAlreadyInUseException"
+                            use="literal"/>
+            </fault>
+            <fault name="CharacterisationFailedException">
+                <soap:fault name="CharacterisationFailedException"
+                            use="literal"/>
+            </fault>
+
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+            <fault name="FileIsLockedException">
+                <soap:fault name="FileIsLockedException" use="literal"/>
+            </fault>
+
+        </operation>
+        <operation name="uploadFileToObjectWithCharacterisation">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            <fault name="ChecksumFailedException">
+                <soap:fault name="ChecksumFailedException" use="literal"/>
+            </fault>
+            <fault name="InvalidFilenameException">
+                <soap:fault name="InvalidFilenameException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+            <fault name="FileObjectAlreadyInUseException">
+                <soap:fault name="FileObjectAlreadyInUseException"
+                            use="literal"/>
+            </fault>
+            <fault name="CharacterisationFailedException">
+                <soap:fault name="CharacterisationFailedException"
+                            use="literal"/>
+            </fault>
+
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+            <fault name="FileIsLockedException">
+                <soap:fault name="FileIsLockedException" use="literal"/>
+            </fault>
+
+        </operation>
+        <operation name="uploadFileToObjectFromPermanentURL">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileAlreadyApprovedException">
+                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
+            </fault>
+            <fault name="ChecksumFailedException">
+                <soap:fault name="ChecksumFailedException" use="literal"/>
+            </fault>
+            <fault name="InvalidFilenameException">
+                <soap:fault name="InvalidFilenameException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="NotEnoughFreeSpaceException">
+                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
+            </fault>
+            <fault name="FileObjectAlreadyInUseException">
+                <soap:fault name="FileObjectAlreadyInUseException"
+                            use="literal"/>
+            </fault>
+            <fault name="CharacterisationFailedException">
+                <soap:fault name="CharacterisationFailedException"
+                            use="literal"/>
+            </fault>
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+            <fault name="FileIsLockedException">
+                <soap:fault name="FileIsLockedException" use="literal"/>
+            </fault>
+
+        </operation>
+
+
         <operation name="uploadFileToObject">
             <soap:operation soapAction=""/>
             <input>
