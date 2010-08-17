@@ -31,6 +31,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
+import java.net.URL;
+import java.net.MalformedURLException;
+
 /**
  * Small utility class for lowlevel scriptimpl. Methods will probably move to
  * domsutils at a later date.
@@ -64,5 +67,15 @@ public class Utils {
     public static boolean isChecksum(String output) {
         log.trace("Entering isChecksum(" + output + ")");
         return output != null && output.matches("[a-fA-F0-9]*");
+    }
+
+    public static boolean isURL(String output) {
+        log.trace("Entering isURL(" + output + ")");
+        try {
+            new URL(output);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
     }
 }
