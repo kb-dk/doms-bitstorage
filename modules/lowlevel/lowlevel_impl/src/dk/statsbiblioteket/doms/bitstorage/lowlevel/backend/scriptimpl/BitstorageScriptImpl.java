@@ -218,8 +218,7 @@ public class BitstorageScriptImpl implements Bitstorage {
      */
     public void disapprove(URL file)
             throws
-            CommunicationException,
-            InvalidFileNameException {
+            CommunicationException {
         log.trace("Entering disapprove(" + file + ")");
 
         try {
@@ -261,7 +260,6 @@ public class BitstorageScriptImpl implements Bitstorage {
      */
     public String approve(URL file, String md5)
             throws CommunicationException,
-                   InvalidFileNameException,
                    ChecksumFailedException {
         log.trace("Entering approve(" + md5 + ", " + file + ")");
 
@@ -362,14 +360,12 @@ public class BitstorageScriptImpl implements Bitstorage {
      *
      * @param file the url to check
      * @return true if approved, false if in temporary
-     * @throws FileNotFoundException    if the file is not in bitstorage
-     * @throws InvalidFileNameException if the url is not of the expected format
+     * @throws FileNotFoundException if the file is not in bitstorage
      */
     public boolean isApproved(URL file)
             throws
             FileNotFoundException,
-            CommunicationException,
-            InvalidFileNameException {
+            CommunicationException {
         log.trace("Entering isApproved(" + file + ")");
 
         try {

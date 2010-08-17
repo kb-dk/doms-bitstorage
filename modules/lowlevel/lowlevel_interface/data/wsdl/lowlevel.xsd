@@ -41,12 +41,6 @@
     <xs:element name="NotEnoughFreeSpaceException"
                 type="xs:string"/>
 
-    <xs:element name="UploadFailedException" type="xs:string"/>
-
-    <xs:element name="FileAlreadyApprovedException" type="xs:string"/>
-
-    <xs:element name="InvalidFileNameException" type="xs:string"/>
-
     <xs:element name="FileIsLockedException" type="xs:string"/>
 
     <xs:element name="approve" type="tns:approve"/>

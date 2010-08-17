@@ -80,17 +80,6 @@ public class BitstorageToLowlevelExceptionMapper
     }
 
     /**
-     * Maps FileAlreadyApprovedException to the equivalent SOAP fault.
-     *
-     * @param ce Exception mapped from.
-     * @return Resulting exception.
-     */
-    public LowlevelSoapException convert(FileAlreadyApprovedException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.FileAlreadyApprovedException(
-                ce.getMessage(), ce.getMessage(), ce);
-    }
-
-    /**
      * Maps FileIsLocked to the equivalent SOAP fault.
      *
      * @param ce Exception mapped from.
@@ -113,16 +102,6 @@ public class BitstorageToLowlevelExceptionMapper
                 ce.getMessage(), ce.getMessage(), ce);
     }
 
-    /**
-     * Maps InvalidFilenameException to the equivalent SOAP fault.
-     *
-     * @param ce Exception mapped from.
-     * @return Resulting exception.
-     */
-    public LowlevelSoapException convert(InvalidFileNameException ce) {
-        return new dk.statsbiblioteket.doms.bitstorage.lowlevel.InvalidFileNameException(
-                ce.getMessage(), ce.getMessage(), ce);
-    }
 
     /**
      * Maps NotEnoughFreeSpaceException to the equivalent SOAP fault.

@@ -79,34 +79,27 @@ public interface Bitstorage {
      * @param filelength The length of the file. The size to reserve before
      *                   before starting upload.
      * @return the resolvable URL to the uploaded file
-     * @throws ChecksumFailedException      if the provided checksum does not
-     *                                      match the one calculated on the
-     *                                      server
-     * @throws CommunicationException       on problems communicating with
-     *                                      bitstorage
-     * @throws FileAlreadyApprovedException if a file with that name has
-     *                                      already been added to the
-     *                                      bitstorage
-     * @throws NotEnoughFreeSpaceException  if there is not enough space for
-     *                                      the file to be uploaded
-     * @throws InvalidFileNameException     If the filename could not be
-     *                                      transformed into a valid URL
-     * @throws FileIsLockedException        If the file in bitstorage is already being
-     *                                      processed by another process. If you try to upload to a filename that
-     *                                      already exist in temporary store, and this file is being worked on
-     *                                      by another upload or other function, this exception will be thrown.
+     * @throws ChecksumFailedException     if the provided checksum does not
+     *                                     match the one calculated on the
+     *                                     server
+     * @throws CommunicationException      on problems communicating with
+     *                                     bitstorage
+     * @throws NotEnoughFreeSpaceException if there is not enough space for
+     *                                     the file to be uploaded
+     * @throws FileIsLockedException       If the file in bitstorage is already being
+     *                                     processed by another process. If you try to upload to a filename that
+     *                                     already exist in temporary store, and this file is being worked on
+     *                                     by another upload or other function, this exception will be thrown.
      * @see #approve(java.net.URL, String)
      */
     public URL upload(String filename,
                       InputStream data,
                       String md5,
                       long filelength)
-            throws NotEnoughFreeSpaceException, 
-            InvalidFileNameException, CommunicationException,
-            //NotEnoughFreeSpaceException,
-            ChecksumFailedException,
-            FileAlreadyApprovedException,
-            FileIsLockedException;
+            throws NotEnoughFreeSpaceException,
+                   CommunicationException,
+                   ChecksumFailedException,
+                   FileIsLockedException;
 
 
     /**
@@ -116,17 +109,11 @@ public interface Bitstorage {
      * method is idempotent.
      *
      * @param file The url to the file (in bitstorage)
-     * @throws CommunicationException   on problems communicating with bitstorage
-     * @throws InvalidFileNameException if the url is not of the format of
-     *                                  this bitstorage
-     * @throws FileIsLockedException    If the file in bitstorage is already being
-     *                                  processed by another process.
+     * @throws CommunicationException on problems communicating with bitstorage
      */
     public void disapprove(URL file)
             throws
-            CommunicationException,
-            InvalidFileNameException,
-            FileIsLockedException;
+            CommunicationException;
 
 
     /**
@@ -140,25 +127,14 @@ public interface Bitstorage {
      * @param file The url to the file (in bitstorage)
      * @param md5  The md5sum of the file
      * @return the calculated md5sum of the file
-     * @throws CommunicationException      on problems communicating with
-     *                                     bitstorage
-     * @throws FileNotFoundException       if the file was not found in the
-     *                                     temporary or the permanent storage
-     * @throws NotEnoughFreeSpaceException if there was not enough free space in
-     *                                     the permanent storage
-     * @throws ChecksumFailedException     if the supplied checksum does not
-     *                                     match the checksum of the file
-     * @throws InvalidFileNameException    if the url is not of the format of
-     *                                     this bitstorage
-     * @throws FileIsLockedException       If the file in bitstorage is already being
-     *                                     processed by another process.
+     * @throws CommunicationException  on problems communicating with
+     *                                 bitstorage
+     * @throws ChecksumFailedException if the supplied checksum does not
      */
     public String approve(URL file, String md5)
-            throws FileNotFoundException, CommunicationException,
-            NotEnoughFreeSpaceException,
-            ChecksumFailedException,
-            InvalidFileNameException,
-            FileIsLockedException;
+            throws
+            CommunicationException,
+            ChecksumFailedException;
 
     /**
      * Return the number of bytes left in permanent bitstorage.
@@ -189,20 +165,14 @@ public interface Bitstorage {
      *
      * @param file the url of the file
      * @return the md5sum
-     * @throws FileNotFoundException    if the file is not found in either
-     *                                  permanent or temporary bitstorage.
-     * @throws CommunicationException   on problems communicating with bitstorage
-     * @throws InvalidFileNameException if the url is not of the format of
-     *                                  this bitstorage
-     * @throws FileIsLockedException    If the file in bitstorage is already being
-     *                                  processed by another process.
+     * @throws FileNotFoundException  if the file is not found in either
+     *                                permanent or temporary bitstorage.
+     * @throws CommunicationException on problems communicating with bitstorage
      */
     public String getMd5(URL file)
             throws
             FileNotFoundException,
-            CommunicationException,
-            InvalidFileNameException,
-            FileIsLockedException;
+            CommunicationException;
 
 
     /**
@@ -210,19 +180,13 @@ public interface Bitstorage {
      *
      * @param file the url to check
      * @return true if is an approved file, false if it is an temporary file
-     * @throws FileNotFoundException    if the file is not found in bitstorage
-     * @throws CommunicationException   on problems communicating with bitstorage
-     * @throws InvalidFileNameException if the url is not of the format of
-     *                                  this bitstorage
-     * @throws FileIsLockedException    If the file in bitstorage is already being
-     *                                  processed by another process.
+     * @throws FileNotFoundException  if the file is not found in bitstorage
+     * @throws CommunicationException on problems communicating with bitstorage
      */
     public boolean isApproved(URL file)
             throws
             FileNotFoundException,
-            CommunicationException,
-            InvalidFileNameException,
-            FileIsLockedException;
+            CommunicationException;
 
 
 }

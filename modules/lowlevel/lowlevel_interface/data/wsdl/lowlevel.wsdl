@@ -48,12 +48,6 @@
     <message name="ChecksumFailedException">
         <part name="fault" element="tns:ChecksumFailedException"/>
     </message>
-    <message name="FileAlreadyApprovedException">
-        <part name="fault" element="tns:FileAlreadyApprovedException"/>
-    </message>
-    <message name="InvalidFileNameException">
-        <part name="fault" element="tns:InvalidFileNameException"/>
-    </message>
     <message name="CommunicationException">
         <part name="fault" element="tns:CommunicationException"/>
     </message>
@@ -120,10 +114,6 @@
             </documentation>
             <input message="tns:uploadFile"/>
             <output message="tns:uploadFileResponse"/>
-            <fault message="tns:InvalidFileNameException"
-                   name="InvalidFileNameException"/>
-            <fault message="tns:FileAlreadyApprovedException"
-                   name="FileAlreadyApprovedException"/>
             <fault message="tns:ChecksumFailedException"
                    name="ChecksumFailedException"/>
             <fault message="tns:CommunicationException"
@@ -132,7 +122,6 @@
                    name="NotEnoughFreeSpaceException"/>
             <fault message="tns:FileIsLockedException"
                    name="FileIsLockedException"/>
-
         </operation>
         <operation name="disapprove">
             <documentation>Delete the named file from bitstorage. Only works for
@@ -145,13 +134,6 @@
             <output message="tns:disapproveResponse"/>
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
-            <fault message="tns:FileNotFoundException"
-                   name="FileNotFoundException"/>
-            <fault message="tns:FileAlreadyApprovedException"
-                   name="FileAlreadyApprovedException"/>
-            <fault message="tns:FileIsLockedException"
-                   name="FileIsLockedException"/>
-
         </operation>
         <operation name="approve">
             <documentation>Check the earlier uploaded file against the provided
@@ -169,17 +151,8 @@
             <output message="tns:approveResponse"/>
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
-            <fault message="tns:FileNotFoundException"
-                   name="FileNotFoundException"/>
-            <fault message="tns:NotEnoughFreeSpaceException"
-                   name="NotEnoughFreeSpaceException"/>
             <fault message="tns:ChecksumFailedException"
                    name="ChecksumFailedException"/>
-            <fault message="tns:FileAlreadyApprovedException"
-                   name="FileAlreadyApprovedException"/>
-            <fault message="tns:FileIsLockedException"
-                   name="FileIsLockedException"/>
-
         </operation>
 
         <operation name="spaceLeft">
@@ -208,9 +181,6 @@
                    name="FileNotFoundException"/>
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
-            <fault message="tns:FileIsLockedException"
-                   name="FileIsLockedException"/>
-
         </operation>
         <operation name="isApproved">
             <documentation>Check if the url is of a approved file.
@@ -221,9 +191,6 @@
                    name="FileNotFoundException"/>
             <fault message="tns:CommunicationException"
                    name="CommunicationException"/>
-            <fault message="tns:FileIsLockedException"
-                   name="FileIsLockedException"/>
-
         </operation>
     </portType>
     <binding name="LowlevelBitstorageSoapWebservicePortBinding"
@@ -238,14 +205,8 @@
             <output>
                 <soap:body use="literal"/>
             </output>
-            <fault name="FileAlreadyApprovedException">
-                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
-            </fault>
             <fault name="ChecksumFailedException">
                 <soap:fault name="ChecksumFailedException" use="literal"/>
-            </fault>
-            <fault name="InvalidFileNameException">
-                <soap:fault name="InvalidFileNameException" use="literal"/>
             </fault>
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
@@ -269,16 +230,6 @@
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
             </fault>
-            <fault name="FileNotFoundException">
-                <soap:fault name="FileNotFoundException" use="literal"/>
-            </fault>
-            <fault name="FileAlreadyApprovedException">
-                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
-            </fault>
-            <fault name="FileIsLockedException">
-                <soap:fault name="FileIsLockedException" use="literal"/>
-            </fault>
-
         </operation>
         <operation name="approve">
             <soap:operation soapAction=""/>
@@ -290,24 +241,10 @@
             </output>
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
-
-            </fault>
-            <fault name="FileNotFoundException">
-                <soap:fault name="FileNotFoundException" use="literal"/>
-            </fault>
-            <fault name="NotEnoughFreeSpaceException">
-                <soap:fault name="NotEnoughFreeSpaceException" use="literal"/>
             </fault>
             <fault name="ChecksumFailedException">
                 <soap:fault name="ChecksumFailedException" use="literal"/>
             </fault>
-            <fault name="FileAlreadyApprovedException">
-                <soap:fault name="FileAlreadyApprovedException" use="literal"/>
-            </fault>
-            <fault name="FileIsLockedException">
-                <soap:fault name="FileIsLockedException" use="literal"/>
-            </fault>
-
         </operation>
         <operation name="spaceLeft">
             <soap:operation soapAction=""/>
@@ -315,7 +252,6 @@
                 <soap:body use="literal"/>
             </input>
             <output>
-
                 <soap:body use="literal"/>
             </output>
             <fault name="CommunicationException">
@@ -333,7 +269,6 @@
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
             </fault>
-
         </operation>
         <operation name="getMd5">
             <soap:operation soapAction=""/>
@@ -349,10 +284,6 @@
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
             </fault>
-            <fault name="FileIsLockedException">
-                <soap:fault name="FileIsLockedException" use="literal"/>
-            </fault>
-
         </operation>
         <operation name="isApproved">
 
@@ -368,9 +299,6 @@
             </fault>
             <fault name="CommunicationException">
                 <soap:fault name="CommunicationException" use="literal"/>
-            </fault>
-            <fault name="FileIsLockedException">
-                <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
         </operation>
     </binding>
