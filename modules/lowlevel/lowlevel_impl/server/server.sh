@@ -34,30 +34,30 @@ main () {
 	    global_lock
 	    FILE=$(get_path tmp)
 	    if [ -n "$FILE"  ] ; then
-		if fuser "$FILE" > /dev/null 2>&1 ; then
-		    global_unlock
-		    echo "file locked" 1>&2
-		    exit 3
-		fi
-		MD5=$(md5sum < "$FILE")
-		MD5=${MD5%% *}
-		if [ "$(get_path)" ] ; then
-		    global_unlock
-		    if [ "$MD5ARG" = "$MD5" ] ; then
-			echo "file was saved" 1>&2
-			return 0
-		    else
-			echo "file was saved with an other checksum"  1>&2
-			return 2
+		    if fuser "$FILE" > /dev/null 2>&1 ; then
+		        global_unlock
+		        echo "file locked" 1>&2
+		        exit 3
 		    fi
-		fi
+		    MD5=$(md5sum < "$FILE")
+		    MD5=${MD5%% *}
+		    if [ "$(get_path)" ] ; then
+    		    global_unlock
+	    	    if [ "$MD5ARG" = "$MD5" ] ; then
+		        	echo "file was saved" 1>&2
+			        return 0
+		        else
+			        echo "file was saved with an other checksum"  1>&2
+			        return 2
+		        fi
+		    fi
 	    fi
 	    SLENGTH=$(echo $LENGTH + $MIN_EXTRA_SPACE | bc)
 	    DIR=$(find_fs.py reserve $FS_CONF "$TARG" $SLENGTH)
 	    if [ -z "$DIR" ] ; then
-		echo "no space left" 1>&2
-		global_unlock
-		return 1
+		    echo "no space left" 1>&2
+		    global_unlock
+		    return 1
 	    fi
 	    mkdir -p $DIR/{tmp,files}
 	    touch "$DIR/tmp/$TARG"
@@ -67,9 +67,9 @@ main () {
 	    MD5=$(md5sum < "$DIR/tmp/$TARG")
 	    MD5=${MD5%% *}
 	    if [ "$MD5" != "$MD5ARG" ] ; then
-		rm "$DIR/tmp/$TARG"
-		echo "checksum error" 1>&2
-		exit 2
+		    rm "$DIR/tmp/$TARG"
+		    echo "checksum error" 1>&2
+		    exit 2
 	    fi
 	    echo "file saved"  1>&2
 	    export A=${ARG#* * }
@@ -84,9 +84,9 @@ main () {
 	    global_lock
 	    FILE=$(get_path tmp only)
 	    if [ -z "$FILE" ] ; then
-		global_unlock
-		echo "file not found" 1>&2
-		exit 1
+		    global_unlock
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    DIR=${FILE%/tmp/*}
 	    mv "$DIR/tmp/$TARG" "$DIR/files/$TARG"
@@ -94,9 +94,9 @@ main () {
 	    MD5=$(md5sum < "$DIR/files/$TARG")
 	    MD5=${MD5%% *}
 	    if [ "$MD5" != "$MD5ARG" ] ; then
-		mv "$DIR/files/$TARG" "$DIR/tmp/$TARG"
-		echo "checksum error" 1>&2
-		exit 2
+		    mv "$DIR/files/$TARG" "$DIR/tmp/$TARG"
+		    echo "checksum error" 1>&2
+		    exit 2
 	    fi
 	    register_sum.sh $DIR "$TARG" $MD5
 	    echo "file approved" 1>&2
@@ -108,16 +108,16 @@ main () {
 	    # : arguments filename
 	    FILE=$(get_path tmp)
 	    if [ -z "$FILE" ] ; then
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    ;;
 	exists-approved) : do a file exist and is approved
 	    # : arguments: filename
 	    FILE=$(get_path)
 	    if [ -z "$FILE" ] ; then
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    ;;
 	get-md5) : get md5sum of a file
@@ -126,8 +126,8 @@ main () {
 	    # : exit status: 1 on errors, 0 on success
 	    FILE=$(get_path tmp)
 	    if [ -z "$FILE" ] ; then
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    MD5=$(md5sum < "$FILE")
 	    MD5=${MD5%% *}
@@ -139,10 +139,10 @@ main () {
 	    # : exit status: 0 on success, else 1
 	    FILE=$(get_path tmp)
 	    if [ -n "$FILE" ] ; then
-		cat "$FILE"
+		    cat "$FILE"
 	    else
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    ;;
 	get-approved) : get an approved file only
@@ -151,19 +151,20 @@ main () {
 	    # : exit status: 0 on success, else 1
 	    FILE=$(get_path)
 	    if [ -n "$FILE" ] ; then
-		cat "$FILE"
+		    cat "$FILE"
 	    else
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    ;;
 	delete) : delete an unapproved file
+	    # : arguments filename
 	    global_lock
 	    FILE=$(get_path tmp only)
 	    global_unlock
 	    if [ -z "$FILE" ] ; then
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+		    exit 1
 	    fi
 	    rm -f $FILE
 	    echo "file deleted" 1>&2
@@ -196,10 +197,10 @@ main () {
 	    # output: number of backup copies
 	    FILE=$(get_path)
 	    if [ -n "$FILE" ] ; then
-		echo $(/usr/openv/netbackup/bin/bplist "FILE" 2> /dev/null | wc -l)
+		    echo $(/usr/openv/netbackup/bin/bplist "FILE" 2> /dev/null | wc -l)
 	    else
-		echo "file not found" 1>&2
-		exit 1
+		    echo "file not found" 1>&2
+    		exit 1
 	    fi
 	    ;;
 	*)
