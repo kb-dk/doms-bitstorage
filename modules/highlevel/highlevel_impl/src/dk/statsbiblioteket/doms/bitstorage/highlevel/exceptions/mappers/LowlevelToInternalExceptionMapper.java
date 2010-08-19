@@ -42,49 +42,37 @@ public class LowlevelToInternalExceptionMapper
     public InternalException convert(
             ChecksumFailedException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.ChecksumFailed);
+                                     ce,
+                                     InternalException.Type.ChecksumFailed);
     }
 
     public InternalException convert(
             CommunicationException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.Communication);
-    }
-
-    public InternalException convert(
-            FileAlreadyApprovedException ce) {
-        return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.FileAlreadyApproved);
+                                     ce,
+                                     InternalException.Type.Communication);
     }
 
 
     public InternalException convert(FileIsLockedException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.FileIsLocked);
+                                     ce,
+                                     InternalException.Type.FileIsLocked);
     }
 
 
     public InternalException convert(
             FileNotFoundException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.FileNotFound);
+                                     ce,
+                                     InternalException.Type.FileNotFound);
     }
 
-    public InternalException convert(InvalidFileNameException ce) {
-        return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.InvalidFilename);
-    }
 
     public InternalException convert(NotEnoughFreeSpaceException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.NotEnoughFreeSpace);
+                                     ce,
+                                     InternalException.Type.NotEnoughFreeSpace);
     }
 
 
