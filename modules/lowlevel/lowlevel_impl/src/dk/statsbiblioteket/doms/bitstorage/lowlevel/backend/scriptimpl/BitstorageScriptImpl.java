@@ -98,20 +98,8 @@ public class BitstorageScriptImpl implements Bitstorage {
     /**
      * These are patterns to match for, for parsing output.
      */
-    private static final String ALREADY_STORED_REPLY = "was stored!";
-    private static final String FILE_NOT_FOUND_REPLY = "file not found";
-    private static final String NO_SPACE_LEFT_REPLY = "No space left";
     private static final String FREE_SPACE_REPLY = "Free space: ";
     private static final String MAX_FILE_SIZE_REPLY = "Max file size: ";
-
-    /* These are the three replies for Getstate*/
-    private static final String FILE_IN_STAGE = "File in stage";
-    private static final String FILE_IN_STORAGE = "File in storage";
-    private static final String FILE_NOT_FOUND = "File not found";
-
-
-    /*Used in approve */
-    private static final String WRONG_MD5 = "checksum error";
 
 
     public BitstorageScriptImpl() {
@@ -223,7 +211,7 @@ public class BitstorageScriptImpl implements Bitstorage {
 
         try {
 
-            String datafile = file.toString();
+            String datafile = toFile(file);
             String output;
 
             output = runcommand(ScriptCommand.DISAPPROVE_COMMAND, datafile);
@@ -234,6 +222,7 @@ public class BitstorageScriptImpl implements Bitstorage {
                 case 1:
                     log.debug("File to disapprove '" + file + "" +
                               "' not found. Not a problem");
+                    break;
                 default:
                     throw new CommunicationException(e.getMessage(), e);
             }
@@ -254,23 +243,21 @@ public class BitstorageScriptImpl implements Bitstorage {
      * @param file The url to the file (in bitstorage)
      * @param md5  the md5sum of the file. Is checked against the
      *             server checksum
-     * @return The url to the file (in bitstorage)
      * @throws CommunicationException is there was some problem
      *                                with the script command
      */
-    public String approve(URL file, String md5)
+    public void approve(URL file, String md5)
             throws CommunicationException,
                    ChecksumFailedException {
         log.trace("Entering approve(" + md5 + ", " + file + ")");
 
 
         try {
-            String datafile = file.toString();
+            String datafile = toFile(file);
             String output;
 
             output = runcommand(ScriptCommand.APPROVE_COMMAND,
                                 md5, datafile);
-            return output;
         } catch (ContingencyException e) {
             int exitstatus = e.getReturncode();
 
@@ -279,7 +266,7 @@ public class BitstorageScriptImpl implements Bitstorage {
                     log.debug("File to approve '" + file + "" +
                               "' not found in temp, so must be in permanent"
                               + " storage already. Not a problem");
-
+                    break;
                 case 2:
                     throw new ChecksumFailedException(
                             "Checksum for file" + file
@@ -326,7 +313,7 @@ public class BitstorageScriptImpl implements Bitstorage {
 
         try {
 
-            String datafile = file.toString();
+            String datafile = toFile(file);
             String output;
 
             output = runcommand(ScriptCommand.GETMD5_COMMAND, datafile);
@@ -369,7 +356,7 @@ public class BitstorageScriptImpl implements Bitstorage {
         log.trace("Entering isApproved(" + file + ")");
 
         try {
-            String datafile = file.toString();
+            String datafile = toFile(file);
             String output;
 
             output = runcommand(ScriptCommand.GETSTATE_COMMAND, datafile);
@@ -394,6 +381,15 @@ public class BitstorageScriptImpl implements Bitstorage {
         } catch (Exception e) {
             log.error("Caught unknown exception", e);
             throw new CommunicationException("Unknown failure", e);
+        }
+    }
+
+    private String toFile(URL file) {
+        String stringform = file.toString();
+        if (stringform.startsWith(bitfinder)) {
+            return stringform.substring(bitfinder.length());
+        } else {
+            return stringform;
         }
     }
 

@@ -49,7 +49,7 @@
         </description>
         <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.bitfinder
         </param-name>
-        <param-value>http://bitfinder.statsbiblioteket.dk/</param-value>
+        <param-value>http://stage01/doms/</param-value>
     </context-param>
 
     <context-param>

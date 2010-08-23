@@ -126,12 +126,11 @@ public interface Bitstorage {
      *
      * @param file The url to the file (in bitstorage)
      * @param md5  The md5sum of the file
-     * @return the calculated md5sum of the file
      * @throws CommunicationException  on problems communicating with
      *                                 bitstorage
      * @throws ChecksumFailedException if the supplied checksum does not
      */
-    public String approve(URL file, String md5)
+    public void approve(URL file, String md5)
             throws
             CommunicationException,
             ChecksumFailedException;
