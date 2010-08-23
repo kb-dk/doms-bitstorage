@@ -29,6 +29,15 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.fcrepo.server.proxy.AbstractInvocationHandler;
+import org.fcrepo.server.management.ManagementModule;
+import org.fcrepo.server.access.Access;
+import org.fcrepo.server.access.ObjectProfile;
+import org.fcrepo.server.Server;
+import org.fcrepo.server.Context;
+import org.fcrepo.server.errors.ModuleInitializationException;
+import org.fcrepo.server.errors.ServerInitializationException;
+import org.fcrepo.common.Constants;
 
 import javax.xml.namespace.QName;
 import java.lang.reflect.Method;
@@ -39,15 +48,6 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.LinkedList;
 
-import fedora.server.proxy.AbstractInvocationHandler;
-import fedora.server.management.ManagementModule;
-import fedora.server.access.Access;
-import fedora.server.access.ObjectProfile;
-import fedora.server.Server;
-import fedora.server.Context;
-import fedora.server.errors.ModuleInitializationException;
-import fedora.server.errors.ServerInitializationException;
-import fedora.common.Constants;
 
 /**
  * Hooks the modifyObject method, so that when a file object is set to Active
@@ -56,9 +56,9 @@ import fedora.common.Constants;
  * temporary bitstorage to permanent.
  *
  * @see HighlevelBitstorageSoapWebservice#publish(String)
- *
- *  author: abr
- *  reviewer: jrg
+ *      <p/>
+ *      author: abr
+ *      reviewer: jrg
  */
 public class HookApprove extends AbstractInvocationHandler {
 
