@@ -218,20 +218,21 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
-        String message =
-                "Entered uploadFileToObjectFromPermanentURLWithCharacterisation with params: '"
-                + pid + "', '"
-                + filename + "', '"
-                + permanentURL + ", "
-                + md5String
-                + "', '"
-                + filelength + "', "
-                + characterisation.toString() + ".";
-        log.trace(message);
         boolean[] checkpoints = {false, false, false};
-        String uploadedURL = "";
+        String uploadedURL = permanentURL;
         Operation op = null;
         try {
+            String message =
+                    "Entered uploadFileToObjectFromPermanentURLWithCharacterisation with params: '"
+                    + pid + "', '"
+                    + filename + "', '"
+                    + permanentURL + ", "
+                    + md5String
+                    + "', '"
+                    + filelength + "', "
+                    + characterisation.toString() + ".";
+            log.trace(message);
+
             op = StaticStatus.initOperation("Upload");
             try {
                 initialise();
@@ -248,8 +249,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 message = "Fedora datastream created";
                 log.debug(message);
                 StaticStatus.event(op, message);
-                message
-                        = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
+                message = "Second checkpoint reached. File is in lowlevel and "
+                          + "the datastream is in fedora";
                 log.debug(message);
                 StaticStatus.event(op, message);
 
@@ -269,8 +270,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                  formatURIs,
                                                  op);
                 checkpoints[2] = true;
-                message
-                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
+                message = "Third Checkpoint reached. File stored, file object"
+                          + " updated. Charac info stored";
                 log.debug(message);
                 StaticStatus.event(op, message);
 
@@ -316,19 +317,20 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
-        String message =
-                "Entered uploadFileToObjectWithCharacterisation with params: '"
-                + pid + "', '"
-                + filename + "', '"
-                + md5String
-                + "', '"
-                + filelength + "', "
-                + characterisation.toString() + ".";
-        log.trace(message);
         boolean[] checkpoints = {false, false, false};
         String uploadedURL = "";
         Operation op = null;
         try {
+            String message =
+                    "Entered uploadFileToObjectWithCharacterisation with params: '"
+                    + pid + "', '"
+                    + filename + "', '"
+                    + md5String
+                    + "', '"
+                    + filelength + "', "
+                    + characterisation.toString() + ".";
+            log.trace(message);
+
             op = StaticStatus.initOperation("Upload");
             try {
                 initialise();
@@ -450,18 +452,18 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
-        String message =
-                "Entered uploadFileToObjectFromPermanentURL with params: '"
-                + pid + "', \n'"
-                + filename + "', \n'"
-                + permanentURL + "', \n'"
-                + md5String + "', \n'"
-                + filelength + "'.\n";
-        log.trace(message);
         boolean[] checkpoints = {false, false, false};
         String uploadedURL = permanentURL;
         Operation op = null;
         try {
+            String message =
+                    "Entered uploadFileToObjectFromPermanentURL with params: '"
+                    + pid + "', \n'"
+                    + filename + "', \n'"
+                    + permanentURL + "', \n'"
+                    + md5String + "', \n'"
+                    + filelength + "'.\n";
+            log.trace(message);
             op = StaticStatus.initOperation("Upload");//TODO?
             try {
                 initialise();
@@ -532,17 +534,18 @@ public class HighlevelBitstorageSoapWebserviceImpl
             @WebParam(name = "filelength", targetNamespace = "")
             long filelength) throws
                              HighlevelSoapException {
-        String message = "Entered uploadFileToObject with params: '"
-                         + pid + "', '"
-                         + filename + "', '"
-                         + md5String
-                         + "', '"
-                         + filelength + "'.";
-        log.trace(message);
         boolean[] checkpoints = {false, false, false};
         String uploadedURL = "";
         Operation op = null;
         try {
+            String message = "Entered uploadFileToObject with params: '"
+                             + pid + "', '"
+                             + filename + "', '"
+                             + md5String
+                             + "', '"
+                             + filelength + "'.";
+            log.trace(message);
+
             op = StaticStatus.initOperation("Upload");
             try {
                 initialise();

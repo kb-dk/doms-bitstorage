@@ -165,8 +165,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
      */
     @WebMethod
     public void disapprove(@WebParam(name = "fileurl",
-                                     targetNamespace = "")
-    String fileurl)
+                                     targetNamespace = "") String fileurl)
             throws FileIsLockedException,
                    CommunicationException,
                    LowlevelSoapException,
