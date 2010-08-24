@@ -432,7 +432,7 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="false" />
   <component name="libraryTable">
-    <library name="sbutils-0.4.8">
+    <library name="sbutils">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/sbutils-0.4.8/jars" />
       </CLASSES>
@@ -444,7 +444,7 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/lib/sbutils-0.4.8/jars" recursive="false" />
     </library>
-    <library name="jaxws-ri-2.1.7">
+    <library name="jaxws-ri">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars" />
       </CLASSES>
@@ -456,7 +456,7 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/lib/jaxws-ri-2.1.7/jars" recursive="false" />
     </library>
-    <library name="jersey-1.1.4">
+    <library name="jersey">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/asm-3.1.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/jersey-1.1.4/jars/jersey-client-1.1.4.jar!/" />
@@ -486,7 +486,7 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/lib/servlet-api-2.5-apache-tomcat-6.0.20/jars" recursive="false" />
     </library>
-    <library name="jsr311-api-1.0">
+    <library name="jsr311-api">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/jsr311-api-1.0/jars" />
       </CLASSES>
@@ -498,7 +498,7 @@
       </SOURCES>
       <jarDirectory url="file://$PROJECT_DIR$/lib/jsr311-api-1.0/jars" recursive="false" />
     </library>
-    <library name="domsutil-0.0.7">
+    <library name="domsutil">
       <CLASSES>
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/jars/webservice-common.jar!/" />
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/jars/surveyable_impl.jar!/" />
@@ -514,7 +514,7 @@
         <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/src/domsutil-0.0.7-src.zip!/domsutil-0.0.7/modules/surveyable/surveyable_interface/src" />
       </SOURCES>
     </library>
-    <library name="commons-logging-1.1.1">
+    <library name="commons-logging">
       <CLASSES>
         <root url="file://$PROJECT_DIR$/lib/commons-logging-1.1.1/jars" />
       </CLASSES>

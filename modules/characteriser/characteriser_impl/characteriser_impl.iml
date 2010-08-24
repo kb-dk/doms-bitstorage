@@ -55,8 +55,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jaxws-ri-2.1.7" level="project" />
-    <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
+    <orderEntry type="library" name="jaxws-ri" level="project" />
+    <orderEntry type="library" name="commons-logging" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -66,8 +66,8 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="sbutils-0.4.8" level="project" />
-    <orderEntry type="library" name="domsutil-0.0.7" level="project" />
+    <orderEntry type="library" name="sbutils" level="project" />
+    <orderEntry type="library" name="domsutil" level="project" />
     <orderEntry type="module-library">
       <library name="FedoraDOM">
         <CLASSES>

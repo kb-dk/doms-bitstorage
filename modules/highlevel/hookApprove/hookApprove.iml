@@ -19,7 +19,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="highlevel_interface" />
-    <orderEntry type="library" name="commons-logging-1.1.1" level="project" />
+    <orderEntry type="library" name="commons-logging" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

@@ -18,7 +18,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="library" name="sbutils-0.4.8" level="project" />
+    <orderEntry type="library" name="sbutils" level="project" />
   </component>
 </module>
 
