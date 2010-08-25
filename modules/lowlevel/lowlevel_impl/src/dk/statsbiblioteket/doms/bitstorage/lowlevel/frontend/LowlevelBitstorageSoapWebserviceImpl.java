@@ -138,6 +138,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
             } finally {
                 LOG.trace("Function over, returning");
                 data.close();
+                LOG.trace("data stream closed");
             }
         } catch (BitstorageException e) {
             LOG.error(errorMessage, e);
