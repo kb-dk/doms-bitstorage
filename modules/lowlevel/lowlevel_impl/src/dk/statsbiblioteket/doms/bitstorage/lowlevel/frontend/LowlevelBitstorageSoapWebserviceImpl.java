@@ -136,6 +136,7 @@ public class LowlevelBitstorageSoapWebserviceImpl
                 return bs.upload(filename, data, md5String, filelength)
                         .toString();
             } finally {
+                LOG.trace("Function over, returning");
                 data.close();
             }
         } catch (BitstorageException e) {
