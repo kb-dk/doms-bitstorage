@@ -53,31 +53,10 @@
     </context-param>
 
     <context-param>
-        <description>
-            The interval in ms between checking if a file has become unlocked,
-            default 1 sec
-        </description>
-        <param-name>
-            dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.pollInterval
-        </param-name>
-        <param-value>1000</param-value>
-    </context-param>
-
-    <context-param>
-        <description>
-            The total time to wait for a file to become unlocked, in ms. Default
-            10 min
-        </description>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.lowlevel.locking.timeout
-        </param-name>
-        <param-value>600000</param-value>
-    </context-param>
-
-    <context-param>
         <description>This is the command to invoke to use the script
         </description>
         <param-name>
-            dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script
+            dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.script
         </param-name>
         <param-value>ssh doms@stage01 bin/server.sh
         </param-value>

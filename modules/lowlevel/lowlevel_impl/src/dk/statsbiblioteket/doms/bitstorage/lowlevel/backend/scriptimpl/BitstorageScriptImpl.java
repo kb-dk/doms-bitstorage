@@ -153,7 +153,6 @@ public class BitstorageScriptImpl implements Bitstorage {
                                 filelength + "", md5, filename);
             log.debug("Upload script command exited normally");
             output = output.trim();
-
             return new URL(output);
         } catch (ContingencyException e) {//something went wrong
             int exitstatus = e.getReturncode();
@@ -520,7 +519,7 @@ public class BitstorageScriptImpl implements Bitstorage {
 
         List<String> arrayList = new ArrayList<String>();
         String scriptblob = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.Script");
+                "dk.statsbiblioteket.doms.bitstorage.lowlevel.scriptimpl.script");
         String[] scriptlist = scriptblob.split(" ");
 
         arrayList.addAll(Arrays.asList(scriptlist));
