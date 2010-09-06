@@ -46,69 +46,70 @@ import org.apache.commons.logging.LogFactory;
 public class InternalExceptionsToSoapFaultsMapper
         extends ExceptionMapper<HighlevelSoapException, InternalException> {
 
-    private Log log = LogFactory.getLog(InternalExceptionsToSoapFaultsMapper.class);
+    private Log log
+            = LogFactory.getLog(InternalExceptionsToSoapFaultsMapper.class);
 
 
     public HighlevelSoapException convert(InternalException ce) {
         switch (ce.getType()) {
             case Communication:
-                return new CommunicationException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new CommunicationException(ce.getMessage(),
+                                                  ce.getType().toString(),
+                                                  ce);
             case ChecksumFailed:
-                return new ChecksumFailedException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new ChecksumFailedException(ce.getMessage(),
+                                                   ce.getType().toString(),
+                                                   ce);
             case Unknown://TODO
-                return new CommunicationException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new CommunicationException(ce.getMessage(),
+                                                  ce.getType().toString(),
+                                                  ce);
 
             //lowlevel types
             case FileAlreadyApproved:
-                return new FileAlreadyApprovedException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new FileAlreadyApprovedException(ce.getMessage(),
+                                                        ce.getType().toString(),
+                                                        ce);
             case FileIsLocked:
-                return new FileIsLockedException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new FileIsLockedException(ce.getMessage(),
+                                                 ce.getType().toString(),
+                                                 ce);
             case FileNotFound://TODO
-                return new InvalidFilenameException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new InvalidFilenameException(ce.getMessage(),
+                                                    ce.getType().toString(),
+                                                    ce);
             case NotEnoughFreeSpace:
-                return new NotEnoughFreeSpaceException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new NotEnoughFreeSpaceException(ce.getMessage(),
+                                                       ce.getType().toString(),
+                                                       ce);
             case InvalidFilename:
-                return new InvalidFilenameException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new InvalidFilenameException(ce.getMessage(),
+                                                    ce.getType().toString(),
+                                                    ce);
 
             //Fedora types
             case FileObjectAlreadyInUse:
-                return new FileObjectAlreadyInUseException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new FileObjectAlreadyInUseException(ce.getMessage(),
+                                                           ce.getType().toString(),
+                                                           ce);
             case NotAuthorized://TODO
-                return new CommunicationException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new CommunicationException(ce.getMessage(),
+                                                  ce.getType().toString(),
+                                                  ce);
             case ObjectNotFound:
-                return new ObjectNotFoundException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new ObjectNotFoundException(ce.getMessage(),
+                                                   ce.getType().toString(),
+                                                   ce);
 
             //Characteriser types
             case CharacterisationFailed:
-                return new CharacterisationFailedException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new CharacterisationFailedException(ce.getMessage(),
+                                                           ce.getType().toString(),
+                                                           ce);
             default:
-                return new CommunicationException(ce.getType().toString(),
-                        ce.getMessage(),
-                        ce);
+                return new CommunicationException(ce.getMessage(),
+                                                  ce.getType().toString(),
+                                                  ce);
         }
     }
 }
