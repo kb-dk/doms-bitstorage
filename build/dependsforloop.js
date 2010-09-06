@@ -58,7 +58,8 @@ for (var i = 0; i < dirs.length; i++) {
     subdir = new File(basedir, dirs[i])
     echo.setMessage("recursing into " + subdir);
     echo.execute();
-    if (contains(subdir.list(), "build.xml")) {
+    list = subdir.list(); //TODO possible race condition
+    if (list != null && contains(list, "build.xml")) {
         var anttask = project.createTask("ant");
         anttask.setDir(subdir);
         anttask.setTarget(target);

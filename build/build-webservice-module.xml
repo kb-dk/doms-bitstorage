@@ -26,16 +26,22 @@
   -->
 
 <project name="webservice">
-
     <import file="build-module.xml"/>
 
+    <property name="wsdl.dir" value="data/wsdl"/>
+
     <fileset id="webinf" dir="${basedir}/web/WEB-INF">
+    </fileset>
+
+    <fileset id="webcontent" dir="${basedir}/web">
+        <exclude name="WEB-INF/**"/>
     </fileset>
 
     <target name="war" depends="jar" unless="codeNotChanged">
         <buildwar jars.to.pack="classpath"
                   warfilename="${warfilename}"
                   web-inf="webinf"
+                  web-content="webcontent"
                   wsdl.dir="${wsdl.dir}"/>
         <delete file="dist/${jarfile}"/>
     </target>
@@ -51,6 +57,6 @@
     <target name="all" depends="war,module.all"/>
 
     <!--All project libs are packed in the war, do not copy them-->
-    <target name="-copyLibsForDist" depends="-copyLicensesForDist"/>
+    <target name="_copyLibsForDist" depends="_copyLicensesForDist"/>
 
 </project>
