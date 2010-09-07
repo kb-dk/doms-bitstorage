@@ -26,17 +26,24 @@
   ~ under the License.
   -->
 
-<xs:schema xmlns="http://www.fedora.info/definitions/1/0/access/"
-           targetNamespace="http://www.fedora.info/definitions/1/0/access/"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           elementFormDefault="qualified">
-    <xs:element name="fedoraObjectHistory">
+<xs:schema
+        targetNamespace="http://www.fedora.info/definitions/1/0/management/"
+        xmlns:management="http://www.fedora.info/definitions/1/0/management/"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified">
+    <xs:include schemaLocation="datastreamProfile.xsd"/>
+    <xs:element name="datastreamHistory">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="objectChangeDate" type="xs:string"
-                            maxOccurs="unbounded"/>
+                <xs:element minOccurs="1" maxOccurs="unbounded"
+                            ref="management:datastreamProfile"/>
             </xs:sequence>
             <xs:attribute name="pid" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string"/>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="dsID" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string"/>
                 </xs:simpleType>
