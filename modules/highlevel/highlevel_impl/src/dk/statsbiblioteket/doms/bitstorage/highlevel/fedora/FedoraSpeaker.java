@@ -31,6 +31,7 @@ import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
+import javax.xml.ws.WebServiceContext;
 import java.util.Collection;
 
 /**
@@ -63,7 +64,8 @@ public interface FedoraSpeaker {
      */
     public void createContentDatastream(String pid,
                                         String url,
-                                        String checksum)
+                                        String checksum,
+                                        String filename)
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamAlreadyExistException,
@@ -76,6 +78,7 @@ public interface FedoraSpeaker {
      * @param pid      the pid of the object
      * @param url      the URL of the content
      * @param checksum the checksum for the ocntent
+     * @param filename
      * @throws FedoraObjectNotFoundException if the object does not exist
      * @throws FedoraCommunicationException  if something else failed
      * @throws FedoraChecksumFailedException if the checksum does not match
@@ -83,7 +86,7 @@ public interface FedoraSpeaker {
      */
     public void updateContentDatastream(String pid,
                                         String url,
-                                        String checksum)
+                                        String checksum, String filename)
             throws
             FedoraObjectNotFoundException,
             FedoraCommunicationException,
@@ -123,7 +126,8 @@ public interface FedoraSpeaker {
      *                                       not be serialized into a storable format
      */
     public void storeCharacterization(String pid,
-                                      Characterisation characterisation)
+                                      Characterisation characterisation,
+                                      WebServiceContext context)
             throws
             FedoraObjectNotFoundException,
             FedoraSerializationExcecption,
