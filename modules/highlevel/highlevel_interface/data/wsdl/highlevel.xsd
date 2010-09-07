@@ -217,7 +217,7 @@
                         type="xs:base64Binary"/>
             <xs:element name="md5string" type="xs:string"/>
             <xs:element name="filelength" type="xs:long"/>
-            <xs:element name="characterisation" type="char:characterisation"/>
+            <xs:element ref="char:Characterisation"/>
         </xs:sequence>
     </xs:complexType>
 

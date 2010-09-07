@@ -43,6 +43,7 @@
         </xs:appinfo>
     </xs:annotation>
 
+    <xs:element name="Characterisation" type="tns:characterisation"/>
 
     <xs:element name="CommunicationException"
                 type="xs:string"/>
@@ -64,7 +65,7 @@
 
     <xs:complexType name="characteriseResponse">
         <xs:sequence>
-            <xs:element name="characterisation" type="tns:characterisation"/>
+            <xs:element ref="tns:Characterisation"/>
         </xs:sequence>
     </xs:complexType>
 
