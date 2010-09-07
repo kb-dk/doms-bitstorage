@@ -30,7 +30,7 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions;
 /**
  * TODO ABR forgot to javadoc this class
  */
-public class FedoraAuthenticationException extends FedoraCommunicationException {
+public class FedoraAuthenticationException extends FedoraException {
     public FedoraAuthenticationException() {
     }
 
