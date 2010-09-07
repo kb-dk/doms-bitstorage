@@ -275,8 +275,12 @@ public class HighlevelBitstorageSoapWebserviceImpl
                           + " updated. Charac info stored";
                 log.debug(message);
                 StaticStatus.event(op, message);
-
                 //checkpoint here, charac info stored
+
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                updateObjectLabel(pid, uploadedURL);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -294,6 +298,19 @@ public class HighlevelBitstorageSoapWebserviceImpl
             StaticStatus.endOperation(op);
         }
 
+    }
+
+    private void updateObjectLabel(String pid, String label)
+            throws InternalException {
+        String message;
+        try {
+
+            log.debug("Begin creating fedora datastream");
+            fedora.setObjectLabel(pid, label);
+
+        } catch (FedoraException e) {
+            throw fedoraMapper.convertMostApplicable(e);
+        }
     }
 
     public void uploadFileToObjectWithCharacterisation(
@@ -391,6 +408,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
 
                 //checkpoint here, charac info stored
+
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                updateObjectLabel(pid, uploadedURL);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -507,6 +529,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
 
                 //checkpoint here, charac info stored
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                updateObjectLabel(pid, uploadedURL);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -604,6 +630,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
 
                 //checkpoint here, charac info stored
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                updateObjectLabel(pid, uploadedURL);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {

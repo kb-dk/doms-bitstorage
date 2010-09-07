@@ -100,7 +100,7 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             FedoraObjectNotFoundException,
             FedoraDatastreamAlreadyExistException,
             FedoraCommunicationException,
-            FedoraChecksumFailedException {
+            FedoraChecksumFailedException, FedoraAuthenticationException {
 
         rest.objectExists(pid);
         try {
@@ -129,7 +129,7 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraCommunicationException,
-            FedoraDatastreamNotFoundException {
+            FedoraDatastreamNotFoundException, FedoraAuthenticationException {
         rest.objectExists(pid);
         rest.datastreamExists(pid, contentDatastreamName);
         try {
@@ -151,7 +151,7 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
-            FedoraCommunicationException {
+            FedoraCommunicationException, FedoraAuthenticationException {
 
         //not delegate
         ObjectProfile profile = rest.getObjectProfile(pid);
@@ -206,7 +206,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraCommunicationException,
-            FedoraDatastreamAlreadyExistException {
+            FedoraDatastreamAlreadyExistException,
+            FedoraAuthenticationException {
 
 
         //marshall the charac to a string or url
@@ -250,7 +251,10 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
 
     public boolean datastreamExists(String pid,
                                     String datastream)
-            throws FedoraObjectNotFoundException, FedoraCommunicationException {
+            throws
+            FedoraObjectNotFoundException,
+            FedoraCommunicationException,
+            FedoraAuthenticationException {
         try {
             rest.datastreamExists(pid, datastream);
         } catch (FedoraDatastreamNotFoundException e) {
@@ -277,7 +281,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
-            FedoraCommunicationException {
+            FedoraCommunicationException,
+            FedoraAuthenticationException {
         return rest.datastreamHasContent(pid, datastream);
     }
 
@@ -286,7 +291,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
-            FedoraCommunicationException {
+            FedoraCommunicationException,
+            FedoraAuthenticationException {
         rest.deleteDatastream(pid, ds);
     }
 
@@ -294,7 +300,8 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
-            FedoraCommunicationException {
+            FedoraCommunicationException,
+            FedoraAuthenticationException {
         DatastreamProfile profile =
                 rest.getDatastreamProfile(pid, contentDatastreamName);
         return profile.getDsLocation();
@@ -305,11 +312,19 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
-            FedoraCommunicationException {
+            FedoraCommunicationException,
+            FedoraAuthenticationException {
 
         DatastreamProfile profile =
                 rest.getDatastreamProfile(pid, contentDatastreamName);
         return profile.getDsChecksum();
+    }
+
+    public void setObjectLabel(String pid, String label) throws
+                                                         FedoraAuthenticationException,
+                                                         FedoraObjectNotFoundException,
+                                                         FedoraCommunicationException {
+        rest.setObjectLabel(pid, label);
     }
 
 

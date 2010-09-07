@@ -43,10 +43,7 @@ import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.AbortableHttpRequest;
-import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.HttpResponseException;
@@ -167,7 +164,8 @@ public class FedoraBasicRestSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraCommunicationException,
-            FedoraDatastreamNotFoundException {
+            FedoraDatastreamNotFoundException,
+            FedoraAuthenticationException {
 
         objectExists(pid);
         datastreamExists(pid, ds);
@@ -282,7 +280,8 @@ public class FedoraBasicRestSpeaker {
             throws
             FedoraCommunicationException,
             FedoraDatastreamNotFoundException,
-            FedoraObjectNotFoundException {
+            FedoraObjectNotFoundException,
+            FedoraAuthenticationException {
         objectExists(pid);
         HttpGet getDatastream = new HttpGet(
                 "/fedora/objects/" + pid + "/datastreams/" +
@@ -300,7 +299,10 @@ public class FedoraBasicRestSpeaker {
 
     public void objectExists(String pid
     )
-            throws FedoraCommunicationException, FedoraObjectNotFoundException {
+            throws
+            FedoraCommunicationException,
+            FedoraObjectNotFoundException,
+            FedoraAuthenticationException {
         HttpGet getObjectProfile = new HttpGet("/fedora/objects/" + pid);
 
         try {
@@ -318,7 +320,9 @@ public class FedoraBasicRestSpeaker {
     )
             throws
             FedoraCommunicationException,
-            FedoraDatastreamNotFoundException, FedoraObjectNotFoundException {
+            FedoraDatastreamNotFoundException,
+            FedoraObjectNotFoundException,
+            FedoraAuthenticationException {
         pid = sanitize(pid);
 
         objectExists(pid);
@@ -353,7 +357,8 @@ public class FedoraBasicRestSpeaker {
     public ObjectProfile getObjectProfile(String pid)
             throws
             FedoraCommunicationException,
-            FedoraObjectNotFoundException {
+            FedoraObjectNotFoundException,
+            FedoraAuthenticationException {
         pid = sanitize(pid);
 
         objectExists(pid);
@@ -389,7 +394,8 @@ public class FedoraBasicRestSpeaker {
             FedoraCommunicationException,
 
             FedoraObjectNotFoundException,
-            FedoraDatastreamNotFoundException {
+            FedoraDatastreamNotFoundException,
+            FedoraAuthenticationException {
         pid = sanitize(pid);
         datastream = sanitize(datastream);
         HttpRequest getDatastreamContents = new HttpGet(
@@ -423,7 +429,8 @@ public class FedoraBasicRestSpeaker {
             throws
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
-            FedoraCommunicationException {
+            FedoraCommunicationException,
+            FedoraAuthenticationException {
         HttpGet getDatastreamContents = new HttpGet(
                 "/fedora/objects/" + pid + "/datastreams/" +
                 datastream + "/contents");
@@ -560,4 +567,19 @@ public class FedoraBasicRestSpeaker {
         }
     }
 
+    public void setObjectLabel(String pid, String label) throws
+                                                         FedoraObjectNotFoundException,
+                                                         FedoraAuthenticationException,
+                                                         FedoraCommunicationException {
+        objectExists(pid);
+
+        HttpRequest modifyLabel =
+                new HttpPut("/fedora/objects/" + pid + "?label=" + label);
+        try {
+            invoke(modifyLabel);
+        } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
+            throw new FedoraCommunicationException(e);
+        }
+
+    }
 }
