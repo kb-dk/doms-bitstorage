@@ -29,11 +29,16 @@
 <xs:schema xmlns:tns="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
            targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
-
+           xmlns:char="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
            jaxb:version="1.0"
            xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
            jaxb:extensionBindingPrefixes="xjc">
+
+    <xs:import
+            namespace="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
+            schemaLocation="characterisation.xsd">
+    </xs:import>
 
     <xs:annotation>
         <xs:appinfo>
@@ -42,8 +47,6 @@
             </jaxb:globalBindings>
         </xs:appinfo>
     </xs:annotation>
-
-    <xs:element name="Characterisation" type="tns:characterisation"/>
 
     <xs:element name="CommunicationException"
                 type="xs:string"/>
@@ -65,24 +68,7 @@
 
     <xs:complexType name="characteriseResponse">
         <xs:sequence>
-            <xs:element ref="tns:Characterisation"/>
-        </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="characterisation">
-        <xs:sequence>
-            <xs:element name="formatURI" type="xs:anyURI"
-                        maxOccurs="unbounded"/>
-            <xs:element name="bestFormat" type="xs:anyURI"/>
-            <xs:element name="validationStatus" type="xs:string"/>
-            <xs:element name="identifyServiceDescriptions" type="xs:string"
-                        minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="identifyServiceReports" type="xs:string"
-                        minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="validateServiceDescriptions" type="xs:string"
-                        minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="validateServiceReports" type="xs:string"
-                        minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element ref="char:Characterisation"/>
         </xs:sequence>
     </xs:complexType>
 

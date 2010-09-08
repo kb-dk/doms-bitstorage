@@ -26,14 +26,14 @@
   ~ under the License.
   -->
 
-<xs:schema xmlns:tns="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
-           targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
-
-           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-           jaxb:version="1.0"
-           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-           jaxb:extensionBindingPrefixes="xjc">
+<xs:schema
+        xmlns:tns="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+        targetNamespace="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
+        xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+        jaxb:version="1.0"
+        xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+        jaxb:extensionBindingPrefixes="xjc">
 
     <xs:element name="Characterisation" type="tns:characterisation"/>
 
