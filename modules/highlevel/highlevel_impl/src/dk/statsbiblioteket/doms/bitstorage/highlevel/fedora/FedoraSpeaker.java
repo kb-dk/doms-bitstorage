@@ -139,22 +139,6 @@ public interface FedoraSpeaker {
             FedoraDatastreamAlreadyExistException;
 
     /**
-     * Check if the datastream exists in the object.
-     *
-     * @param pid        the pid of the object
-     * @param datastream the name of the datastream
-     * @return true if the datastream exists
-     * @throws FedoraObjectNotFoundException if the object does not exist
-     * @throws FedoraCommunicationException  if something else failed
-     */
-    public boolean datastreamExists(String pid,
-                                    String datastream)
-            throws
-            FedoraAuthenticationException,
-            FedoraObjectNotFoundException,
-            FedoraCommunicationException;
-
-    /**
      * TODO
      * Odd method that checks if the datastream has content.
      *
@@ -244,4 +228,18 @@ public interface FedoraSpeaker {
             FedoraObjectNotFoundException,
             FedoraCommunicationException;
 
+    /**
+     * Sets the format uri of the specified datastream
+     *
+     * @param pid        the pid
+     * @param datastream the datastream
+     * @param formatURI  the format uri
+     */
+    void setDatastreamFormatURI(String pid,
+                                String datastream,
+                                String formatURI) throws
+                                                  FedoraObjectNotFoundException,
+                                                  FedoraAuthenticationException,
+                                                  FedoraCommunicationException,
+                                                  FedoraDatastreamNotFoundException;
 }

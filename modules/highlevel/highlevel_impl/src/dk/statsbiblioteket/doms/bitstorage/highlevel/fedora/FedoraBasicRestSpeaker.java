@@ -61,6 +61,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -159,24 +160,21 @@ public class FedoraBasicRestSpeaker {
 
     }
 
+    @PreDestroy
+    public void close() {
+        client.getConnectionManager().shutdown();
+    }
 
     public void deleteDatastream(String pid, String ds)
             throws
-            FedoraObjectNotFoundException,
             FedoraCommunicationException,
-            FedoraDatastreamNotFoundException,
-            FedoraAuthenticationException {
+            FedoraAuthenticationException, ResourceNotFoundException {
 
-        objectExists(pid);
-        datastreamExists(pid, ds);
         HttpRequest delete =
                 new HttpPost("/fedora/objects/" + pid + "/datastreams/" +
                              ds + "?dsState=D");
-        try {
-            invoke(delete);
-        } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
-            throw new FedoraCommunicationException(e);
-        }
+
+        invoke(delete);
 
     }
 
@@ -203,7 +201,6 @@ public class FedoraBasicRestSpeaker {
      * @param checksum the checksum of the content
      * @throws FedoraAuthenticationException If the client was not created
      *                                       with sufficient credentials to perform this operation.
-     * @throws ResourceNotFoundException     if the object was not found
      */
     synchronized void createExternalDatastream(String pid,
                                                String ds,
@@ -211,8 +208,8 @@ public class FedoraBasicRestSpeaker {
                                                String checksum,
                                                String label) throws
                                                              FedoraCommunicationException,
-                                                             ResourceNotFoundException,
-                                                             FedoraAuthenticationException {
+                                                             FedoraAuthenticationException,
+                                                             FedoraObjectNotFoundException {
         HttpRequest create =
                 new HttpPost("/fedora/objects/" + pid
                              + "/datastreams/" + ds
@@ -224,12 +221,10 @@ public class FedoraBasicRestSpeaker {
                              + "&checksumType=md5" //checksum type
                              + "&checksum=" + checksum  //actual checksum
                 );
-
-        objectExists(pid);
         try {
             invoke(create);
         } catch (ResourceNotFoundException e) {
-            throw new FedoraCommunicationException(e);
+            throw new FedoraObjectNotFoundException("Object not found", e);
         }
 
     }
@@ -242,26 +237,17 @@ public class FedoraBasicRestSpeaker {
             throws
             FedoraCommunicationException,
             FedoraAuthenticationException,
-            FedoraObjectNotFoundException,
-            FedoraDatastreamAlreadyExistException {
+            FedoraObjectNotFoundException {
         HttpRequest modify =
                 new HttpPost("/fedora/objects/" + pid + "/datastreams/" +
                              ds + "?dsLocation=" + characurl +
                              "&dsLabel=" + label +
                              "&mimetype=text/xml&dsState=A");
-        objectExists(pid);
-        try {
-            datastreamExists(pid, ds);
-            //if we get to here, the datastream is found
-            throw new FedoraDatastreamAlreadyExistException(
-                    "Datastream already exists, cannot create new");
-        } catch (FedoraDatastreamNotFoundException e) {//good
-
-        }
         try {
             invoke(modify);
         } catch (ResourceNotFoundException e) {
-            throw new FedoraCommunicationException(e);
+            throw new FedoraObjectNotFoundException(
+                    "Object '" + pid + "' not found", e);
         }
     }
 
@@ -272,7 +258,7 @@ public class FedoraBasicRestSpeaker {
                                        FedoraCommunicationException,
                                        ResourceNotFoundException,
                                        FedoraAuthenticationException {
-        invokeWithOutRead(request);
+        invoke(request);
     }
 
     public void datastreamExists(String pid,
@@ -320,23 +306,17 @@ public class FedoraBasicRestSpeaker {
     )
             throws
             FedoraCommunicationException,
-            FedoraDatastreamNotFoundException,
-            FedoraObjectNotFoundException,
-            FedoraAuthenticationException {
+            FedoraAuthenticationException,
+            ResourceNotFoundException {
         pid = sanitize(pid);
-
-        objectExists(pid);
 
         HttpRequest getDatastream = new HttpGet(
                 "/fedora/objects/" + pid + "/datastreams/" +
                 datastreamname + "?format=xml");
 
         String datastream;
-        try {
-            datastream = invoke(getDatastream);
-        } catch (ResourceNotFoundException e) {
-            throw new FedoraDatastreamNotFoundException(e);
-        }
+
+        datastream = invoke(getDatastream);
 
         Object datastreamProfile = null;
         try {
@@ -361,29 +341,31 @@ public class FedoraBasicRestSpeaker {
             FedoraAuthenticationException {
         pid = sanitize(pid);
 
-        objectExists(pid);
-
         HttpRequest getObject = new HttpGet(
                 "/fedora/objects/" + pid + "?format=xml");
 
-        String datastream;
+        String profile;
         try {
-            datastream = invoke(getObject);
+            profile = invoke(getObject);
         } catch (ResourceNotFoundException e) {
-            throw new FedoraObjectNotFoundException(e);
+            throw new FedoraObjectNotFoundException("Object not found", e);
         }
 
         Object objectProfile = null;
         try {
             objectProfile
-                    = unmarshaller.unmarshal(new StringReader(datastream));
+                    = unmarshaller.unmarshal(new StringReader(profile));
         } catch (JAXBException e) {
             throw new FedoraCommunicationException(e);
         }
         if (objectProfile instanceof ObjectProfile) {
             return (ObjectProfile) objectProfile;
         } else {
-            throw new FedoraCommunicationException(objectProfile.toString());
+            throw new FedoraCommunicationException("Could not parse the return"
+                                                   + " value as a object "
+                                                   + "profile '"
+                                                   + objectProfile.toString()
+                                                   + "'");
         }
 
     }
@@ -392,23 +374,16 @@ public class FedoraBasicRestSpeaker {
                                         String datastream)
             throws
             FedoraCommunicationException,
-
-            FedoraObjectNotFoundException,
-            FedoraDatastreamNotFoundException,
-            FedoraAuthenticationException {
+            FedoraAuthenticationException,
+            ResourceNotFoundException {
         pid = sanitize(pid);
         datastream = sanitize(datastream);
         HttpRequest getDatastreamContents = new HttpGet(
                 "/fedora/objects/" + pid + "/datastreams/" +
                 datastream + "/content");
-        objectExists(pid);
-        datastreamExists(pid, datastream);
 
-        try {
-            return invoke(getDatastreamContents);
-        } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
-            throw new FedoraCommunicationException(e);
-        }
+        return invoke(getDatastreamContents);
+
     }
 
 
@@ -427,17 +402,11 @@ public class FedoraBasicRestSpeaker {
     public boolean datastreamHasContent(String pid,
                                         String datastream)
             throws
-            FedoraObjectNotFoundException,
-            FedoraDatastreamNotFoundException,
             FedoraCommunicationException,
             FedoraAuthenticationException {
         HttpGet getDatastreamContents = new HttpGet(
                 "/fedora/objects/" + pid + "/datastreams/" +
-                datastream + "/contents");
-        objectExists(pid);
-        datastreamExists(pid, datastream);
-
-
+                datastream + "/content");
         try {
             invokeWithOutRead(getDatastreamContents);
         } catch (ResourceNotFoundException e) {
@@ -474,32 +443,7 @@ public class FedoraBasicRestSpeaker {
             result = client.execute(
                     host, request, responsehandler, context);
         } catch (HttpResponseException e) {//thrown if the return code was not in the 200s
-            int httpcode;
-            httpcode = e.getStatusCode();
-            if (httpcode >= 500) { //server error
-                throw new FedoraServerError("Fedora server error", e);
-            } else if (httpcode >= 400) {
-                switch (httpcode) {
-                    case 401:
-                    case 407:
-                    case 403:
-                        throw new FedoraAuthenticationException(
-                                "Could not authenticate",
-                                e);
-                    case 404:
-                    case 410:
-                        throw new ResourceNotFoundException(
-                                "Could not find resource",
-                                e);
-                    default:
-                        throw new FedoraClientException(
-                                "Unrecognized exception",
-                                e);
-                }
-            }
-            throw new FedoraCommunicationException("Unrecognized error code",
-                                                   e);
-
+            return handleHttpError(e);
         } catch (ClientProtocolException e) {//thrown if something else failed WITHIN the http protocol
             throw new FedoraCommunicationException(
                     "Exception when communicating with Fedora",
@@ -514,6 +458,38 @@ public class FedoraBasicRestSpeaker {
 
     }
 
+    private String handleHttpError(HttpResponseException e) throws
+                                                            FedoraAuthenticationException,
+                                                            ResourceNotFoundException,
+                                                            FedoraCommunicationException {
+        int httpcode;
+        httpcode = e.getStatusCode();
+        if (httpcode >= 500) { //server error
+            throw new FedoraServerError("Fedora server error", e);
+        } else if (httpcode >= 400) {
+            switch (httpcode) {
+                case 401:
+                case 407:
+                case 403:
+                    throw new FedoraAuthenticationException(
+                            "Could not authenticate",
+                            e);
+                case 404:
+                case 410:
+                    throw new ResourceNotFoundException(
+                            "Could not find resource",
+                            e);
+                default:
+                    throw new FedoraClientException(
+                            "Unrecognized exception",
+                            e);
+            }
+        }
+        throw new FedoraCommunicationException("Unrecognized error code",
+                                               e);
+    }
+
+
     private void invokeWithOutRead(HttpRequestBase request)
             throws
             FedoraCommunicationException,
@@ -525,7 +501,6 @@ public class FedoraBasicRestSpeaker {
         try {
             result = client.execute(
                     host, request, context);
-            HttpEntity entity = result.getEntity();
             int httpcode = result.getStatusLine().getStatusCode();
             String error = result.getStatusLine().getReasonPhrase();
             request.abort();
@@ -567,19 +542,32 @@ public class FedoraBasicRestSpeaker {
         }
     }
 
+
     public void setObjectLabel(String pid, String label) throws
                                                          FedoraObjectNotFoundException,
                                                          FedoraAuthenticationException,
                                                          FedoraCommunicationException {
-        objectExists(pid);
 
         HttpRequest modifyLabel =
                 new HttpPut("/fedora/objects/" + pid + "?label=" + label);
         try {
             invoke(modifyLabel);
         } catch (ResourceNotFoundException e) {//Catchall, since the resource MUST exist, except for race conditions
-            throw new FedoraCommunicationException(e);
+            throw new FedoraObjectNotFoundException("Object not found", e);
         }
 
+    }
+
+    public void setDatastreamFormatURI(String pid,
+                                       String datastream,
+                                       String formatURI)
+            throws FedoraCommunicationException,
+                   FedoraAuthenticationException,
+                   ResourceNotFoundException {
+        HttpRequest modifyLabel =
+                new HttpPut(
+                        "/fedora/objects/" + pid + "/datastreams/" + datastream
+                        + "?formatURI=" + formatURI);
+        invoke(modifyLabel);
     }
 }

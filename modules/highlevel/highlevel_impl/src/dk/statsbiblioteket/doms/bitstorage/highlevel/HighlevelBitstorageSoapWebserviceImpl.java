@@ -280,7 +280,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 message = "Setting the object label to be the URL";
                 log.debug(message);
                 StaticStatus.event(op, message);
-                updateObjectLabel(pid, uploadedURL);
+                finishingTouches(pid,
+                                 uploadedURL,
+                                 localisedCharac.getBestFormat(),
+                                 op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -300,14 +303,28 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     }
 
-    private void updateObjectLabel(String pid, String label)
+    private void finishingTouches(String pid,
+                                  String label,
+                                  String bestFormat,
+                                  Operation op)
             throws InternalException {
         String message;
         try {
+            message = "Finishing the Fedora object";
+            log.debug(message);
+            StaticStatus.event(op, message);
 
-            log.debug("Begin creating fedora datastream");
+
+            message = "Setting the object label to be the URL";
+            log.debug(message);
+            StaticStatus.event(op, message);
             fedora.setObjectLabel(pid, label);
 
+            message = "Setting the formatURI of the content datastream";
+            log.debug(message);
+            StaticStatus.event(op, message);
+
+            fedora.setDatastreamFormatURI(pid, contents_name, bestFormat);
         } catch (FedoraException e) {
             throw fedoraMapper.convertMostApplicable(e);
         }
@@ -412,7 +429,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 message = "Setting the object label to be the URL";
                 log.debug(message);
                 StaticStatus.event(op, message);
-                updateObjectLabel(pid, uploadedURL);
+                finishingTouches(pid, uploadedURL,
+                                 localisedCharac.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -532,7 +550,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 message = "Setting the object label to be the URL";
                 log.debug(message);
                 StaticStatus.event(op, message);
-                updateObjectLabel(pid, uploadedURL);
+                finishingTouches(pid, uploadedURL,
+                                 characterisation.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -633,7 +652,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 message = "Setting the object label to be the URL";
                 log.debug(message);
                 StaticStatus.event(op, message);
-                updateObjectLabel(pid, uploadedURL);
+                finishingTouches(pid, uploadedURL,
+                                 characterisation.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
