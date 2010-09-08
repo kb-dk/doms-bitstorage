@@ -337,7 +337,8 @@ public class HookApprove extends AbstractInvocationHandler {
                         old_label,
                         old_ownerid,
                         "Undoing state change because file could not be"
-                        + " published");
+                        + " published",
+                        null);
                 //discard rollback returnvalue
                 throw new FileCouldNotBePublishedException(
                         "The file in '" + pid + "' could not be published. "
