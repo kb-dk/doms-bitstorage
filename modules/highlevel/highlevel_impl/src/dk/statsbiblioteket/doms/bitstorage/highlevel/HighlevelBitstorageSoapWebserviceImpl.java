@@ -56,7 +56,6 @@ import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.soap.MTOM;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.servlet.http.HttpServletRequest;
@@ -65,8 +64,6 @@ import java.net.URL;
 import java.util.*;
 import java.io.StringWriter;
 import java.io.StringReader;
-
-import com.sun.xml.ws.api.streaming.XMLStreamWriterFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,9 +94,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private LowlevelToInternalExceptionMapper lowlevelMapper;
 
 
-    private static final String CONTENTS = "CONTENTS";
-    private static final String GOOD = null;
-    private static final String CHARACTERISATION = "CHARAC";
+    private static final String GOOD = "valid";
+
 
     private static Log log = LogFactory.getLog(
             HighlevelBitstorageSoapWebserviceImpl.class);
@@ -107,6 +103,9 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     @Resource
     WebServiceContext context;
+
+    private String contents_name;
+    private String charac_name;
 
 
     private synchronized void initialise() throws ConfigException {
@@ -139,9 +138,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.server");
         int port = Integer.decode(ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.port"));
-        String charac = ConfigCollection.getProperties().getProperty(
+
+        charac_name = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.characstream");
-        String contents = ConfigCollection.getProperties().getProperty(
+
+        contents_name = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.contentstream");
         Credentials creds;
         HttpServletRequest request = (HttpServletRequest) context
@@ -152,8 +153,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
             log.warn("Attempted call at Bitstorage without credentials");
             creds = new Credentials("", "");
         }
-        fedora = new FedoraSpeakerRestImpl(contents,
-                                           charac,
+        fedora = new FedoraSpeakerRestImpl(contents_name,
+                                           charac_name,
                                            creds.getUsername(),
                                            creds.getPassword(),
                                            server,
@@ -242,7 +243,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
 
                 //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, op);
+                updateFedora(pid, md5String, uploadedURL, filename, op);
                 //checkpoint here, fedora updated
                 checkpoints[1] = true;
 
@@ -274,8 +275,15 @@ public class HighlevelBitstorageSoapWebserviceImpl
                           + " updated. Charac info stored";
                 log.debug(message);
                 StaticStatus.event(op, message);
-
                 //checkpoint here, charac info stored
+
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                finishingTouches(pid,
+                                 uploadedURL,
+                                 localisedCharac.getBestFormat(),
+                                 op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -293,6 +301,33 @@ public class HighlevelBitstorageSoapWebserviceImpl
             StaticStatus.endOperation(op);
         }
 
+    }
+
+    private void finishingTouches(String pid,
+                                  String label,
+                                  String bestFormat,
+                                  Operation op)
+            throws InternalException {
+        String message;
+        try {
+            message = "Finishing the Fedora object";
+            log.debug(message);
+            StaticStatus.event(op, message);
+
+
+            message = "Setting the object label to be the URL";
+            log.debug(message);
+            StaticStatus.event(op, message);
+            fedora.setObjectLabel(pid, label);
+
+            message = "Setting the formatURI of the content datastream";
+            log.debug(message);
+            StaticStatus.event(op, message);
+
+            fedora.setDatastreamFormatURI(pid, contents_name, bestFormat);
+        } catch (FedoraException e) {
+            throw fedoraMapper.convertMostApplicable(e);
+        }
     }
 
     public void uploadFileToObjectWithCharacterisation(
@@ -356,7 +391,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
 
                 //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, op);
+                updateFedora(pid, md5String, uploadedURL, filename, op);
                 //checkpoint here, fedora updated
                 checkpoints[1] = true;
 
@@ -390,6 +425,12 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
 
                 //checkpoint here, charac info stored
+
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                finishingTouches(pid, uploadedURL,
+                                 localisedCharac.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -474,7 +515,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 //bypass checkpoint 1
 
 
-                updateFedora(pid, md5String, uploadedURL, op);
+                updateFedora(pid, md5String, uploadedURL, filename, op);
                 //checkpoint here, fedora updated
                 checkpoints[1] = true;
 
@@ -506,6 +547,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
 
                 //checkpoint here, charac info stored
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                finishingTouches(pid, uploadedURL,
+                                 characterisation.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -571,7 +617,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
 
                 //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, op);
+                updateFedora(pid, md5String, uploadedURL, filename, op);
                 //checkpoint here, fedora updated
                 checkpoints[1] = true;
 
@@ -603,6 +649,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
 
                 //checkpoint here, charac info stored
+                message = "Setting the object label to be the URL";
+                log.debug(message);
+                StaticStatus.event(op, message);
+                finishingTouches(pid, uploadedURL,
+                                 characterisation.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -697,7 +748,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 log.debug(message);
                 StaticStatus.event(op, message);
 
-                fedora.storeCharacterization(pid, characterisation);
+                fedora.storeCharacterization(pid, characterisation, context);
 
                 message = "Characterisation of '" + uploadedURL
                           + "' stored in '" + pid + "'";
@@ -721,7 +772,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         Collection<String> formatURIs = null;
         try {
-            formatURIs = fedora.getAllowedFormatURIs(pid, CONTENTS);
+            formatURIs = fedora.getAllowedFormatURIs(pid, contents_name);
         } catch (FedoraException e) {
             throw fedoraMapper.convertMostApplicable(e);
         }
@@ -756,17 +807,21 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private void updateFedora(String pid,
                               String md5String,
                               String uploadedURL,
+                              String filename,
                               Operation op)
             throws InternalException {
         String message;
         try {
             try {
                 log.debug("Begin creating fedora datastream");
-                fedora.createContentDatastream(pid, uploadedURL, md5String);
+                fedora.createContentDatastream(pid,
+                                               uploadedURL,
+                                               md5String,
+                                               filename);
             } catch (FedoraDatastreamAlreadyExistException e) {
-                if (fedora.datastreamHasContent(pid, CONTENTS)) {
+                if (fedora.datastreamHasContent(pid, contents_name)) {
                     message = "Fedora object '" + pid + "' already has a '"
-                              + CONTENTS
+                              + contents_name
                               + "' datastream with content. Aborting operation.";
                     log.error(message);
                     StaticStatus.event(op, message);
@@ -778,11 +833,14 @@ public class HighlevelBitstorageSoapWebserviceImpl
                             InternalException.Type.FileObjectAlreadyInUse);
                 } else {//no content
                     message = "Fedora object '" + pid + "' alreary has a '"
-                              + CONTENTS
+                              + contents_name
                               + "' datastream, but without content so it is replaced.";
                     log.debug(message);
                     StaticStatus.event(op, message);
-                    fedora.updateContentDatastream(pid, uploadedURL, md5String);
+                    fedora.updateContentDatastream(pid,
+                                                   uploadedURL,
+                                                   md5String,
+                                                   filename);
                 }
             }
 
@@ -965,7 +1023,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         log.debug(message);
 
 
-        fedora.deleteDatastream(pid, CONTENTS);
+        fedora.deleteDatastream(pid, contents_name);
 
     }
 
@@ -983,7 +1041,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         log.debug(message);
 
 
-        fedora.deleteDatastream(pid, CHARACTERISATION);
+        fedora.deleteDatastream(pid, charac_name);
 
 
     }

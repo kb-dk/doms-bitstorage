@@ -31,6 +31,7 @@ import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
+import javax.xml.ws.WebServiceContext;
 import java.util.Collection;
 
 /**
@@ -63,8 +64,10 @@ public interface FedoraSpeaker {
      */
     public void createContentDatastream(String pid,
                                         String url,
-                                        String checksum)
+                                        String checksum,
+                                        String filename)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraDatastreamAlreadyExistException,
             FedoraCommunicationException,
@@ -76,6 +79,7 @@ public interface FedoraSpeaker {
      * @param pid      the pid of the object
      * @param url      the URL of the content
      * @param checksum the checksum for the ocntent
+     * @param filename
      * @throws FedoraObjectNotFoundException if the object does not exist
      * @throws FedoraCommunicationException  if something else failed
      * @throws FedoraChecksumFailedException if the checksum does not match
@@ -83,8 +87,9 @@ public interface FedoraSpeaker {
      */
     public void updateContentDatastream(String pid,
                                         String url,
-                                        String checksum)
+                                        String checksum, String filename)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraCommunicationException,
             FedoraDatastreamAlreadyExistException,
@@ -107,6 +112,7 @@ public interface FedoraSpeaker {
     public Collection<String> getAllowedFormatURIs(String pid,
                                                    String datastream)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
@@ -123,27 +129,14 @@ public interface FedoraSpeaker {
      *                                       not be serialized into a storable format
      */
     public void storeCharacterization(String pid,
-                                      Characterisation characterisation)
+                                      Characterisation characterisation,
+                                      WebServiceContext context)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraSerializationExcecption,
-
-            FedoraCommunicationException, FedoraDatastreamAlreadyExistException;
-
-    /**
-     * Check if the datastream exists in the object.
-     *
-     * @param pid        the pid of the object
-     * @param datastream the name of the datastream
-     * @return true if the datastream exists
-     * @throws FedoraObjectNotFoundException if the object does not exist
-     * @throws FedoraCommunicationException  if something else failed
-     */
-    public boolean datastreamExists(String pid,
-                                    String datastream)
-            throws
-            FedoraObjectNotFoundException,
-            FedoraCommunicationException;
+            FedoraCommunicationException,
+            FedoraDatastreamAlreadyExistException;
 
     /**
      * TODO
@@ -161,6 +154,7 @@ public interface FedoraSpeaker {
     public boolean datastreamHasContent(String pid,
                                         String datastream)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
@@ -179,6 +173,7 @@ public interface FedoraSpeaker {
     void deleteDatastream(String pid,
                           String datastream)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
@@ -197,6 +192,7 @@ public interface FedoraSpeaker {
      */
     public String getFileUrl(String pid)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
@@ -214,9 +210,36 @@ public interface FedoraSpeaker {
      */
     public String getFileChecksum(String pid)
             throws
+            FedoraAuthenticationException,
             FedoraObjectNotFoundException,
             FedoraDatastreamNotFoundException,
             FedoraCommunicationException;
 
 
+    /**
+     * Sets the label of the Fedora object
+     *
+     * @param pid   the pid of the object
+     * @param label the label
+     */
+    public void setObjectLabel(String pid, String label)
+            throws
+            FedoraAuthenticationException,
+            FedoraObjectNotFoundException,
+            FedoraCommunicationException;
+
+    /**
+     * Sets the format uri of the specified datastream
+     *
+     * @param pid        the pid
+     * @param datastream the datastream
+     * @param formatURI  the format uri
+     */
+    void setDatastreamFormatURI(String pid,
+                                String datastream,
+                                String formatURI) throws
+                                                  FedoraObjectNotFoundException,
+                                                  FedoraAuthenticationException,
+                                                  FedoraCommunicationException,
+                                                  FedoraDatastreamNotFoundException;
 }

@@ -26,9 +26,9 @@
   ~ under the License.
   -->
 
-<xsd:schema targetNamespace="info:fedora/fedora-system:def/listDatastreams#"
+<xsd:schema targetNamespace="http://www.fedora.info/definitions/1/0/access/"
+            xmlns="http://www.fedora.info/definitions/1/0/access/"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns="info:fedora/fedora-system:def/listDatastreams#"
             elementFormDefault="qualified">
     <!-- root element declaration -->
     <xsd:element name="objectDatastreams">
