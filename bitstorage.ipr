@@ -500,18 +500,18 @@
     </library>
     <library name="domsutil">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/jars/webservice-common.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/jars/surveyable_impl.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/jars/surveyable_interface.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/jars/webservice-common.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/jars/surveyable_impl.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/jars/surveyable_interface.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/apidocs/domsutil-0.0.7-doc.zip!/domsutil-0.0.7" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/apidocs/domsutil-0.0.8-doc.zip!/domsutil-0.0.8" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/jars/webservice-common.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/src/domsutil-0.0.7-src.zip!/domsutil-0.0.7/modules/surveyable/surveyable_impl/src" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/src/domsutil-0.0.7-src.zip!/domsutil-0.0.7/modules/webservice-common/src" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.7/src/domsutil-0.0.7-src.zip!/domsutil-0.0.7/modules/surveyable/surveyable_interface/src" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/jars/webservice-common.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/src/domsutil-0.0.8-src.zip!/domsutil-0.0.8/modules/surveyable/surveyable_impl/src" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/src/domsutil-0.0.8-src.zip!/domsutil-0.0.8/modules/webservice-common/src" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.8/src/domsutil-0.0.8-src.zip!/domsutil-0.0.8/modules/surveyable/surveyable_interface/src" />
       </SOURCES>
     </library>
     <library name="commons-logging">
