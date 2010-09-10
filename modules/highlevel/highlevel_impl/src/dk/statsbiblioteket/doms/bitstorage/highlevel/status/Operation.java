@@ -31,10 +31,7 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.status.Event;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "operation", propOrder = {
@@ -45,6 +42,7 @@ import javax.xml.bind.annotation.XmlType;
         "highlevelMethod",
         "history"
 })
+@XmlRootElement
 public class Operation {
 
     @XmlElement(name = "ID", required = true)
