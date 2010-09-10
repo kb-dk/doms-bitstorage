@@ -949,7 +949,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
         /*
        Pseudo kode
 
-         This method is invoked as a result of setting an file object to active. As such, it should not set the file object to active
+         This method is invoked as a result of setting an file object to active.
+          As such, it should not set the file object to active
 
          1. Call lowlevel to publish the file
         */
@@ -959,20 +960,24 @@ public class HighlevelBitstorageSoapWebserviceImpl
         try {
             op.setFedoraPid(pid);
 
-            String url = null;
-            String checksum;
+            boolean controlled = fedora.isControlledByLowlevel(pid);
+            if (controlled) {
+                String url;
+                String checksum;
 
-            url = fedora.getFileUrl(pid);
-            checksum = fedora.getFileChecksum(pid);
+                url = fedora.getFileUrl(pid);
+                checksum = fedora.getFileChecksum(pid);
 
-            if (!lowlevel.isApproved(url)) {
-                lowlevel.approve(url, checksum);
-            } else {
-                //File is already approved
-                String message = "The file '" + url
-                                 + "' is already approved. The object cannot be deleted";
-                log.debug(message);
-                StaticStatus.event(op, message);
+
+                if (!lowlevel.isApproved(url)) {
+                    lowlevel.approve(url, checksum);
+                } else {
+                    //File is already approved
+                    String message = "The file '" + url
+                                     + "' is already approved. The object cannot be deleted";
+                    log.debug(message);
+                    StaticStatus.event(op, message);
+                }
             }
 
         } catch (FedoraException e) {

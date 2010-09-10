@@ -67,6 +67,11 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.StringReader;
 import java.net.URLEncoder;
+import java.util.List;
+import java.util.ArrayList;
+
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * This is the basic REST speaker. It should act sort of like the Fedora Client
@@ -569,5 +574,29 @@ public class FedoraBasicRestSpeaker {
                         "/fedora/objects/" + pid + "/datastreams/" + datastream
                         + "?formatURI=" + formatURI);
         invoke(modifyLabel);
+    }
+
+    public List<String> query(String query) throws
+                                            FedoraCommunicationException,
+                                            ResourceNotFoundException,
+                                            FedoraAuthenticationException {
+
+        HttpRequest queryPost = new HttpPost(
+                "/fedora/risearch?type=tuples&lang=iTQL&format=CSV&query="
+                + query);
+        String objects = invoke(queryPost);
+
+        String[] lines = objects.split("\n");
+        List<String> foundobjects = new ArrayList<String>();
+        for (String line : lines) {
+            if (line.startsWith("\"")) {
+                continue;
+            }
+            if (line.startsWith("info:fedora/")) {
+                line = line.substring("info:fedora/".length());
+            }
+            foundobjects.add(line);
+        }
+        return foundobjects;
     }
 }

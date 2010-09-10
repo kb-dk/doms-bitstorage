@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
+import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -362,6 +363,30 @@ public class FedoraSpeakerRestImpl implements FedoraSpeaker {
         } catch (ResourceNotFoundException e) {
             throw new FedoraDatastreamNotFoundException("Datastream not found",
                                                         e);
+        }
+    }
+
+    public boolean isControlledByLowlevel(String pid) throws
+                                                      ResourceNotFoundException,
+                                                      FedoraAuthenticationException,
+                                                      FedoraCommunicationException {
+        rest.objectExists(pid);
+        List<String> foundObjects = null;
+        try {
+            foundObjects = rest.query(URLEncoder.encode(
+                    "select $cm from <#ri> "
+                    + "where $object <mulgara:is> <info:fedora/" + pid + "> "
+                    + "and $object <fedora-model:hasModel> $cm "
+                    + "and $cm <http://doms.statsbiblioteket.dk/relations/"
+                    + "default/0/1/#isControlledByLowLevelBitstorage> 'false'",
+                    "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new ResourceNotFoundException("The server lacks UTF-8 support");
+        }
+        if (foundObjects.isEmpty()) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

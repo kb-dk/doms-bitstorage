@@ -242,4 +242,16 @@ public interface FedoraSpeaker {
                                                   FedoraAuthenticationException,
                                                   FedoraCommunicationException,
                                                   FedoraDatastreamNotFoundException;
+
+    /**
+     * Checks the content model of this file object, for whether or not
+     * it is controlled by bitstorage
+     *
+     * @param pid the pid to examine
+     * @return true if controlled
+     */
+    boolean isControlledByLowlevel(String pid) throws
+                                               ResourceNotFoundException,
+                                               FedoraAuthenticationException,
+                                               FedoraCommunicationException;
 }
