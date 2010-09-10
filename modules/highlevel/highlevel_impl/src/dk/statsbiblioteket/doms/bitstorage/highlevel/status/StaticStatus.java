@@ -86,7 +86,7 @@ public class StaticStatus {
         JAXBContext jaxbcontext = null;
         try {
             jaxbcontext = JAXBContext.newInstance(
-                    "dk.statsbiblioteket.doms.bitstorage.highlevel");
+                    "dk.statsbiblioteket.doms.bitstorage.highlevel.status");
         } catch (JAXBException e) {
             log.error("Cannot create jaxbcontext", e);
             return "";
