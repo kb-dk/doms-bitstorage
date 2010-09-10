@@ -40,6 +40,7 @@ import org.fcrepo.server.errors.ServerInitializationException;
 import org.fcrepo.common.Constants;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.io.File;
@@ -87,11 +88,6 @@ public class HookApprove extends AbstractInvocationHandler {
     private boolean initialised = false;
 
     /**
-     * The bitstorage client
-     */
-    private HighlevelBitstorageSoapWebservice bitstorageClient;
-
-    /**
      * The Fedora Management module
      */
     private ManagementModule managementModule;
@@ -111,6 +107,9 @@ public class HookApprove extends AbstractInvocationHandler {
      * one of these for the invoke method to attempt to publish the object
      */
     private List<String> filemodels;
+
+    private URL wsdl;
+    private HighlevelBitstorageSoapWebservice client;
 
 
     /**
@@ -194,16 +193,32 @@ public class HookApprove extends AbstractInvocationHandler {
                     + " using default location: " + webservicelocation);
         }
 
-        //create the bitstorage client
-        URL wsdl;
         wsdl = new URL(webservicelocation);
-        bitstorageClient
-                = new HighlevelBitstorageSoapWebserviceService(wsdl,
-                                                               SERVICENAME)
-                .getHighlevelBitstorageSoapWebservicePort();
 
+        String username = managementModule.getParameter(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove."
+                + "username");
+        if (username == null) {
+            username = "fedoraAdmin";
+            LOG.info(
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel."
+                    + "hookapprove.username specified,"
+                    + " using default : " + username);
+        }
+
+        String password = managementModule.getParameter(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove."
+                + "password");
+        if (password == null) {
+            password = "";
+            LOG.info(
+                    "No dk.statsbiblioteket.doms.bitstorage.highlevel."
+                    + "hookapprove.password specified,"
+                    + " using default : " + password);
+        }
+
+        client = getBitstorage(username, password);
         initialised = true;
-
     }
 
     /**
@@ -234,7 +249,24 @@ public class HookApprove extends AbstractInvocationHandler {
                     "fedora.server.management.Management");
         }
         return module;
+    }
 
+
+    private HighlevelBitstorageSoapWebservice getBitstorage(String username,
+                                                            String password) {
+        //create the bitstorage client
+        HighlevelBitstorageSoapWebservice bitstorageClient
+                = new HighlevelBitstorageSoapWebserviceService(wsdl,
+                                                               SERVICENAME)
+                .getHighlevelBitstorageSoapWebservicePort();
+
+        ((BindingProvider) bitstorageClient).getRequestContext().put(
+                BindingProvider.USERNAME_PROPERTY,
+                username);
+        ((BindingProvider) bitstorageClient).getRequestContext().put(
+                BindingProvider.PASSWORD_PROPERTY,
+                password);
+        return bitstorageClient;
     }
 
     /**
@@ -302,7 +334,11 @@ public class HookApprove extends AbstractInvocationHandler {
                     if (!profile.objectState.startsWith("A")) {
                         //object was not already active
 
-                        bitstorageClient.publish(pid);
+                        String username
+                                = context.getSubjectValue(Constants.SUBJECT.LOGIN_ID.uri);
+                        String password = context.getPassword();
+                        client.publish(pid);
+
                         //publish moves the file from temporary bitstorage to
                         //permanent bitstorage
                         //milestone, any fails beyound this must rollback
