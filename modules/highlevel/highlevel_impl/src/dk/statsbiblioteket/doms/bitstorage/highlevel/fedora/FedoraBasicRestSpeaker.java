@@ -216,7 +216,19 @@ public class FedoraBasicRestSpeaker {
                                                              FedoraAuthenticationException,
                                                              FedoraObjectNotFoundException {
         HttpRequest create;
-        if (checksum != null || checksum.length() == 0) {
+        if (checksum == null || checksum.length() == 0) {
+            create = new HttpPost("/fedora/objects/" + pid
+                                  + "/datastreams/" + ds
+                                  + "?controlGroup=R"//redirect
+                                  + "&dsLocation=" + url //the content
+                                  + "&dsLabel=" + label //the filename
+                                  + "&dsState=A" //active state
+                                  + "&mimeType=application/octet-stream"
+                                  //mimetype
+
+            );
+
+        } else {
             create = new HttpPost("/fedora/objects/" + pid
                                   + "/datastreams/" + ds
                                   + "?controlGroup=R"//redirect
@@ -229,16 +241,6 @@ public class FedoraBasicRestSpeaker {
                                   + "&checksum=" + checksum  //actual checksum
             );
 
-        } else {
-            create = new HttpPost("/fedora/objects/" + pid
-                                  + "/datastreams/" + ds
-                                  + "?controlGroup=R"//redirect
-                                  + "&dsLocation=" + url //the content
-                                  + "&dsLabel=" + label //the filename
-                                  + "&dsState=A" //active state
-                                  + "&mimeType=application/octet-stream"
-                                  //mimetype
-            );
         }
 
         try {
