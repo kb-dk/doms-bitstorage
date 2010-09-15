@@ -709,7 +709,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         String message;
         boolean goodfile = true;
         List<String> objectFormats = characterisation.getFormatURIs();
-        if (formatURIs != null) {
+        if (formatURIs != null && !formatURIs.isEmpty()) {
             if (formatURIs.containsAll(objectFormats)) {
                 //good, allowed type
                 if (characterisation.getValidationStatus().equals(GOOD)) {
