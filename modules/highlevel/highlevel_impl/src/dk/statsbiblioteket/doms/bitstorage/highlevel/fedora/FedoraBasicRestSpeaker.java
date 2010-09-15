@@ -215,17 +215,34 @@ public class FedoraBasicRestSpeaker {
                                                              FedoraCommunicationException,
                                                              FedoraAuthenticationException,
                                                              FedoraObjectNotFoundException {
-        HttpRequest create =
-                new HttpPost("/fedora/objects/" + pid
-                             + "/datastreams/" + ds
-                             + "?controlGroup=R"//redirect
-                             + "&dsLocation=" + url //the content
-                             + "&dsLabel=" + label //the filename
-                             + "&dsState=A" //active state
-                             + "&mimeType=application/octet-stream" //mimetype
-                             + "&checksumType=md5" //checksum type
-                             + "&checksum=" + checksum  //actual checksum
-                );
+        HttpRequest create;
+        if (checksum == null || checksum.length() == 0) {
+            create = new HttpPost("/fedora/objects/" + pid
+                                  + "/datastreams/" + ds
+                                  + "?controlGroup=R"//redirect
+                                  + "&dsLocation=" + url //the content
+                                  + "&dsLabel=" + label //the filename
+                                  + "&dsState=A" //active state
+                                  + "&mimeType=application/octet-stream"
+                                  //mimetype
+
+            );
+
+        } else {
+            create = new HttpPost("/fedora/objects/" + pid
+                                  + "/datastreams/" + ds
+                                  + "?controlGroup=R"//redirect
+                                  + "&dsLocation=" + url //the content
+                                  + "&dsLabel=" + label //the filename
+                                  + "&dsState=A" //active state
+                                  + "&mimeType=application/octet-stream"
+                                  //mimetype
+                                  + "&checksumType=md5" //checksum type
+                                  + "&checksum=" + checksum  //actual checksum
+            );
+
+        }
+
         try {
             invoke(create);
         } catch (ResourceNotFoundException e) {
