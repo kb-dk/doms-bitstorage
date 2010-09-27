@@ -215,38 +215,48 @@ public class FedoraBasicRestSpeaker {
                                                              FedoraCommunicationException,
                                                              FedoraAuthenticationException,
                                                              FedoraObjectNotFoundException {
-        HttpRequest create;
-        if (checksum == null || checksum.length() == 0) {
-            create = new HttpPost("/fedora/objects/" + pid
-                                  + "/datastreams/" + ds
-                                  + "?controlGroup=R"//redirect
-                                  + "&dsLocation=" + url //the content
-                                  + "&dsLabel=" + label //the filename
-                                  + "&dsState=A" //active state
-                                  + "&mimeType=application/octet-stream"
-                                  //mimetype
-
-            );
-
-        } else {
-            create = new HttpPost("/fedora/objects/" + pid
-                                  + "/datastreams/" + ds
-                                  + "?controlGroup=R"//redirect
-                                  + "&dsLocation=" + url //the content
-                                  + "&dsLabel=" + label //the filename
-                                  + "&dsState=A" //active state
-                                  + "&mimeType=application/octet-stream"
-                                  //mimetype
-                                  + "&checksumType=md5" //checksum type
-                                  + "&checksum=" + checksum  //actual checksum
-            );
-
-        }
-
         try {
-            invoke(create);
-        } catch (ResourceNotFoundException e) {
-            throw new FedoraObjectNotFoundException("Object not found", e);
+            HttpRequest create;
+            if (checksum == null || checksum.length() == 0) {
+
+                create = new HttpPost("/fedora/objects/" + pid
+                                      + "/datastreams/" + ds
+                                      + "?controlGroup=R"//redirect
+                                      + "&dsLocation="
+                                      + URLEncoder.encode(url, "UTF-8")
+                                      //the content
+                                      + "&dsLabel=" + label //the filename
+                                      + "&dsState=A" //active state
+                                      + "&mimeType=application/octet-stream"
+                                      //mimetype
+
+                );
+
+            } else {
+                create = new HttpPost("/fedora/objects/" + pid
+                                      + "/datastreams/" + ds
+                                      + "?controlGroup=R"//redirect
+                                      + "&dsLocation="
+                                      + URLEncoder.encode(url, "UTF-8")
+                                      //the content
+                                      + "&dsLabel=" + label //the filename
+                                      + "&dsState=A" //active state
+                                      + "&mimeType=application/octet-stream"
+                                      //mimetype
+                                      + "&checksumType=md5" //checksum type
+                                      + "&checksum=" + checksum
+                                      //actual checksum
+                );
+
+            }
+
+            try {
+                invoke(create);
+            } catch (ResourceNotFoundException e) {
+                throw new FedoraObjectNotFoundException("Object not found", e);
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new Error("UTF-8 not knwon", e);
         }
 
     }
@@ -599,8 +609,8 @@ public class FedoraBasicRestSpeaker {
                                             FedoraAuthenticationException {
 
         HttpRequest queryPost = new HttpPost(
-                "/fedora/risearch?type=tuples&lang=iTQL&format=CSV&query="
-                + query);
+                "/fedora/risearch?type=tuples&lang=iTQL&stream=on&flush=true"
+                + "&format=CSV&query=" + query);
         String objects = invoke(queryPost);
 
         String[] lines = objects.split("\n");
