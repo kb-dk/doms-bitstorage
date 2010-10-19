@@ -246,18 +246,27 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
                 op.setFedoraPid(pid);
                 op.setFileSize(filelength);
+
+                //We have permanent url, so skip checkpoint 1
+
+
+                //We already have characterisation, so give it to checkpoint2, so that we save a method call later on
                 uploadCheckpoint2(pid,
                                   filename,
                                   md5String,
                                   checkpoints,
                                   uploadedURL,
-                                  op);
+                                  op,
+                                  characterisation.getBestFormat());
+
+                //Checkpoint 3
                 Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                      characterisation,
                                                                      checkpoints,
                                                                      uploadedURL,
                                                                      op);
-                uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
+                //Checkpoint 4, set the object label.
+                uploadCheckpoint4(pid, uploadedURL, op, null,
                                   checkpoints);
 
 
@@ -303,13 +312,16 @@ public class HighlevelBitstorageSoapWebserviceImpl
             StaticStatus.event(op, message1);
             fedora.setObjectLabel(pid, uploadedURL);
 
-            message1 = "Setting the formatURI of the content datastream";
-            log.debug(message1);
-            StaticStatus.event(op, message1);
 
-            fedora.setDatastreamFormatURI(pid,
-                                          contents_name,
-                                          localisedCharac.getBestFormat());
+            if (localisedCharac != null) {
+                message1 = "Setting the formatURI of the content datastream";
+                log.debug(message1);
+                StaticStatus.event(op, message1);
+
+                fedora.setDatastreamFormatURI(pid,
+                                              contents_name,
+                                              localisedCharac.getBestFormat());
+            }
             checkpoints[3] = true;
         } catch (FedoraException e) {
             throw fedoraMapper.convertMostApplicable(e);
@@ -325,8 +337,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
         message = "Get list of formatURIs from Fedora";
         log.debug(message);
         StaticStatus.event(op, message);
-        Collection<String> formatURIs =
-                getAllowedFormatURIs(pid, op);
 
         Characterisation result;
         try {
@@ -352,7 +362,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
         evaluateCharacterisationAndStore(pid,
                                          uploadedURL,
                                          localisedCharac,
-                                         formatURIs,
                                          op);
         checkpoints[2] = true;
         message = "Third Checkpoint reached. File stored, file object"
@@ -371,8 +380,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         message = "Get list of formatURIs from Fedora";
         log.debug(message);
         StaticStatus.event(op, message);
-        Collection<String> formatURIs =
-                getAllowedFormatURIs(pid, op);
+
 
         Characterisation result;
 
@@ -399,7 +407,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
         evaluateCharacterisationAndStore(pid,
                                          uploadedURL,
                                          characterisation,
-                                         formatURIs,
                                          op);
         checkpoints[2] = true;
         message = "Third Checkpoint reached. File stored, file object"
@@ -414,7 +421,9 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                    String filename,
                                    String md5String,
                                    boolean[] checkpoints,
-                                   String uploadedURL, Operation op)
+                                   String uploadedURL,
+                                   Operation op,
+                                   String formatURI)
             throws InternalException {
         String message;
         try {
@@ -425,7 +434,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                             contents_name,
                                             uploadedURL,
                                             md5String,
-                                            filename);
+                                            filename,
+                                            formatURI);
         } catch (ResourceNotFoundException e1) { //TODO
             e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (FedoraAuthenticationException e1) {
@@ -538,18 +548,21 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                 checkpoints,
                                                 op);
 
+                //We have the charac already, so set the FormatURI right away
                 uploadCheckpoint2(pid,
                                   filename,
                                   md5String,
                                   checkpoints,
                                   uploadedURL,
-                                  op);
+                                  op, characterisation.getBestFormat());
+
                 Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                      characterisation,
                                                                      checkpoints,
                                                                      uploadedURL,
                                                                      op);
-                uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
+                //null, so that the formatURI is not set again
+                uploadCheckpoint4(pid, uploadedURL, op, null,
                                   checkpoints);
 
             } catch (Exception e) {//something unexpected failed down there
@@ -619,7 +632,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                   md5String,
                                   checkpoints,
                                   uploadedURL,
-                                  op);
+                                  op, null);
 
                 Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                      checkpoints,
@@ -687,7 +700,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                   md5String,
                                   checkpoints,
                                   uploadedURL,
-                                  op);
+                                  op, null);
 
                 Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                      checkpoints,
@@ -744,36 +757,19 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private void evaluateCharacterisationAndStore(String pid,
                                                   String uploadedURL,
                                                   Characterisation characterisation,
-                                                  Collection<String> formatURIs,
                                                   Operation op)
             throws InternalException {
         String message;
         boolean goodfile = true;
-        List<String> objectFormats = characterisation.getFormatURIs();
-        if (formatURIs != null && !formatURIs.isEmpty()) {
-            if (formatURIs.containsAll(objectFormats)) {
-                //good, allowed type
-                if (characterisation.getValidationStatus().equals(GOOD)) {
-                    //good, nothing more to care about
+        if (characterisation.getValidationStatus().equals(GOOD)) {
+            //good, nothing more to care about
 
-                } else { //bad file, something is wrong
-                    message = "Characteriser reported the file to be invalid";
-                    log.debug(message);
-                    StaticStatus.event(op, message);
+        } else { //bad file, something is wrong
+            message = "Characteriser reported the file to be invalid";
+            log.debug(message);
+            StaticStatus.event(op, message);
 
-                    goodfile = false;
-                }
-
-            } else {//bad, not allowed type
-                message
-                        = "File to be uploaded is not identified as allowed type";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                log.debug(objectFormats);
-
-                goodfile = false;
-
-            }
+            goodfile = false;
         }
 
         if (!goodfile) {
@@ -783,29 +779,39 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throw new InternalException(error,
                                         InternalException.Type.CharacterisationFailed);
         } else {
-            try {
-                message = "Storing characterisation of '" + uploadedURL
-                          + "' in '" + pid + "'";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                initialiseFedoraSpeaker();
-
-                fedora.createInternalDatastream(pid,
-                                                charac_name,
-                                                characterisation,
-                                                "Characterisation");
-
-                message = "Characterisation of '" + uploadedURL
-                          + "' stored in '" + pid + "'";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-            } catch (FedoraException e) {
-                throw fedoraMapper.convertMostApplicable(e);
-            }
+            storeCharacterisation(pid, uploadedURL, characterisation, op);
         }
     }
 
+    private void storeCharacterisation(String pid,
+                                       String uploadedURL,
+                                       Characterisation characterisation,
+                                       Operation op) throws InternalException {
+        String message;
+        try {
+            message = "Storing characterisation of '" + uploadedURL
+                      + "' in '" + pid + "'";
+            log.debug(message);
+            StaticStatus.event(op, message);
+            initialiseFedoraSpeaker();
+
+            fedora.createInternalDatastream(pid,
+                                            charac_name,
+                                            characterisation,
+                                            "Characterisation");
+
+            message = "Characterisation of '" + uploadedURL
+                      + "' stored in '" + pid + "'";
+            log.debug(message);
+            StaticStatus.event(op, message);
+
+        } catch (FedoraException e) {
+            throw fedoraMapper.convertMostApplicable(e);
+        }
+    }
+
+
+    //Not used anymore, as it is hellishly expensive to get that many datastreams for each fileobject
     private Collection<String> getAllowedFormatURIs(String pid,
                                                     Operation op) throws
 

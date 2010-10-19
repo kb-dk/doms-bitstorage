@@ -191,10 +191,11 @@ public class FedoraSpeakerRestImpl {
     /**
      * Create a new external datastream
      *
-     * @param pid      the object pid
-     * @param ds       the datastream name
-     * @param url      the url to the content
-     * @param checksum the checksum of the content
+     * @param pid       the object pid
+     * @param ds        the datastream name
+     * @param url       the url to the content
+     * @param checksum  the checksum of the content
+     * @param formatURI
      * @throws FedoraAuthenticationException If the client was not created
      *                                       with sufficient credentials to perform this operation.
      */
@@ -202,10 +203,10 @@ public class FedoraSpeakerRestImpl {
                                          String ds,
                                          String url,
                                          String checksum,
-                                         String label) throws
-                                                       FedoraCommunicationException,
-                                                       FedoraAuthenticationException,
-                                                       ResourceNotFoundException {
+                                         String label, String formatURI) throws
+                                                                         FedoraCommunicationException,
+                                                                         FedoraAuthenticationException,
+                                                                         ResourceNotFoundException {
 
 
         WebResource temp = null;
@@ -234,6 +235,10 @@ public class FedoraSpeakerRestImpl {
                     .queryParam("checksum", checksum);
 
         }
+        if (formatURI != null) {
+            temp = temp.queryParam("formatURI", formatURI);
+        }
+
         try {
             temp.header("Authorization", credsAsBase64()).post();
         } catch (UniformInterfaceException e) {
