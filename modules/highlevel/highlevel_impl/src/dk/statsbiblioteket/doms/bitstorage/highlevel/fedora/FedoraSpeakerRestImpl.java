@@ -82,7 +82,9 @@ public class FedoraSpeakerRestImpl {
         for (String cmodel : cmodels) {
             DsCompositeModel content = null;
             try {
-                content = getDatastreamContents(cmodel, "DS-COMPOSITE-MODEL");
+                content = getDatastreamContents(cmodel,
+                                                "DS-COMPOSITE-MODEL",
+                                                DsCompositeModel.class);
             } catch (ResourceNotFoundException e) {
                 // The content model does not exist, or do not have the datastream
                 //not technically a problem, so log this instead
@@ -341,7 +343,8 @@ public class FedoraSpeakerRestImpl {
     }
 
     public <T> T getDatastreamContents(String pid,
-                                       String datastream)
+                                       String datastream,
+                                       Class<T> returnvalue)
             throws
             FedoraCommunicationException,
             FedoraAuthenticationException,
@@ -353,8 +356,7 @@ public class FedoraSpeakerRestImpl {
                     .path(sanitize(datastream))
                     .path("/content")
                     .header("Authorization", credsAsBase64())
-                    .get(new GenericType<T>() {
-                    });
+                    .get(returnvalue);
             return contents;
         } catch (UniformInterfaceException e) {
             if (e.getResponse().getClientResponseStatus().equals(ClientResponse.Status.NOT_FOUND)) {

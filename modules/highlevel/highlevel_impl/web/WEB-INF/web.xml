@@ -85,14 +85,7 @@
         <description>The fedora server host</description>
         <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.server
         </param-name>
-        <param-value>localhost</param-value>
-    </context-param>
-
-    <context-param>
-        <description>The fedora server port</description>
-        <param-name>dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.port
-        </param-name>
-        <param-value>7910</param-value>
+        <param-value>http://localhost:7910/fedora</param-value>
     </context-param>
 
     <context-param>
