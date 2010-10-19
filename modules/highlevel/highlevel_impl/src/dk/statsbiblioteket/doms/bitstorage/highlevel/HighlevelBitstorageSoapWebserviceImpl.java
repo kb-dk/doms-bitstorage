@@ -38,6 +38,7 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.FedoraTo
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.InternalExceptionsToSoapFaultsMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.LowlevelToInternalExceptionMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.*;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.DatastreamProfile;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StaticStatus;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.status.Operation;
@@ -85,7 +86,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             lowlevel;
     private CharacteriseSoapWebservice charac;
 
-    private FedoraSpeaker fedora;
+    private FedoraSpeakerRestImpl fedora;
 
     private InternalExceptionsToSoapFaultsMapper internalMapper;
     private CharacteriseToInternalExceptionMapper
@@ -106,44 +107,38 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     private String contents_name;
     private String charac_name;
+    private boolean fedoraInitialised = false;
+    private boolean lowlevelInitialised = false;
 
 
-    private synchronized void initialise() throws ConfigException {
-
-        if (initialised) {
-            return;
-        }
-        System.setProperty(
-                "com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
-                "true");
-
+    public HighlevelBitstorageSoapWebserviceImpl() {
         lowlevelMapper = new LowlevelToInternalExceptionMapper();
         fedoraMapper = new FedoraToInternalExceptionMapper();
         characMapper = new CharacteriseToInternalExceptionMapper();
         internalMapper = new InternalExceptionsToSoapFaultsMapper();
 
+        System.setProperty(
+                "com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace",
+                "true");
 
-        initialiseLowLevelConnector();
-        initialiseCharacteriserConnector();
-        initialiseFedoraSpeaker();
-
-        initialised = true;
-
-    }
-
-
-    private void initialiseFedoraSpeaker() {
-
-        String server = ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.server");
-        int port = Integer.decode(ConfigCollection.getProperties().getProperty(
-                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.port"));
 
         charac_name = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.characstream");
 
         contents_name = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.contentstream");
+
+    }
+
+    private synchronized void initialiseFedoraSpeaker() throws FedoraException {
+
+        if (fedoraInitialised) {
+            return;
+        }
+        String server;
+        server = ConfigCollection.getProperties().getProperty(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.server");
+
         Credentials creds;
         HttpServletRequest request = (HttpServletRequest) context
                 .getMessageContext()
@@ -153,16 +148,23 @@ public class HighlevelBitstorageSoapWebserviceImpl
             log.warn("Attempted call at Bitstorage without credentials");
             creds = new Credentials("", "");
         }
-        fedora = new FedoraSpeakerRestImpl(contents_name,
-                                           charac_name,
-                                           creds.getUsername(),
-                                           creds.getPassword(),
-                                           server,
-                                           port);
+        try {
+            fedora = new FedoraSpeakerRestImpl(creds,
+                                               server);
+        } catch (MalformedURLException e) {
+            throw new FedoraException(
+                    "Failed to read the fedora location from the config",
+                    e);
+        }
+        fedoraInitialised = true;
     }
 
-    private void initialiseLowLevelConnector() throws ConfigException {
+    private synchronized void initialiseLowLevelConnector()
+            throws ConfigException {
 
+        if (lowlevelInitialised) {
+            return;
+        }
 
         String wsdlloc = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.lowlevellocation");
@@ -176,7 +178,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         } catch (MalformedURLException e) {
             throw new ConfigException(e);
         }
-
+        lowlevelInitialised = true;
 
     }
 
@@ -184,7 +186,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         String wsdlloc = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.characteriserlocation");
-        try {
+        try {//TODO credentials
             charac = new CharacteriseSoapWebserviceService(
                     new URL(wsdlloc),
                     new QName(
@@ -219,9 +221,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
-        boolean[] checkpoints = {false, false, false};
+        boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = permanentURL;
         Operation op = null;
+
+
         try {
             String message =
                     "Entered uploadFileToObjectFromPermanentURLWithCharacterisation with params: '"
@@ -236,54 +240,26 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
             op = StaticStatus.initOperation("Upload");
             try {
-                initialise();
+                initialiseFedoraSpeaker();
+                initialiseLowLevelConnector();
+
                 StaticStatus.event(op, message);
                 op.setFedoraPid(pid);
                 op.setFileSize(filelength);
+                uploadCheckpoint2(pid,
+                                  filename,
+                                  md5String,
+                                  checkpoints,
+                                  uploadedURL,
+                                  op);
+                Characterisation localisedCharac = uploadCheckpoint3(pid,
+                                                                     characterisation,
+                                                                     checkpoints,
+                                                                     uploadedURL,
+                                                                     op);
+                uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
+                                  checkpoints);
 
-
-                //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, filename, op);
-                //checkpoint here, fedora updated
-                checkpoints[1] = true;
-
-                message = "Fedora datastream created";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                message = "Second checkpoint reached. File is in lowlevel and "
-                          + "the datastream is in fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-
-                message = "Get list of formatURIs from Fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                Collection<String> formatURIs =
-                        getAllowedFormatURIs(pid, uploadedURL, op);
-
-                Characterisation localisedCharac
-                        = convertCharac(
-                        characterisation);
-                evaluateCharacterisationAndStore(pid,
-                                                 uploadedURL,
-                                                 localisedCharac,
-                                                 formatURIs,
-                                                 op);
-                checkpoints[2] = true;
-                message = "Third Checkpoint reached. File stored, file object"
-                          + " updated. Charac info stored";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                //checkpoint here, charac info stored
-
-                message = "Setting the object label to be the URL";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                finishingTouches(pid,
-                                 uploadedURL,
-                                 localisedCharac.getBestFormat(),
-                                 op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -303,32 +279,214 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     }
 
-    private void finishingTouches(String pid,
-                                  String label,
-                                  String bestFormat,
-                                  Operation op)
+    private void uploadCheckpoint4(String pid,
+                                   String uploadedURL,
+                                   Operation op,
+                                   Characterisation localisedCharac,
+                                   boolean[] checkpoints)
             throws InternalException {
-        String message;
+
+        String message;/* CHECKPOINT 4*/
+        message = "Setting the object label to be the URL";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        String message1;
         try {
-            message = "Finishing the Fedora object";
-            log.debug(message);
-            StaticStatus.event(op, message);
+            initialiseFedoraSpeaker();
+            message1 = "Finishing the Fedora object";
+            log.debug(message1);
+            StaticStatus.event(op, message1);
 
 
-            message = "Setting the object label to be the URL";
-            log.debug(message);
-            StaticStatus.event(op, message);
-            fedora.setObjectLabel(pid, label);
+            message1 = "Setting the object label to be the URL";
+            log.debug(message1);
+            StaticStatus.event(op, message1);
+            fedora.setObjectLabel(pid, uploadedURL);
 
-            message = "Setting the formatURI of the content datastream";
-            log.debug(message);
-            StaticStatus.event(op, message);
+            message1 = "Setting the formatURI of the content datastream";
+            log.debug(message1);
+            StaticStatus.event(op, message1);
 
-            fedora.setDatastreamFormatURI(pid, contents_name, bestFormat);
+            fedora.setDatastreamFormatURI(pid,
+                                          contents_name,
+                                          localisedCharac.getBestFormat());
+            checkpoints[3] = true;
         } catch (FedoraException e) {
             throw fedoraMapper.convertMostApplicable(e);
         }
     }
+
+    private Characterisation uploadCheckpoint3(String pid,
+                                               dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation,
+                                               boolean[] checkpoints,
+                                               String uploadedURL, Operation op)
+            throws InternalException {
+        String message;/* CHECKPOINT 3*/
+        message = "Get list of formatURIs from Fedora";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        Collection<String> formatURIs =
+                getAllowedFormatURIs(pid, op);
+
+        Characterisation result;
+        try {
+            JAXBContext context1
+                    = JAXBContext.newInstance(Characterisation.class);
+            JAXBContext context2
+                    = JAXBContext.newInstance(dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation.class);
+            StringWriter writer = new StringWriter();
+            context2.createMarshaller().marshal(characterisation, writer);
+            writer.flush();
+            StringReader charstring = new StringReader(writer.toString());
+            Object convertecChar = context1.createUnmarshaller().unmarshal(
+                    charstring);
+            result = (Characterisation) convertecChar;
+        } catch (JAXBException e) {
+            throw new InternalException(e,
+                                        InternalException.Type.CharacterisationFailed);
+
+        }
+
+        Characterisation localisedCharac
+                = result;
+        evaluateCharacterisationAndStore(pid,
+                                         uploadedURL,
+                                         localisedCharac,
+                                         formatURIs,
+                                         op);
+        checkpoints[2] = true;
+        message = "Third Checkpoint reached. File stored, file object"
+                  + " updated. Charac info stored";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        //checkpoint here, charac info stored
+        return localisedCharac;
+    }
+
+    private Characterisation uploadCheckpoint3(String pid,
+                                               boolean[] checkpoints,
+                                               String uploadedURL, Operation op)
+            throws InternalException {
+        String message;/* CHECKPOINT 3*/
+        message = "Get list of formatURIs from Fedora";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        Collection<String> formatURIs =
+                getAllowedFormatURIs(pid, op);
+
+        Characterisation result;
+
+        try {
+            initialiseCharacteriserConnector();
+            Characterisation characterisation1;
+            String message1 = "Begin characterisation";
+            log.debug(message1);
+            StaticStatus.event(op, message1);
+
+            characterisation1 = charac.characterise(pid,
+                                                    null);//TODO not fricking null
+            message1 = "File characterised";
+            log.debug(message1);
+            StaticStatus.event(op, message1);
+            result = characterisation1;
+
+        } catch (CharacteriseSoapException e) {
+            throw characMapper.convertMostApplicable(e);
+        }
+
+        Characterisation characterisation = result;
+
+        evaluateCharacterisationAndStore(pid,
+                                         uploadedURL,
+                                         characterisation,
+                                         formatURIs,
+                                         op);
+        checkpoints[2] = true;
+        message = "Third Checkpoint reached. File stored, file object"
+                  + " updated. Charac info stored";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        //checkpoint here, charac info stored
+        return characterisation;
+    }
+
+    private void uploadCheckpoint2(String pid,
+                                   String filename,
+                                   String md5String,
+                                   boolean[] checkpoints,
+                                   String uploadedURL, Operation op)
+            throws InternalException {
+        String message;
+        try {
+            initialiseFedoraSpeaker();
+
+            log.debug("Begin creating fedora datastream");
+            fedora.createExternalDatastream(pid,
+                                            contents_name,
+                                            uploadedURL,
+                                            md5String,
+                                            filename);
+        } catch (ResourceNotFoundException e1) { //TODO
+            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (FedoraAuthenticationException e1) {
+            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (FedoraCommunicationException e1) {
+            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (FedoraException e1) {
+            throw fedoraMapper.convertMostApplicable(e1);
+        }
+
+        //checkpoint here, fedora updated
+        checkpoints[1] = true;
+        message = "Fedora datastream created";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        message = "Second checkpoint reached. File is in lowlevel and "
+                  + "the datastream is in fedora";
+        log.debug(message);
+        StaticStatus.event(op, message);
+    }
+
+    private String uploadCheckpoint1(String filename,
+                                     DataHandler filedata,
+                                     String md5String,
+                                     long filelength,
+                                     boolean[] checkpoints,
+                                     Operation op) throws InternalException {
+
+        String uploadedURL1;
+        try {
+            initialiseLowLevelConnector();
+            String message1 = "Begin upload to bitstorage";
+            log.trace(message1);
+            StaticStatus.event(op, message1);
+
+
+            uploadedURL1 = lowlevel.uploadFile(filename,
+                                               filedata,
+                                               md5String,
+                                               filelength);
+
+            message1 = "Uploaded file to bitstorage, returned url '" +
+                       uploadedURL1 + "'";
+            log.trace(message1);
+            StaticStatus.event(op, message1);
+
+        } catch (LowlevelSoapException e) {
+            throw lowlevelMapper.convertMostApplicable(e);
+        }
+        String uploadedURL = uploadedURL1;
+
+        checkpoints[0] = true;
+        //Checkpoint here
+        String message =
+                "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '"
+                + uploadedURL + "'";
+        log.debug(message);
+        StaticStatus.event(op, message);
+        return uploadedURL;
+    }
+
 
     public void uploadFileToObjectWithCharacterisation(
             @WebParam(name = "pid", targetNamespace = "") String pid,
@@ -352,7 +510,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
-        boolean[] checkpoints = {false, false, false};
+        boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = "";
         Operation op = null;
         try {
@@ -368,69 +526,31 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
             op = StaticStatus.initOperation("Upload");
             try {
-                initialise();
+
                 StaticStatus.event(op, message);
                 op.setFedoraPid(pid);
                 op.setFileSize(filelength);
 
+                uploadedURL = uploadCheckpoint1(filename,
+                                                filedata,
+                                                md5String,
+                                                filelength,
+                                                checkpoints,
+                                                op);
 
-                //No rollback here, we have not reached first checkpoint
-                uploadedURL = uploadFile(filename,
-                                         filedata,
-                                         md5String,
-                                         filelength,
-                                         op);
-
-                checkpoints[0] = true;
-                //Checkpoint here
-                message =
-                        "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '"
-                        + uploadedURL + "'";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-
-                //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, filename, op);
-                //checkpoint here, fedora updated
-                checkpoints[1] = true;
-
-                message = "Fedora datastream created";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                message
-                        = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-
-                message = "Get list of formatURIs from Fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                Collection<String> formatURIs =
-                        getAllowedFormatURIs(pid, uploadedURL, op);
-
-                Characterisation localisedCharac
-                        = convertCharac(
-                        characterisation);
-                evaluateCharacterisationAndStore(pid,
-                                                 uploadedURL,
-                                                 localisedCharac,
-                                                 formatURIs,
-                                                 op);
-                checkpoints[2] = true;
-                message
-                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-                //checkpoint here, charac info stored
-
-                message = "Setting the object label to be the URL";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                finishingTouches(pid, uploadedURL,
-                                 localisedCharac.getBestFormat(), op);
+                uploadCheckpoint2(pid,
+                                  filename,
+                                  md5String,
+                                  checkpoints,
+                                  uploadedURL,
+                                  op);
+                Characterisation localisedCharac = uploadCheckpoint3(pid,
+                                                                     characterisation,
+                                                                     checkpoints,
+                                                                     uploadedURL,
+                                                                     op);
+                uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
+                                  checkpoints);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -451,27 +571,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     }
 
-    private Characterisation convertCharac(dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation)
-            throws InternalException {
-        try {
-            JAXBContext context1
-                    = JAXBContext.newInstance(Characterisation.class);
-            JAXBContext context2
-                    = JAXBContext.newInstance(dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation.class);
-            StringWriter writer = new StringWriter();
-            context2.createMarshaller().marshal(characterisation, writer);
-            writer.flush();
-            StringReader charstring = new StringReader(writer.toString());
-            Object convertecChar = context1.createUnmarshaller().unmarshal(
-                    charstring);
-            return (Characterisation) convertecChar;
-        } catch (JAXBException e) {
-            throw new InternalException(e,
-                                        InternalException.Type.CharacterisationFailed);
-
-        }
-
+    private boolean[] createNewCheckpointset() {
+        return new boolean[]{false, false, false, false};
     }
+
 
     public void uploadFileToObjectFromPermanentURL(
             @WebParam(name = "pid", targetNamespace = "") String pid,
@@ -493,7 +596,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
-        boolean[] checkpoints = {false, false, false};
+        boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = permanentURL;
         Operation op = null;
         try {
@@ -507,51 +610,24 @@ public class HighlevelBitstorageSoapWebserviceImpl
             log.trace(message);
             op = StaticStatus.initOperation("Upload");//TODO?
             try {
-                initialise();
                 StaticStatus.event(op, message);
                 op.setFedoraPid(pid);
                 op.setFileSize(filelength);
 
-                //bypass checkpoint 1
+                uploadCheckpoint2(pid,
+                                  filename,
+                                  md5String,
+                                  checkpoints,
+                                  uploadedURL,
+                                  op);
 
+                Characterisation localisedCharac = uploadCheckpoint3(pid,
+                                                                     checkpoints,
+                                                                     uploadedURL,
+                                                                     op);
+                uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
+                                  checkpoints);
 
-                updateFedora(pid, md5String, uploadedURL, filename, op);
-                //checkpoint here, fedora updated
-                checkpoints[1] = true;
-
-                message = "Fedora datastream created";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                message
-                        = "First checkpoint reached. File in on permament adress and the datastream is in fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-
-                Characterisation characterisation = characterise(pid, op);
-                message = "Get list of formatURIs from Fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                Collection<String> formatURIs =
-                        getAllowedFormatURIs(pid, uploadedURL, op);
-
-                evaluateCharacterisationAndStore(pid,
-                                                 uploadedURL,
-                                                 characterisation,
-                                                 formatURIs,
-                                                 op);
-                checkpoints[2] = true;
-                message
-                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-                //checkpoint here, charac info stored
-                message = "Setting the object label to be the URL";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                finishingTouches(pid, uploadedURL,
-                                 characterisation.getBestFormat(), op);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -580,7 +656,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             @WebParam(name = "filelength", targetNamespace = "")
             long filelength) throws
                              HighlevelSoapException {
-        boolean[] checkpoints = {false, false, false};
+        boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = "";
         Operation op = null;
         try {
@@ -594,66 +670,31 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
             op = StaticStatus.initOperation("Upload");
             try {
-                initialise();
+
                 StaticStatus.event(op, message);
                 op.setFedoraPid(pid);
                 op.setFileSize(filelength);
 
+                uploadedURL = uploadCheckpoint1(filename,
+                                                filedata,
+                                                md5String,
+                                                filelength,
+                                                checkpoints,
+                                                op);
 
-                //No rollback here, we have not reached first checkpoint
-                uploadedURL = uploadFile(filename,
-                                         filedata,
-                                         md5String,
-                                         filelength,
-                                         op);
+                uploadCheckpoint2(pid,
+                                  filename,
+                                  md5String,
+                                  checkpoints,
+                                  uploadedURL,
+                                  op);
 
-                checkpoints[0] = true;
-                //Checkpoint here
-                message =
-                        "First checkpoint reached. File is uploaded to lowlevel bitstorage with this url '"
-                        + uploadedURL + "'";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-
-                //Stuff put in bitstorage, so this must be rolled back
-                updateFedora(pid, md5String, uploadedURL, filename, op);
-                //checkpoint here, fedora updated
-                checkpoints[1] = true;
-
-                message = "Fedora datastream created";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                message
-                        = "Second checkpoint reached. File is in lowlevel and the datastream is in fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-
-                Characterisation characterisation = characterise(pid, op);
-                message = "Get list of formatURIs from Fedora";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                Collection<String> formatURIs =
-                        getAllowedFormatURIs(pid, uploadedURL, op);
-
-                evaluateCharacterisationAndStore(pid,
-                                                 uploadedURL,
-                                                 characterisation,
-                                                 formatURIs,
-                                                 op);
-                checkpoints[2] = true;
-                message
-                        = "Third Checkpoint reached. File stored, file object updated. Charac info stored";
-                log.debug(message);
-                StaticStatus.event(op, message);
-
-                //checkpoint here, charac info stored
-                message = "Setting the object label to be the URL";
-                log.debug(message);
-                StaticStatus.event(op, message);
-                finishingTouches(pid, uploadedURL,
-                                 characterisation.getBestFormat(), op);
+                Characterisation localisedCharac = uploadCheckpoint3(pid,
+                                                                     checkpoints,
+                                                                     uploadedURL,
+                                                                     op);
+                uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
+                                  checkpoints);
 
             } catch (Exception e) {//something unexpected failed down there
                 try {
@@ -747,8 +788,12 @@ public class HighlevelBitstorageSoapWebserviceImpl
                           + "' in '" + pid + "'";
                 log.debug(message);
                 StaticStatus.event(op, message);
+                initialiseFedoraSpeaker();
 
-                fedora.storeCharacterization(pid, characterisation, context);
+                fedora.createInternalDatastream(pid,
+                                                charac_name,
+                                                characterisation,
+                                                "Characterisation");
 
                 message = "Characterisation of '" + uploadedURL
                           + "' stored in '" + pid + "'";
@@ -762,7 +807,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
     private Collection<String> getAllowedFormatURIs(String pid,
-                                                    String uploadedURL,
                                                     Operation op) throws
 
                                                                   InternalException {
@@ -772,6 +816,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         Collection<String> formatURIs = null;
         try {
+            initialiseFedoraSpeaker();
             formatURIs = fedora.getAllowedFormatURIs(pid, contents_name);
         } catch (FedoraException e) {
             throw fedoraMapper.convertMostApplicable(e);
@@ -780,110 +825,13 @@ public class HighlevelBitstorageSoapWebserviceImpl
         return formatURIs;
     }
 
-    private Characterisation characterise(String pid,
-                                          Operation op)
-            throws InternalException {
-
-        try {
-            Characterisation characterisation;
-            String message = "Begin characterisation";
-            log.debug(message);
-            StaticStatus.event(op, message);
-
-
-            characterisation = charac.characterise(pid,
-                                                   null);//TODO not fricking null
-            message = "File characterised";
-            log.debug(message);
-            StaticStatus.event(op, message);
-            return characterisation;
-
-        } catch (CharacteriseSoapException e) {
-            throw characMapper.convertMostApplicable(e);
-        }
-
-    }
-
-    private void updateFedora(String pid,
-                              String md5String,
-                              String uploadedURL,
-                              String filename,
-                              Operation op)
-            throws InternalException {
-        String message;
-        try {
-            try {
-                log.debug("Begin creating fedora datastream");
-                fedora.createContentDatastream(pid,
-                                               uploadedURL,
-                                               md5String,
-                                               filename);
-            } catch (FedoraDatastreamAlreadyExistException e) {
-                if (fedora.datastreamHasContent(pid, contents_name)) {
-                    message = "Fedora object '" + pid + "' already has a '"
-                              + contents_name
-                              + "' datastream with content. Aborting operation.";
-                    log.error(message);
-                    StaticStatus.event(op, message);
-
-                    throw new InternalException(
-                            "The file object '" + pid + "' " +
-                            "is already in use. Pick another file object to " +
-                            "upload a file for",
-                            InternalException.Type.FileObjectAlreadyInUse);
-                } else {//no content
-                    message = "Fedora object '" + pid + "' alreary has a '"
-                              + contents_name
-                              + "' datastream, but without content so it is replaced.";
-                    log.debug(message);
-                    StaticStatus.event(op, message);
-                    fedora.updateContentDatastream(pid,
-                                                   uploadedURL,
-                                                   md5String,
-                                                   filename);
-                }
-            }
-
-        } catch (FedoraException e) {
-            throw fedoraMapper.convertMostApplicable(e);
-        }
-    }
-
-    private String uploadFile(String filename,
-                              DataHandler filedata,
-                              String md5String, long filelength, Operation op)
-            throws
-            InternalException {
-        String message;
-        String uploadedURL;
-        try {
-            message = "Begin upload to bitstorage";
-            log.trace(message);
-            StaticStatus.event(op, message);
-
-            uploadedURL = lowlevel.uploadFile(filename,
-                                              filedata,
-                                              md5String,
-                                              filelength);
-
-            message = "Uploaded file to bitstorage, returned url '" +
-                      uploadedURL + "'";
-            log.trace(message);
-            StaticStatus.event(op, message);
-
-        } catch (LowlevelSoapException e) {
-            throw lowlevelMapper.convertMostApplicable(e);
-        }
-        return uploadedURL;
-    }
-
 
     public void delete(@WebParam(name = "pid", targetNamespace = "") String pid)
             throws HighlevelSoapException
 
     {
-        initialise();
-        //This method is invoked as a result of deleting a file object. As such, it should not set the file object to deleted.
+        //This method is invoked as a result of deleting a file object. As such,
+        // it should not set the file object to deleted.
         Operation op = StaticStatus.initOperation("Delete");
         try {
             op.setFedoraPid(pid);
@@ -896,12 +844,15 @@ public class HighlevelBitstorageSoapWebserviceImpl
             log.trace(message);
             StaticStatus.event(op, message);
 
-            url = fedora.getFileUrl(pid);
+            initialiseFedoraSpeaker();
+            url = fedora.getDatastreamProfile(pid,
+                                              contents_name).getDsLocation();
 
             message = "Gotten url '" + url + "' from fedora";
             log.trace(message);
             StaticStatus.event(op, message);
 
+            initialiseLowLevelConnector();
             if (!lowlevel.isApproved(url)) {
                 message = "disapproving file '" + url + "' in lowlevel";
                 log.trace(message);
@@ -945,7 +896,6 @@ public class HighlevelBitstorageSoapWebserviceImpl
             @WebParam(name = "pid", targetNamespace = "") String pid)
             throws HighlevelSoapException {
 
-        initialise();
         /*
        Pseudo kode
 
@@ -958,15 +908,19 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
         Operation op = StaticStatus.initOperation("Publish");
         try {
-            op.setFedoraPid(pid);
+            initialiseFedoraSpeaker();
+            initialiseLowLevelConnector();
 
+            op.setFedoraPid(pid);
             boolean controlled = fedora.isControlledByLowlevel(pid);
             if (controlled) {
                 String url;
                 String checksum;
 
-                url = fedora.getFileUrl(pid);
-                checksum = fedora.getFileChecksum(pid);
+                DatastreamProfile profile = fedora.getDatastreamProfile(pid,
+                                                                        contents_name);
+                url = profile.getDsLocation();
+                checksum = profile.getDsChecksum();
 
 
                 if (!lowlevel.isApproved(url)) {
