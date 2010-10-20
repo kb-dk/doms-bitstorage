@@ -26,7 +26,7 @@
   -->
 
 <project name="macros">
-    <!--Part of doms build framework version 1.0.10-->
+    <!--Part of doms build framework version 1.0.12-->
 
 
     <property name="global.dir" value="${basedir}/.."/>
@@ -40,6 +40,7 @@
     <property name="jarfile" value="${ant.project.name}.jar"/>
     <property name="srcpack.zip" value="${ant.project.name}-src.zip"/>
     <property name="docspack.zip" value="${ant.project.name}-apidocs.zip"/>
+    <property name="execfile" value="${ant.project.name}-bin.zip"/>
 
 
     <path id="script.classpath">
@@ -230,6 +231,56 @@
             <delete dir="libtemp"/>
         </sequential>
 
+    </macrodef>
+
+
+    <macrodef name="executablezip" description="Packs the module into a binary
+       release">
+        <sequential>
+            <mkdir dir="dist"/>
+
+
+            <convertPath dirset="module.libs"
+                         postfix="/jars/*.jar"
+                         newfileset="module.libs.jars"/>
+
+
+            <convertPath dirset="project.libs"
+                         postfix="/jars/*.jar"
+                         newfileset="project.libs.jars"/>
+
+            <convertPath dirset="module.dependencies"
+                         postfix="/dist/**/*.jar"
+                         newfileset="dependencies.jars"/>
+
+            <copy todir="tempjars" flatten="true">
+                <fileset refid="project.libs.jars"/>
+                <fileset refid="module.libs.jars"/>
+                <fileset refid="dependencies.jars"/>
+            </copy>
+
+            <zip destfile="dist/${execfile}">
+                <zipfileset dir="bin" erroronmissingdir="false" prefix="bin">
+                    <include name="**/*"/>
+                </zipfileset>
+                <zipfileset dir="config" erroronmissingdir="false"
+                            prefix="config">
+                    <include name="**/*"/>
+                </zipfileset>
+                <zipfileset dir="data" erroronmissingdir="false"
+                            prefix="config">
+                    <include name="**/*"/>
+                </zipfileset>
+                <zipfileset dir="tempjars" erroronmissingdir="false"
+                            prefix="lib"/>
+                <zipfileset dir="dist" erroronmissingdir="false"
+                            prefix="lib">
+                    <include name="*.jar"/>
+                </zipfileset>
+
+            </zip>
+            <delete dir="tempjars"/>
+        </sequential>
     </macrodef>
 
 
