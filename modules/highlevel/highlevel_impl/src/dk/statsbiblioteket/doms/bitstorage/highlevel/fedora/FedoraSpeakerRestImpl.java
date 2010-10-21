@@ -34,6 +34,7 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.ResourceN
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.*;
 import dk.statsbiblioteket.doms.webservices.Base64;
 import dk.statsbiblioteket.doms.webservices.Credentials;
+import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,10 +60,21 @@ public class FedoraSpeakerRestImpl {
 
     private static Client client = Client.create();
 
+    private static TimeSensitiveCache<Credentials, Caches> caches
+            = new TimeSensitiveCache<Credentials, Caches>(1000 * 60 * 60,
+                                                          true,
+                                                          20);
+
+    private Caches cache;
 
     public FedoraSpeakerRestImpl(Credentials creds,
                                  String server) throws MalformedURLException {
         this.creds = creds;
+        cache = caches.get(creds);
+        if (cache == null) {
+            cache = new Caches();
+            caches.put(creds, cache);
+        }
         restApi = client.resource(server);
     }
 
@@ -123,17 +135,13 @@ public class FedoraSpeakerRestImpl {
                                                       FedoraAuthenticationException,
                                                       FedoraCommunicationException {
         List<String> foundObjects = null;
-        try {
-            foundObjects = query(URLEncoder.encode(
-                    "select $cm from <#ri> "
-                    + "where $object <mulgara:is> <info:fedora/" + pid + "> "
-                    + "and $object <fedora-model:hasModel> $cm "
-                    + "and $cm <http://doms.statsbiblioteket.dk/relations/"
-                    + "default/0/1/#isControlledByLowLevelBitstorage> 'false'",
-                    "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            throw new ResourceNotFoundException("The server lacks UTF-8 support");
-        }
+
+        foundObjects = query(
+                "select $cm from <#ri> "
+                + "where $object <mulgara:is> <info:fedora/" + pid + "> "
+                + "and $object <fedora-model:hasModel> $cm "
+                + "and $cm <http://doms.statsbiblioteket.dk/relations/"
+                + "default/0/1/#isControlledByLowLevelBitstorage> 'false'");
         if (foundObjects.isEmpty()) {
             return true;
         } else {
@@ -155,6 +163,8 @@ public class FedoraSpeakerRestImpl {
             FedoraAuthenticationException, ResourceNotFoundException {
 
         try {
+            cache.removeDatastreamContents(pid, ds);
+            cache.removeDatastreamProfile(pid, ds);
             restApi.path("/objects/")
                     .path(sanitize(pid))
                     .path("/datastreams/")
@@ -211,6 +221,9 @@ public class FedoraSpeakerRestImpl {
 
         WebResource temp = null;
         try {
+            cache.removeDatastreamProfile(pid, ds);
+            cache.removeDatastreamContents(pid, ds);
+
             temp = restApi.path("/objects/")
                     .path(sanitize(pid))
                     .path("/datastreams/")
@@ -267,6 +280,8 @@ public class FedoraSpeakerRestImpl {
             ResourceNotFoundException {
 
         WebResource temp = null;
+        cache.removeDatastreamProfile(pid, ds);
+        cache.removeDatastreamContents(pid, ds);
 
         temp = restApi.path("/objects/")
                 .path(sanitize(pid))
@@ -301,13 +316,19 @@ public class FedoraSpeakerRestImpl {
             FedoraAuthenticationException,
             ResourceNotFoundException {
         try {
-            DatastreamProfile profile = restApi.path("/objects/")
+            DatastreamProfile profile;
+            profile = cache.getDatastreamProfile(pid, datastreamname);
+            if (profile != null) {
+                return profile;
+            }
+            profile = restApi.path("/objects/")
                     .path(sanitize(pid))
                     .path("/datastreams/")
                     .path(sanitize(datastreamname))
                     .queryParam("format", "xml")
                     .header("Authorization", credsAsBase64())
                     .get(DatastreamProfile.class);
+            cache.storeDatastreamProfile(pid, datastreamname, profile);
             return profile;
         } catch (UniformInterfaceException e) {
             if (e.getResponse().getClientResponseStatus().equals(ClientResponse.Status.NOT_FOUND)) {
@@ -328,11 +349,18 @@ public class FedoraSpeakerRestImpl {
             ResourceNotFoundException,
             FedoraAuthenticationException {
         try {
-            ObjectProfile profile = restApi.path("/objects/")
+            ObjectProfile profile;
+            profile = cache.getObjectProfile(pid);
+            if (profile != null) {
+                return profile;
+            }
+
+            profile = restApi.path("/objects/")
                     .path(sanitize(pid))
                     .queryParam("format", "xml")
                     .header("Authorization", credsAsBase64())
                     .get(ObjectProfile.class);
+            cache.storeObjectProfile(pid, profile);
             return profile;
         } catch (UniformInterfaceException e) {
             if (e.getResponse().getClientResponseStatus().equals(ClientResponse.Status.NOT_FOUND)) {
@@ -355,13 +383,25 @@ public class FedoraSpeakerRestImpl {
             FedoraAuthenticationException,
             ResourceNotFoundException {
         try {
-            T contents = restApi.path("/objects/")
+
+            T contents;
+            contents = cache.getDatastreamContents(pid,
+                                                   datastream,
+                                                   returnvalue);
+            if (contents != null) {
+                return contents;
+            }
+            contents = restApi.path("/objects/")
                     .path(sanitize(pid))
                     .path("/datastreams/")
                     .path(sanitize(datastream))
                     .path("/content")
                     .header("Authorization", credsAsBase64())
                     .get(returnvalue);
+            cache.storeDatastreamContents(pid,
+                                          datastream,
+                                          returnvalue,
+                                          contents);
             return contents;
         } catch (UniformInterfaceException e) {
             if (e.getResponse().getClientResponseStatus().equals(ClientResponse.Status.NOT_FOUND)) {
@@ -382,6 +422,7 @@ public class FedoraSpeakerRestImpl {
                                                          FedoraAuthenticationException,
                                                          FedoraCommunicationException {
         try {
+            cache.removeObjectProfile(pid);
             restApi.path("/objects/")
                     .path(sanitize(pid))
                     .queryParam("label", label)
@@ -407,6 +448,7 @@ public class FedoraSpeakerRestImpl {
                    FedoraAuthenticationException,
                    ResourceNotFoundException {
         try {
+            cache.removeDatastreamProfile(pid, datastream);
             restApi.path("/objects/")
                     .path(sanitize(pid))
                     .path("/datastreams/")
