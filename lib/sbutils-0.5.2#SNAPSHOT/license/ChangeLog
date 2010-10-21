@@ -1,7 +1,165 @@
-2009-12-02 11:20  mkamstrup
+2010-07-29 15:33  hkirk
 
-	* [r233] build.xml, ChangeLog, NEWS:
+	* [r254] test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  Bugfix: added cleanup
 
+2010-07-29 15:17  hkirk
+
+	* [r253] src/dk/statsbiblioteket/util/Zips.java,
+	  test/dk/statsbiblioteket/util/ZipsTest.java:
+	  
+	  Added getZipEntry() method to the Zips class along with a
+	  unittest for this method.
+	  Cleanup Javadoc
+
+2010-06-08 12:48  hkirk
+
+	* [r252] src/dk/statsbiblioteket/util/xml/XSLT.java:
+	  
+	  Cleanup: Import and override annotations
+
+2010-05-20 11:48  hkirk
+
+	* [r251] build.xml:
+	  
+	  Updated build.xml file, for next build.
+
+2010-05-20 11:43  hkirk
+
+	* [r250] ChangeLog, NEWS, build.xml:
+	  
+	  Updated news and changelog file, prio to 0.5.0 release.
+
+2010-05-20 11:26  hkirk
+
+	* [r249] src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Bugfix: simplified selectBoolean, which contained an error, when
+	  looking for an attribute with value 'false', and default value
+	  also was 'false'.
+
+2010-05-20 11:24  hkirk
+
+	* [r248] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Updated testcases, need to fix a TODO in this file
+
+2010-05-20 10:58  hkirk
+
+	* [r247]
+	  test/dk/statsbiblioteket/util/xml/XPathSelectorImplTest.java:
+	  
+	  Test cases for simplified selectBoolean method
+
+2010-05-04 13:49  toke-sb
+
+	* [r246] src/dk/statsbiblioteket/util/CachedCollator.java,
+	  test/dk/statsbiblioteket/util/CachedCollatorTest.java:
+	  
+	  Bugfix: The CachedCollator compared wrongly when the last
+	  character had secondary or tertiary difference
+
+2010-05-03 13:07  toke-sb
+
+	* [r245] ChangeLog, build.xml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/xml/NamespaceRemover.java,
+	  test/data/xml/specific_problem.xml[ADD],
+	  test/dk/statsbiblioteket/util/xml/NamespaceRemoverTest.java:
+	  
+	  Half bugfix: The rules for prefixes for namespace removal was too
+	  strict. They are extended now, but not complete
+
+2010-01-07 08:56  toke-sb
+
+	* [r244] src/dk/statsbiblioteket/util/xml/DOM.java,
+	  src/dk/statsbiblioteket/util/xml/SynchronousXPathSelector.java[CPY],
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Feature: Implemented a thread safe XPathSelector that allows
+	  threaded parallel execution
+	  Bugfix: Made DOM thread safe by using the new XPathSelector
+
+2010-01-07 08:08  mkamstrup
+
+	* [r243] test/data/big.xml[ADD],
+	  test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Include a big XML document for testing purposes (even though we
+	  don't use it yet)
+
+2010-01-06 23:14  mkamstrup
+
+	* [r242] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Formally detect uncaught exceptions in threads in the threaded
+	  test cases for DOM.select*
+
+2010-01-06 23:01  mkamstrup
+
+	* [r241] test/dk/statsbiblioteket/util/xml/DOMSelectTest.java:
+	  
+	  Add two unit tests that heavily excercises the DOM.select* API
+	  from 20 threads. They both pass just fine (although I had
+	  expeccted that they wouldn't)
+
+2010-01-06 22:29  mkamstrup
+
+	* [r240] sbutil.ipr:
+	  
+	  Set the project language level to Java 6 in the Idea settings -
+	  this allows for @Override on interface methods
+
+2010-01-06 22:06  mkamstrup
+
+	* [r239] sbutil.iml, sbutil.ipr:
+	  
+	  Re-instate changes to Idea project files from the reverted r237
+
+2010-01-06 22:03  mkamstrup
+
+	* [r238] sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Revert r237. There was several problems with this commit:
+	  
+	  * @Override annotations for interface methods are fully legal in
+	  Java6,
+	  so why remove them?
+	  
+	  * Programs expecting DOM.select* methods to be thread safe are
+	  buggy.
+	  Synchronizing XPathSelectorImpl.selectObject() seems entirely the
+	  wrong
+	  solution to what I consider misuse of the DOM.select* API. If we
+	  want
+	  to make DOM.select* thread safe then I would very much like
+	  another solution
+	  
+	  * Mixing lots of Idea project file changes with a critical bugfix
+
+2010-01-06 16:29  toke-sb
+
+	* [r237] sbutil.iml, sbutil.ipr,
+	  src/dk/statsbiblioteket/util/xml/XPathSelectorImpl.java:
+	  
+	  Bugfix: The XPathSelectorImpl was not thread safe and was used
+	  from static methods in DOM. The current fix was to make the
+	  relevant method synchronized, which is a performance killer in
+	  multi threaded applications
+
+2009-12-09 08:32  toke-sb
+
+	* [r236] src/dk/statsbiblioteket/util/CachedCollator.java:
+	  
+	  Performance: Optimized the tight inner loop for cache-based
+	  String comparison for CachedCollator to use direct array-lookups
+	  and modified the arrays to contain the whole char-range
+
+2009-12-02 10:18  mkamstrup
+
+	* [r234] ChangeLog, NEWS, build.xml:
+	  
 	  Release SB Util 0.4.8
 
 2009-12-02 10:00  mkamstrup
