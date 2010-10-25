@@ -62,7 +62,10 @@ public class Caches {
     }
 
     public ObjectProfile getObjectProfile(String pid) {
-        return objectProfiles.get(pid);
+        if (pidProtection(pid)) {
+            return objectProfiles.get(pid);
+        }
+        return null;
     }
 
     public void removeObjectProfile(String pid) {
@@ -70,27 +73,35 @@ public class Caches {
     }
 
     public void storeObjectProfile(String pid, ObjectProfile profile) {
-        objectProfiles.put(pid, profile);
+        if (pidProtection(pid)) {
+            objectProfiles.put(pid, profile);
+        }
     }
 
 
     public <T> T getDatastreamContents(String pid,
                                        String datastream,
                                        Class<T> returnvalue) {
-        Object value = datastreamContents.get(mergeStrings(pid, datastream));
-        if (returnvalue.isInstance(value)) {
-            return returnvalue.cast(value);
-        } else {
-            removeDatastreamContents(pid, datastream);
-            return null;
+        if (pidProtection(pid)) {
+            Object value = datastreamContents.get(mergeStrings(pid,
+                                                               datastream));
+            if (returnvalue.isInstance(value)) {
+                return returnvalue.cast(value);
+            } else {
+                removeDatastreamContents(pid, datastream);
+                return null;
+            }
         }
+        return null;
     }
 
 
     public <T> void storeDatastreamContents(String pid,
                                             String datastream,
                                             Class<T> returnvalue, T contents) {
-        datastreamContents.put(mergeStrings(pid, datastream), contents);
+        if (pidProtection(pid)) {
+            datastreamContents.put(mergeStrings(pid, datastream), contents);
+        }
     }
 
     public void removeDatastreamContents(String pid, String ds) {
@@ -104,13 +115,18 @@ public class Caches {
 
     public DatastreamProfile getDatastreamProfile(String pid,
                                                   String datastreamname) {
-        return datastreamProfiles.get(mergeStrings(pid, datastreamname));
+        if (pidProtection(pid)) {
+            return datastreamProfiles.get(mergeStrings(pid, datastreamname));
+        }
+        return null;
     }
 
     public void storeDatastreamProfile(String pid,
                                        String datastreamname,
                                        DatastreamProfile profile) {
-        datastreamProfiles.put(mergeStrings(pid, datastreamname), profile);
+        if (pidProtection(pid)) {
+            datastreamProfiles.put(mergeStrings(pid, datastreamname), profile);
+        }
     }
 
     private String mergeStrings(String... strings) {
@@ -125,6 +141,15 @@ public class Caches {
 
         }
         return result;
+    }
+
+
+    private boolean pidProtection(String pid) {
+        pid = pid.replaceAll("info:fedora/", "");
+        if (pid.startsWith("doms:")) {
+            return true;
+        }
+        return false;
     }
 
 }

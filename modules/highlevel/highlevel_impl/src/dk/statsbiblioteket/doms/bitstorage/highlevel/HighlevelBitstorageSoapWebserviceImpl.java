@@ -265,6 +265,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                                      checkpoints,
                                                                      uploadedURL,
                                                                      op);
+                //Checkpoint 4, set the object label.
                 uploadCheckpoint4(pid, uploadedURL, op, null,
                                   checkpoints);
 
