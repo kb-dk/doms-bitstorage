@@ -413,51 +413,6 @@
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
-              <option name="branchMap">
-                <map>
-                  <entry key="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags">
-                    <value>
-                      <list>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1287565695145" />
-                          <option name="revision" value="1024" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.8" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1287500809094" />
-                          <option name="revision" value="1005" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.7" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1287485962253" />
-                          <option name="revision" value="991" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.6" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1284559295956" />
-                          <option name="revision" value="682" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.5" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1284549950720" />
-                          <option name="revision" value="676" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.4" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1284370162645" />
-                          <option name="revision" value="653" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.3" />
-                        </SvnBranchItem>
-                        <SvnBranchItem>
-                          <option name="creationDateMillis" value="1283942133210" />
-                          <option name="revision" value="615" />
-                          <option name="url" value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/release0.0.2" />
-                        </SvnBranchItem>
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="branchUrls">
                 <list>
                   <option value="https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/branches" />
@@ -544,15 +499,15 @@
     </library>
     <library name="domsutil">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11#SNAPSHOT/jars/surveyable_impl.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11#SNAPSHOT/jars/webservice-common.jar!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11#SNAPSHOT/jars/surveyable_interface.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11/jars/webservice-common.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11/jars/surveyable_interface.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11/jars/surveyable_impl.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11#SNAPSHOT/src/surveyable_impl-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11#SNAPSHOT/src/webservice-common-src.zip!/" />
-        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11#SNAPSHOT/src/surveyable_interface-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11/src/surveyable_interface-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11/src/surveyable_impl-src.zip!/" />
+        <root url="jar://$PROJECT_DIR$/lib/domsutil-0.0.11/src/webservice-common-src.zip!/" />
       </SOURCES>
     </library>
     <library name="commons-logging">
