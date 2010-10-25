@@ -435,13 +435,13 @@
   <component name="libraryTable">
     <library name="sbutils">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.5.2#SNAPSHOT/jars/sbutil-0.5.2#SNAPSHOT.jar!/" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/jars/sbutil-0.5.2.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.5.2#SNAPSHOT/apidocs/sbutil-0.5.2#SNAPSHOT-apidocs.zip!/sbutil-0.5.2#SNAPSHOT/doc" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/apidocs/sbutil-0.5.2-apidocs.zip!/sbutil-0.5.2/doc" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$PROJECT_DIR$/lib/sbutils-0.5.2#SNAPSHOT/src/sbutil-0.5.2#SNAPSHOT-src.zip!/sbutil-0.5.2#SNAPSHOT/src" />
+        <root url="jar://$PROJECT_DIR$/lib/sbutil-0.5.2/src/sbutil-0.5.2-src.zip!/sbutil-0.5.2/src" />
       </SOURCES>
     </library>
     <library name="jaxws-ri">
