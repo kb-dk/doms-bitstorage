@@ -44,6 +44,6 @@
 
     <!--Project libs used by this module-->
     <dirset id="project.libs" dir="${global.dir}/lib/">
-        <include name="${sbutils.lib}"/>
+        <include name="${sbutil.lib}"/>
     </dirset>
 </project>
