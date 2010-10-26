@@ -29,6 +29,7 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
 
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.ObjectProfile;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.DatastreamProfile;
+import dk.statsbiblioteket.doms.webservices.ConfigCollection;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 
 /**
@@ -47,18 +48,25 @@ public class Caches {
     TimeSensitiveCache<String, Object> datastreamContents;
 
     public Caches() {
-        long timeToLive = 1000 * 60 * 10;
+        long lifetime
+                = Long.parseLong(ConfigCollection.getProperties().getProperty(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.connectors.fedora.cache.lifetime",
+                "" + 1000 * 60 * 10));
+        int size
+                = Integer.parseInt(ConfigCollection.getProperties().getProperty(
+                "dk.statsbiblioteket.doms.bitstorage.highlevel.connectors.fedora.cache.size",
+                "" + 20));
         objectProfiles = new TimeSensitiveCache<String, ObjectProfile>(
-                timeToLive,
+                lifetime,
                 true,
-                25);
+                size);
         datastreamProfiles = new TimeSensitiveCache<String, DatastreamProfile>(
-                timeToLive,
+                lifetime,
                 true,
-                25);
-        datastreamContents = new TimeSensitiveCache<String, Object>(timeToLive,
+                size);
+        datastreamContents = new TimeSensitiveCache<String, Object>(lifetime,
                                                                     true,
-                                                                    25);
+                                                                    size);
     }
 
     public ObjectProfile getObjectProfile(String pid) {
