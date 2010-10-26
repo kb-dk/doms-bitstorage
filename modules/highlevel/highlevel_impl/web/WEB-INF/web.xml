@@ -109,6 +109,25 @@
     </context-param>
 
     <context-param>
+        <description>The lifetime of cached objects. Default 10 mins
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.connectors.fedora.cache.lifetime
+        </param-name>
+        <param-value>600000</param-value>
+    </context-param>
+
+    <context-param>
+        <description>The size of the caches. Default 20 elements
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.bitstorage.highlevel.connectors.fedora.cache.size
+        </param-name>
+        <param-value>20</param-value>
+    </context-param>
+
+
+    <context-param>
         <description>The class that will be exposed for surveillance
         </description>
         <param-name>
