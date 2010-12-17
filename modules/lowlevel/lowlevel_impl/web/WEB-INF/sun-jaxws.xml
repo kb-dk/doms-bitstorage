@@ -45,6 +45,6 @@
             wsdl='WEB-INF/wsdl/surveyable.wsdl'
             service="{http://surveyable.domsutil.doms.statsbiblioteket.dk/}SurveyableService"
             port="{http://surveyable.domsutil.doms.statsbiblioteket.dk/}Surveyable"
-            url-pattern='/lowlevelsurveyable/'
+            url-pattern='/surveyable/'
             />
 </endpoints>

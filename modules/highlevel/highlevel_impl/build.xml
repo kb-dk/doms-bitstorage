@@ -87,6 +87,7 @@
         <include name="${jersey.lib}"/>
         <include name="${jsr311-api.lib}"/>
         <include name="${commons-logging.lib}"/>
+        <include name="${log4j.lib}"/>
     </dirset>
 
     <dirset id="module.dependencies" dir="${global.dir}/modules/">
