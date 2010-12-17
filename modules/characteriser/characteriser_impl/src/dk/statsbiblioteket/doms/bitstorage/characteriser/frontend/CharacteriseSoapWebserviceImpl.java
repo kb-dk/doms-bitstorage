@@ -27,6 +27,12 @@
 
 package dk.statsbiblioteket.doms.bitstorage.characteriser.frontend;
 
+import com.sun.xml.ws.developer.JAXWSProperties;
+import dk.statsbiblioteket.doms.bitstorage.characteriser.*;
+import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
+import dk.statsbiblioteket.util.qa.QAInfo;
+import eu.planets_project.fedora.FedoraObjectManager;
+import eu.planets_project.fedora.connector.FedoraConnectionException;
 import eu.planets_project.ifr.core.storage.api.DigitalObjectManager;
 import eu.planets_project.services.datatypes.DigitalObject;
 import eu.planets_project.services.datatypes.ServiceDescription;
@@ -35,34 +41,26 @@ import eu.planets_project.services.identify.Identify;
 import eu.planets_project.services.identify.IdentifyResult;
 import eu.planets_project.services.validate.Validate;
 import eu.planets_project.services.validate.ValidateResult;
-import eu.planets_project.fedora.FedoraObjectManager;
-import eu.planets_project.fedora.connector.FedoraConnectionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import dk.statsbiblioteket.doms.bitstorage.characteriser.*;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
-import dk.statsbiblioteket.util.qa.QAInfo;
-
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.xml.ws.Service;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.soap.MTOMFeature;
-import javax.xml.ws.soap.SOAPBinding;
-import javax.xml.namespace.QName;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Service;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.soap.MTOMFeature;
+import javax.xml.ws.soap.SOAPBinding;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.*;
-import java.io.StringWriter;
-
-import com.sun.xml.ws.developer.JAXWSProperties;
 
 /**
  *

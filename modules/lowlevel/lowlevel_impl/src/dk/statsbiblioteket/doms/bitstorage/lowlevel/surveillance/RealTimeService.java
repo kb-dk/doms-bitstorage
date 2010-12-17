@@ -27,9 +27,6 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.surveillance;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.BitstorageFactory;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.CommunicationException;
@@ -37,8 +34,10 @@ import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Surveyable;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
 import dk.statsbiblioteket.util.qa.QAInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.Properties;
 
@@ -110,10 +109,10 @@ public class RealTimeService implements Surveyable {
                     = Integer.parseInt(preferredBytesLeft);
         } catch (NumberFormatException e) {
             log.error("Couldn't parse the value of web.xml parameter '"
-                    + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
+                      + PARAMETER_NAME_FOR_PREFERRED_BYTES_LEFT + "'");
         }
         log.debug("Preferred number of bytes in bitstorage now set to '"
-                + preferredSpaceInBitstorage + "'");
+                  + preferredSpaceInBitstorage + "'");
 
         requiredBytesLeft = props.getProperty(
                 PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT);
@@ -121,14 +120,15 @@ public class RealTimeService implements Surveyable {
             requiredSpaceInBitstorage = Integer.parseInt(requiredBytesLeft);
         } catch (NumberFormatException e) {
             log.error("Couldn't parse the value of web.xml parameter '"
-                    + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
+                      + PARAMETER_NAME_FOR_REQUIRED_BYTES_LEFT + "'");
         }
         log.debug("Required number of bytes in bitstorage now set to '"
-                + requiredSpaceInBitstorage + "'");
+                  + requiredSpaceInBitstorage + "'");
     }
 
 
-    /** Returns only the current real time info.
+    /**
+     * Returns only the current real time info.
      *
      * @param time This given date is ignored.
      * @return A status containing list of status messages.
@@ -139,7 +139,8 @@ public class RealTimeService implements Surveyable {
     }
 
 
-    /** Returns real time info about the current state of the lowlevel
+    /**
+     * Returns real time info about the current state of the lowlevel
      * bitstorage webservice.
      * This method serves as fault barrier. All exceptions are caught and turned
      * into a status message.
@@ -157,7 +158,7 @@ public class RealTimeService implements Surveyable {
             // Create status covering exception
             status = makeStatus(Severity.RED,
                                 "Exception caught by fault barrier: "
-                                        + e.getMessage());
+                                + e.getMessage());
         }
 
         return status;
@@ -183,31 +184,31 @@ public class RealTimeService implements Surveyable {
 
         } catch (CommunicationException e) {
             log.error("Lowlevel bitstorage webservice"
-                    + " was called but it couldn't communicate with"
-                    + " backend ssh-server.", e);
+                      + " was called but it couldn't communicate with"
+                      + " backend ssh-server.", e);
             // Report no comms with backend ssh-server
             return makeStatus(Severity.RED,
-                    "Lowlevel bitstorage webservice"
-                            + " was called but it couldn't communicate with"
-                            + " backend ssh-server."
-                            + " Exception thrown with name: '"
-                            + e.getClass().getName()
-                            + "' and message: ["
-                            + e.getMessage()
-                            + "]"
+                              "Lowlevel bitstorage webservice"
+                              + " was called but it couldn't communicate with"
+                              + " backend ssh-server."
+                              + " Exception thrown with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              + "]"
             );
         } catch (Exception e) {
             log.error("Something went wrong calling"
-                    + " the lowlevel bitstorage.", e);
+                      + " the lowlevel bitstorage.", e);
             // Report something unknown went wrong
             return makeStatus(Severity.RED,
-                    "Something went wrong calling"
-                            + " the lowlevel bitstorage."
-                            + " Exception thrown with name: '"
-                            + e.getClass().getName()
-                            + "' and message: ["
-                            + e.getMessage()
-                            + "]"
+                              "Something went wrong calling"
+                              + " the lowlevel bitstorage."
+                              + " Exception thrown with name: '"
+                              + e.getClass().getName()
+                              + "' and message: ["
+                              + e.getMessage()
+                              + "]"
             );
         }
 
@@ -215,22 +216,22 @@ public class RealTimeService implements Surveyable {
         if (spaceLeftInBitstorage < requiredSpaceInBitstorage) {
             // Report too little space
             return makeStatus(Severity.RED,
-                    "Not enough space" +
-                            "in bitstorage. Remaining size must be atleast "
-                            + requiredSpaceInBitstorage + " bytes.");
+                              "Not enough space" +
+                              "in bitstorage. Remaining size must be atleast "
+                              + requiredSpaceInBitstorage + " bytes.");
         } else if (spaceLeftInBitstorage < preferredSpaceInBitstorage) {
             // Report close to too little space
             return makeStatus(Severity.YELLOW,
-                    "Space left in bitstorage is getting"
-                            + " dangerously close to the lower limit in"
-                            + " bitstorage. Remaining size should be atleast "
-                            + preferredSpaceInBitstorage + " bytes.");
+                              "Space left in bitstorage is getting"
+                              + " dangerously close to the lower limit in"
+                              + " bitstorage. Remaining size should be atleast "
+                              + preferredSpaceInBitstorage + " bytes.");
         } else {
             // Report everything ok
             return makeStatus(Severity.GREEN,
-                    "Lowlevel bitstorage is up, and there is enough space."
-                            + " Currently " + spaceLeftInBitstorage
-                            + " bytes left.");
+                              "Lowlevel bitstorage is up, and there is enough space."
+                              + " Currently " + spaceLeftInBitstorage
+                              + " bytes left.");
         }
     }
 
@@ -246,7 +247,7 @@ public class RealTimeService implements Surveyable {
      */
     private Status makeStatus(Severity severity, String message) {
         log.trace("Entered method makeStatus('" + severity + "', '" + message
-                + "')");
+                  + "')");
         Status status = new Status();
         StatusMessage statusMessage = new StatusMessage();
 

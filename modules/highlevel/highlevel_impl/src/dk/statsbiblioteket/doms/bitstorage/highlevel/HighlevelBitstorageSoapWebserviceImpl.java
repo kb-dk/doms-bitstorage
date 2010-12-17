@@ -37,34 +37,38 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.Characte
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.FedoraToInternalExceptionMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.InternalExceptionsToSoapFaultsMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers.LowlevelToInternalExceptionMapper;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.*;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.FedoraSpeakerRestImpl;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraAuthenticationException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraCommunicationException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraException;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.ResourceNotFoundException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.DatastreamProfile;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StaticStatus;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.status.Operation;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.status.StaticStatus;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
-import dk.statsbiblioteket.doms.webservices.*;
-import org.apache.commons.logging.LogFactory;
+import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
+import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
 import org.apache.commons.logging.Log;
-
+import org.apache.commons.logging.LogFactory;
 
 import javax.activation.DataHandler;
 import javax.annotation.Resource;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.xml.namespace.QName;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
-import javax.xml.ws.soap.MTOM;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.servlet.http.HttpServletRequest;
+import javax.xml.namespace.QName;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.WebServiceException;
+import javax.xml.ws.handler.MessageContext;
+import javax.xml.ws.soap.MTOM;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import java.io.StringWriter;
-import java.io.StringReader;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

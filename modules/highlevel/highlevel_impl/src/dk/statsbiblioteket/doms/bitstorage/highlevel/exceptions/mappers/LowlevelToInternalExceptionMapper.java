@@ -27,9 +27,9 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
-import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.*;
+import dk.statsbiblioteket.doms.webservices.exceptionhandling.ExceptionMapper;
 
 public class LowlevelToInternalExceptionMapper
         extends ExceptionMapper<InternalException, LowlevelSoapException> {

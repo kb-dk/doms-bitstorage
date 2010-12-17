@@ -27,13 +27,16 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
 
-import com.sun.jersey.api.client.*;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraAuthenticationException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraCommunicationException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.ResourceNotFoundException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.*;
-import dk.statsbiblioteket.doms.webservices.Base64;
-import dk.statsbiblioteket.doms.webservices.Credentials;
+import dk.statsbiblioteket.doms.webservices.authentication.Base64;
+import dk.statsbiblioteket.doms.webservices.authentication.Credentials;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -27,15 +27,13 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.scriptimpl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.Bitstorage;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.*;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
-import dk.statsbiblioteket.doms.webservices.Base64;
+import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
 import dk.statsbiblioteket.util.console.ProcessRunner;
 import dk.statsbiblioteket.util.qa.QAInfo;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;

@@ -27,9 +27,9 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.fedora;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.ObjectProfile;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.DatastreamProfile;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.ObjectProfile;
+import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
 
 /**

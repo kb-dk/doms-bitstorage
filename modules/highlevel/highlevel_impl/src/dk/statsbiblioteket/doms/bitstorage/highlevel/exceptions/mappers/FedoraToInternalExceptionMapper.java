@@ -27,9 +27,9 @@
 
 package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.*;
+import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.*;
-import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
+import dk.statsbiblioteket.doms.webservices.exceptionhandling.ExceptionMapper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,34 +44,34 @@ public class FedoraToInternalExceptionMapper
 
     public InternalException convert(FedoraException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.Unknown);
+                                     ce,
+                                     InternalException.Type.Unknown);
     }
 
     public InternalException convert(FedoraAuthenticationException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.NotAuthorized);
+                                     ce,
+                                     InternalException.Type.NotAuthorized);
     }
 
 
     public InternalException convert(FedoraChecksumFailedException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.ChecksumFailed);
+                                     ce,
+                                     InternalException.Type.ChecksumFailed);
     }
 
     public InternalException convert(FedoraCommunicationException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.Communication);
+                                     ce,
+                                     InternalException.Type.Communication);
     }
 
 
     public InternalException convert(FedoraObjectNotFoundException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.ObjectNotFound);
+                                     ce,
+                                     InternalException.Type.ObjectNotFound);
     }
 
 }

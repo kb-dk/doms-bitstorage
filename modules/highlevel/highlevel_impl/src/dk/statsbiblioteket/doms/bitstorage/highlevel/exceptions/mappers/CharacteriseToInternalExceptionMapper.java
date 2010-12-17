@@ -29,7 +29,8 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
-import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
+import dk.statsbiblioteket.doms.webservices.exceptionhandling.ExceptionMapper;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -43,7 +44,7 @@ public class CharacteriseToInternalExceptionMapper
 
     public InternalException convert(CharacteriseSoapException ce) {
         return new InternalException(ce.getMessage(),
-                ce,
-                InternalException.Type.CharacterisationFailed);
+                                     ce,
+                                     InternalException.Type.CharacterisationFailed);
     }
 }

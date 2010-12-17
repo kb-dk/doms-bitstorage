@@ -29,7 +29,7 @@ package dk.statsbiblioteket.doms.bitstorage.lowlevel.frontend;
 
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.LowlevelSoapException;
 import dk.statsbiblioteket.doms.bitstorage.lowlevel.backend.exceptions.*;
-import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
+import dk.statsbiblioteket.doms.webservices.exceptionhandling.ExceptionMapper;
 import dk.statsbiblioteket.util.qa.QAInfo;
 
 import javax.xml.ws.WebServiceException;

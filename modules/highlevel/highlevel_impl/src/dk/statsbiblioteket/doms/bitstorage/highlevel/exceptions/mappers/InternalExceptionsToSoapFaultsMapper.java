@@ -30,9 +30,7 @@ package dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.mappers;
 
 import dk.statsbiblioteket.doms.bitstorage.highlevel.*;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
-
-import dk.statsbiblioteket.doms.webservices.exceptions.ExceptionMapper;
-
+import dk.statsbiblioteket.doms.webservices.exceptionhandling.ExceptionMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

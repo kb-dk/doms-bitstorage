@@ -27,19 +27,19 @@
 
 package dk.statsbiblioteket.doms.bitstorage.characteriser.surveillance;
 
-import dk.statsbiblioteket.util.qa.QAInfo;
-import dk.statsbiblioteket.doms.webservices.ConfigCollection;
-import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.Severity;
+import dk.statsbiblioteket.doms.domsutil.surveyable.Status;
 import dk.statsbiblioteket.doms.domsutil.surveyable.StatusMessage;
-import dk.statsbiblioteket.doms.bitstorage.characteriser.CommunicationException;
+import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
+import dk.statsbiblioteket.util.qa.QAInfo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Properties;
 
 
-/** Class that exposes real time system info for the characteriser as
+/**
+ * Class that exposes real time system info for the characteriser as
  * surveyable messages.
  */
 @QAInfo(level = QAInfo.Level.NORMAL,
@@ -78,7 +78,7 @@ public class RealTimeService {
      * The namespace of the service
      */
     private static final String SERVICE_NAMESPACE_URI = "http://"
-            + "characteriser.bitstorage.doms.statsbiblioteket.dk/";
+                                                        + "characteriser.bitstorage.doms.statsbiblioteket.dk/";
 
     /**
      * The name of the service
@@ -94,11 +94,12 @@ public class RealTimeService {
         location = props.getProperty(
                 PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL);
         log.debug("Location of wsdl for surveyee now set to '"
-                + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
+                  + PARAMETER_NAME_FOR_SURVEYEE_WSDL_URL + "'");
     }
 
 
-    /** Returns only the current real time info.
+    /**
+     * Returns only the current real time info.
      *
      * @param time This given date is ignored.
      * @return A status containing list of status messages.
@@ -109,7 +110,8 @@ public class RealTimeService {
     }
 
 
-    /** Returns real time info about the current state of the characteriser.
+    /**
+     * Returns real time info about the current state of the characteriser.
      * This method serves as fault barrier. All exceptions are caught and turned
      * into a status message.
      *
@@ -126,7 +128,7 @@ public class RealTimeService {
             // Create status covering exception
             status = makeStatus(Severity.RED,
                                 "Exception caught by fault barrier: "
-                                        + e.getMessage());
+                                + e.getMessage());
         }
 
         return status;
@@ -214,7 +216,7 @@ public class RealTimeService {
      */
     private Status makeStatus(Severity severity, String message) {
         log.trace("Entered method makeStatus('" + severity + "', '" + message
-                + "')");
+                  + "')");
         Status status = new Status();
         StatusMessage statusMessage = new StatusMessage();
 
@@ -227,9 +229,6 @@ public class RealTimeService {
         status.getMessages().add(statusMessage);
         return status;
     }
-
-
-    
 
 
 }
