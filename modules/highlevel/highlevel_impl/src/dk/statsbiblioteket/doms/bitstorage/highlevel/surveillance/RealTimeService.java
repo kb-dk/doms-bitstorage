@@ -69,6 +69,7 @@ public class RealTimeService implements Surveyable {
      */
     @PostConstruct // Will be called after the call of the constructor
     private void initialize() {
+        
         log.trace("Entered method initialize()");
         try {
             ConfigCollection.getProperties();
