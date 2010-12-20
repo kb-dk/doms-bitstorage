@@ -53,7 +53,7 @@ public class RealTimeService {
     /**
      * The name of the system being surveyed by through this class.
      */
-    private static final String SURVEYEE_NAME = "Characteriser";
+    private static final String SURVEYEE_NAME = "DomsCharacteriser";
 
     /**
      * Common prefix of those parameters in web.xml which are used in this

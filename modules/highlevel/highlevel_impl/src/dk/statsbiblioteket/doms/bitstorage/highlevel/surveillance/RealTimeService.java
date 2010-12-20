@@ -66,7 +66,7 @@ public class RealTimeService implements Surveyable {
     /**
      * The name of the system being surveyed by through this class.
      */
-    private static final String SURVEYEE_NAME = "HighlevelBitstorage";
+    private static final String SURVEYEE_NAME = "DomsHighlevelBitstorage";
 
     /**
      * Will be called by the webservice framework after the call of the

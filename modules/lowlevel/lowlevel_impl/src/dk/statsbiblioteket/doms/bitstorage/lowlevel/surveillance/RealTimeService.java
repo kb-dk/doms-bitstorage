@@ -57,7 +57,7 @@ public class RealTimeService implements Surveyable {
     /**
      * The name of the system being surveyed by through this class.
      */
-    private static final String SURVEYEE_NAME = "LowlevelBitstorage";
+    private static final String SURVEYEE_NAME = "DomsLowlevelBitstorage";
 
     /**
      * Common prefix of those parameters in web.xml which are used in this
