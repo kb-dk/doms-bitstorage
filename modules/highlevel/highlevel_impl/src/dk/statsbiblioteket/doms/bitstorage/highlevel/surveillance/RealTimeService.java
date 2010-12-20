@@ -64,11 +64,6 @@ public class RealTimeService implements Surveyable {
     private long timeOfGetStatusCall;
 
     /**
-     * The name of the system being surveyed by through this class.
-     */
-    private static final String SURVEYEE_NAME = "DomsHighlevelBitstorage";
-
-    /**
      * Will be called by the webservice framework after the call of the
      * constructor. Reads parameters from web.xml.
      * This method serves as fault barrier. All exceptions are caught and
@@ -160,7 +155,12 @@ public class RealTimeService implements Surveyable {
         // we can get from the highlevel bitstorage
 
         status = new Status();
-        status.setName(SURVEYEE_NAME);
+        status.setName(ConfigCollection
+                .getProperties()
+                .getProperty(
+                "dk.statsbiblioteket.doms.surveillance.logappender.LoggerName",
+                "Unnamed"));
+
         status.getMessages().add(makeStatusMessageForCurrentOperations(
                 highlevelBitstorageStatus));
         return status;
@@ -241,7 +241,12 @@ public class RealTimeService implements Surveyable {
         statusMessage.setSeverity(severity);
         statusMessage.setTime(timeOfGetStatusCall);
 
-        status.setName(SURVEYEE_NAME);
+        status.setName(ConfigCollection
+                .getProperties()
+                .getProperty(
+                "dk.statsbiblioteket.doms.surveillance.logappender.LoggerName",
+                "Unnamed"));
+
         status.getMessages().add(statusMessage);
         return status;
     }

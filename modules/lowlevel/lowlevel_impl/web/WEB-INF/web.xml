@@ -121,6 +121,17 @@
         </param-value>
     </context-param>
 
+    <context-param>
+        <description>The name of the service for surveillance purposes
+        </description>
+        <param-name>
+            dk.statsbiblioteket.doms.surveillance.logappender.LoggerName
+        </param-name>
+        <param-value>
+            DomsLowlevelBitstorage
+        </param-value>
+    </context-param>
+
 
     <!--This servlet is used only to load on startup, and configure the logging framework.-->
     <servlet>

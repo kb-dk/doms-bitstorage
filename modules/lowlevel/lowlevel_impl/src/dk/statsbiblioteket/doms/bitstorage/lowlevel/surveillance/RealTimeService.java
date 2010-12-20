@@ -55,11 +55,6 @@ public class RealTimeService implements Surveyable {
 
 
     /**
-     * The name of the system being surveyed by through this class.
-     */
-    private static final String SURVEYEE_NAME = "DomsLowlevelBitstorage";
-
-    /**
      * Common prefix of those parameters in web.xml which are used in this
      * class.
      */
@@ -256,7 +251,12 @@ public class RealTimeService implements Surveyable {
         statusMessage.setTime(System.currentTimeMillis());
         statusMessage.setLogMessage(false);
 
-        status.setName(SURVEYEE_NAME);
+        status.setName(ConfigCollection
+                .getProperties()
+                .getProperty(
+                "dk.statsbiblioteket.doms.surveillance.logappender.LoggerName",
+                "Unnamed"));
+
         status.getMessages().add(statusMessage);
         return status;
     }

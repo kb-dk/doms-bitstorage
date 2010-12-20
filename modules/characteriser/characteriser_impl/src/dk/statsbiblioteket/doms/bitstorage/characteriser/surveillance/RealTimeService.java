@@ -225,7 +225,11 @@ public class RealTimeService {
         statusMessage.setTime(System.currentTimeMillis());
         statusMessage.setLogMessage(false);
 
-        status.setName(SURVEYEE_NAME);
+        status.setName(ConfigCollection
+                .getProperties()
+                .getProperty(
+                "dk.statsbiblioteket.doms.surveillance.logappender.LoggerName",
+                SURVEYEE_NAME));
         status.getMessages().add(statusMessage);
         return status;
     }
