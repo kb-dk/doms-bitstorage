@@ -74,7 +74,7 @@ public class CharacteriseSoapWebserviceImpl implements
     /**
      * The logger for this class.
      */
-    private static final Log LOG
+    private static final Log log
             = LogFactory.getLog(CharacteriseSoapWebserviceImpl.class);
 
     private DigitalObjectManager fedora;
@@ -214,6 +214,8 @@ public class CharacteriseSoapWebserviceImpl implements
             throws
             CharacteriseSoapException,
             FileNotAvailableException {
+        log.trace("Entered method characterise with pid = " + pid + " and" +
+                " acceptedFormats = " + acceptedFormats);
         String errorMessage = "Trouble while characterising object '" + pid
                               + "'";
         try {
@@ -393,7 +395,7 @@ public class CharacteriseSoapWebserviceImpl implements
             throw e;
         }
         catch (Exception e) {
-            LOG.error(errorMessage, e);
+            log.error(errorMessage, e);
             throw new WebServiceException(errorMessage + ": " + e, e);
         }
 
