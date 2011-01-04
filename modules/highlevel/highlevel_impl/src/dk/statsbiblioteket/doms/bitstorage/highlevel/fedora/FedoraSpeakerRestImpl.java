@@ -72,6 +72,8 @@ public class FedoraSpeakerRestImpl {
 
     public FedoraSpeakerRestImpl(Credentials creds,
                                  String server) throws MalformedURLException {
+        log.trace("Entered constructor FedoraSpeakerRestImpl() with" +
+                "server = " + server + " and creds = " + creds);
         this.creds = creds;
         cache = caches.get(creds);
         if (cache == null) {
@@ -88,6 +90,8 @@ public class FedoraSpeakerRestImpl {
             ResourceNotFoundException,
             FedoraCommunicationException,
             FedoraAuthenticationException {
+        log.trace("Entered getAllowedFormatURIs() with pid = " + pid + " and" +
+                " datastream = " + datastream);
 
         //not delegate
         ObjectProfile profile = getObjectProfile(pid);
@@ -164,7 +168,8 @@ public class FedoraSpeakerRestImpl {
             throws
             FedoraCommunicationException,
             FedoraAuthenticationException, ResourceNotFoundException {
-
+            log.trace("Entered deleteDatastream() with pid = " + pid + " and" +
+                    " ds = " + ds);
         try {
             cache.removeDatastreamContents(pid, ds);
             cache.removeDatastreamProfile(pid, ds);
@@ -221,7 +226,9 @@ public class FedoraSpeakerRestImpl {
                                                                          FedoraAuthenticationException,
                                                                          ResourceNotFoundException {
 
-
+        log.trace("Entered createExternalDatastream() with pid = " + pid +
+            " , ds = " + ds + " , " + " , url = " + url + " , checksum = " +
+            checksum + " , label = " + label + "and formatURI = " + formatURI);
         WebResource temp = null;
         try {
             cache.removeDatastreamProfile(pid, ds);
@@ -281,7 +288,8 @@ public class FedoraSpeakerRestImpl {
             FedoraCommunicationException,
             FedoraAuthenticationException,
             ResourceNotFoundException {
-
+        log.trace("Entered createInternalDatastream() with pid = " + pid +
+                " , ds = " + ds + " and label = " + label );
         WebResource temp = null;
         cache.removeDatastreamProfile(pid, ds);
         cache.removeDatastreamContents(pid, ds);
@@ -318,6 +326,8 @@ public class FedoraSpeakerRestImpl {
             FedoraCommunicationException,
             FedoraAuthenticationException,
             ResourceNotFoundException {
+        log.trace("Entered getDatastreamProfile() with pid = " + pid +
+                " and datastreamname = " + datastreamname);
         try {
             DatastreamProfile profile;
             profile = cache.getDatastreamProfile(pid, datastreamname);
@@ -351,6 +361,7 @@ public class FedoraSpeakerRestImpl {
             FedoraCommunicationException,
             ResourceNotFoundException,
             FedoraAuthenticationException {
+        log.trace("Entered getObjectProfile() with pid = " + pid);
         try {
             ObjectProfile profile;
             profile = cache.getObjectProfile(pid);
@@ -385,6 +396,8 @@ public class FedoraSpeakerRestImpl {
             FedoraCommunicationException,
             FedoraAuthenticationException,
             ResourceNotFoundException {
+        log.trace("Entered getDatastreamContents() with pid = " + pid +
+                " and datastream = " + datastream);
         try {
 
             T contents;
@@ -424,6 +437,8 @@ public class FedoraSpeakerRestImpl {
                                                          ResourceNotFoundException,
                                                          FedoraAuthenticationException,
                                                          FedoraCommunicationException {
+        log.trace("Entered setObjectLabel() with pid = " + pid +
+                " and label = " +label);
         try {
             cache.removeObjectProfile(pid);
             restApi.path("/objects/")
@@ -450,6 +465,9 @@ public class FedoraSpeakerRestImpl {
             throws FedoraCommunicationException,
                    FedoraAuthenticationException,
                    ResourceNotFoundException {
+        log.trace("Entered setDatastreamFormatURI() with pid = " + pid +
+                " , datastream = " + datastream + " and formatURI = " +
+                formatURI);
         try {
             cache.removeDatastreamProfile(pid, datastream);
             restApi.path("/objects/")
@@ -476,6 +494,7 @@ public class FedoraSpeakerRestImpl {
                                             FedoraCommunicationException,
                                             ResourceNotFoundException,
                                             FedoraAuthenticationException {
+        log.trace("Entered query() with query = " + query);
         try {
             String objects = restApi.path("/risearch")
                     .queryParam("type", "tuples")

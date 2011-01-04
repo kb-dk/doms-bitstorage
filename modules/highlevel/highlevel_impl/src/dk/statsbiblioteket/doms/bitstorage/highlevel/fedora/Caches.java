@@ -31,6 +31,8 @@ import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.Datastream
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.ObjectProfile;
 import dk.statsbiblioteket.doms.webservices.configuration.ConfigCollection;
 import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,6 +43,8 @@ import dk.statsbiblioteket.util.caching.TimeSensitiveCache;
  */
 public class Caches {
 
+    private Log log = LogFactory.getLog(getClass());
+
     TimeSensitiveCache<String, ObjectProfile> objectProfiles;
 
     TimeSensitiveCache<String, DatastreamProfile> datastreamProfiles;
@@ -48,6 +52,7 @@ public class Caches {
     TimeSensitiveCache<String, Object> datastreamContents;
 
     public Caches() {
+        log.trace("Entered constructor Caches()");
         long lifetime
                 = Long.parseLong(ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.connectors.fedora.cache.lifetime",
