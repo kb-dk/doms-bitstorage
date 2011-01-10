@@ -792,6 +792,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                   Operation op)
             throws InternalException {
         String message;
+        String logMessage = "Entered evaluateCharacterisationAndStore() "
+                + "with params '" + pid + "', '" + uploadedURL + "', '"
+                + "', '" + characterisation.toString() + "', '"
+                + formatURIs + "', '" + op + "'";
+        log.trace(logMessage);
         boolean goodfile = true;
         List<String> objectFormats = characterisation.getFormatURIs();
         if (formatURIs != null && !formatURIs.isEmpty()) {
