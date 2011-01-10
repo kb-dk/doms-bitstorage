@@ -116,6 +116,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
 
     public HighlevelBitstorageSoapWebserviceImpl() {
+
+        log.trace("Entered constructor HighlevelBitstorageSoapWebserviceImpl");
         lowlevelMapper = new LowlevelToInternalExceptionMapper();
         fedoraMapper = new FedoraToInternalExceptionMapper();
         characMapper = new CharacteriseToInternalExceptionMapper();
@@ -136,6 +138,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     private synchronized void initialiseFedoraSpeaker() throws FedoraException {
 
+        log.trace("Entered initialiseFedoraSpeaker() ");
         if (fedoraInitialised) {
             return;
         }
@@ -166,6 +169,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
     private synchronized void initialiseLowLevelConnector()
             throws ConfigException {
 
+        log.trace("Entered initialiseLowLevelConnector() ");
         if (lowlevelInitialised) {
             return;
         }
@@ -188,6 +192,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     private void initialiseCharacteriserConnector() throws ConfigException {
 
+        log.trace("Entered initialiseCharacteriserConnector()");
         String wsdlloc = ConfigCollection.getProperties().getProperty(
                 "dk.statsbiblioteket.doms.bitstorage.highlevel.characteriserlocation");
         try {//TODO credentials
@@ -225,6 +230,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             NotEnoughFreeSpaceException,
             ObjectNotFoundException,
             HighlevelSoapException {
+
         boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = permanentURL;
         Operation op = null;
@@ -299,6 +305,9 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                    boolean[] checkpoints)
             throws InternalException {
 
+        log.trace("Entered uploadCheckpoint4() with pid = " + pid
+            +", uploadedURL = " + uploadedURL + ", op = " + op);
+
         String message;/* CHECKPOINT 4*/
         message = "Setting the object label to be the URL";
         log.debug(message);
@@ -340,6 +349,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
         String message;/* CHECKPOINT 3*/
         message = "Get list of formatURIs from Fedora";
         log.debug(message);
+        log.trace("Entered uploadCheckpoint3() with pid = " + pid
+            +", uploadedURL = " + uploadedURL + ", op = " + op);
         StaticStatus.event(op, message);
         Collection<String> formatURIs =
                 getAllowedFormatURIs(pid, op);
@@ -383,6 +394,9 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                boolean[] checkpoints,
                                                String uploadedURL, Operation op)
             throws InternalException {
+
+        log.trace("Entered uploadCheckpoint3() with pid = " + pid
+            + ", uploadedURL = " + uploadedURL + ", op = " +op);
         String message;/* CHECKPOINT 3*/
         message = "Get list of formatURIs from Fedora";
         log.debug(message);
@@ -435,6 +449,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                    String formatURI)
             throws InternalException {
         String message;
+
+        log.trace("Entered uploadCheckpoint2() with pid = " + pid
+            + ", filename = " + filename + ", md5String = " + md5String
+            + ", uploadedURL = " + uploadedURL + ", op = " + op
+            + ", formatURI = " + formatURI);
         try {
             initialiseFedoraSpeaker();
 
@@ -472,6 +491,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                      long filelength,
                                      boolean[] checkpoints,
                                      Operation op) throws InternalException {
+
+        log.trace("Entered uploadCheckpoint1() with filename = " + filename
+                + ", md5String = " + md5String + ", op = " + op);
+
 
         String uploadedURL1;
         try {
