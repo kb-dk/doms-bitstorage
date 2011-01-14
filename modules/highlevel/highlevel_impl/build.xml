@@ -84,7 +84,6 @@
         <include name="${domsutil.lib}"/>
         <include name="${sbutil.lib}"/>
         <include name="${jaxws-ri.lib}"/>
-        <include name="${jersey.lib}"/>
         <include name="${jsr311-api.lib}"/>
         <include name="${commons-logging.lib}"/>
         <include name="${log4j.lib}"/>

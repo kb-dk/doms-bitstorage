@@ -33,18 +33,14 @@
     <import file="${global.dir}/build/build-module.xml"/>
 
 
-    <!--Project libs used by this module-->
-    <dirset id="project.libs" dir="${global.dir}/lib/">
-        <include name="${jaxws-ri.lib}"/>
-        <include name="${commons-logging.lib}"/>
-    </dirset>
-
     <dirset id="module.dependencies" dir="${global.dir}/modules/">
         <include name="highlevel/highlevel_interface"/>
     </dirset>
 
     <dirset id="build.project.libs" dir="${global.dir}/lib">
         <include name="${fedora-server.lib}"/>
+        <include name="${commons-logging.lib}"/>
+        <include name="${jaxws-ri.lib}"/>
     </dirset>
 
 
