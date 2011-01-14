@@ -27,15 +27,10 @@
 
 package dk.statsbiblioteket.doms.bitstorage.lowlevel;
 
-import dk.statsbiblioteket.util.qa.QAInfo;
-
 /**
  * Super-exception for all lowlevel bitstorage web service exceptions.
  */
-@QAInfo(author = "abr",
-        reviewers = "kfc",
-        state = QAInfo.State.QA_OK)
-public class LowlevelSoapException extends Exception{
+public class LowlevelSoapException extends Exception {
     /**
      * Construct a lowlevel soap exception.
      */
@@ -55,7 +50,7 @@ public class LowlevelSoapException extends Exception{
      * Construct a lowlevel soap exception.
      *
      * @param message The message for the exception.
-     * @param cause The cause of the exception.
+     * @param cause   The cause of the exception.
      */
     public LowlevelSoapException(String message, Throwable cause) {
         super(message, cause);
