@@ -84,6 +84,9 @@
     <message name="FileIsLockedException">
         <part name="fault" element="tns:FileIsLockedException"/>
     </message>
+    <message name="InvalidCredentialsException">
+        <part name="fault" element="tns:InvalidCredentialsException"/>
+    </message>
 
 
     <message name="delete">
@@ -142,6 +145,7 @@
                    name="CharacterisationFailedException"/>
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
+            <fault name="InvalidCredentialsException" message="tns:InvalidCredentialsException"/>
         </operation>
 
 
@@ -171,6 +175,7 @@
                    name="CharacterisationFailedException"/>
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
+                        <fault name="InvalidCredentialsException" message="tns:InvalidCredentialsException"/>
         </operation>
 
 
@@ -204,6 +209,7 @@
                    name="ObjectNotFoundException"/>
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
+                        <fault name="InvalidCredentialsException" message="tns:InvalidCredentialsException"/>
         </operation>
         <operation name="uploadFileToObject">
             <documentation>Upload the provided file to the temporary area of
@@ -233,7 +239,7 @@
                    name="ObjectNotFoundException"/>
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
-
+                        <fault name="InvalidCredentialsException" message="tns:InvalidCredentialsException"/>
         </operation>
         <operation name="delete">
             <documentation>Delete the named file from bitstorage. Only works for
@@ -251,6 +257,7 @@
                    name="FileAlreadyApprovedException"/>
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
+                        <fault name="InvalidCredentialsException" message="tns:InvalidCredentialsException"/>
         </operation>
         <operation name="publish">
             <documentation>Check the earlier uploaded file against the provided
@@ -279,6 +286,7 @@
                    name="FileAlreadyApprovedException"/>
             <fault name="FileIsLockedException"
                    message="tns:FileIsLockedException"/>
+                        <fault name="InvalidCredentialsException" message="tns:InvalidCredentialsException"/>
         </operation>
         <!--
                 <operation name="status">
@@ -336,6 +344,9 @@
             <fault name="FileIsLockedException">
                 <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
+            <fault name="InvalidCredentialsException">
+                <soap:fault name="InvalidCredentialsException"  use="literal"/>
+            </fault>
 
         </operation>
         <operation name="uploadFileToObjectWithCharacterisation">
@@ -376,6 +387,10 @@
             <fault name="FileIsLockedException">
                 <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
+            <fault name="InvalidCredentialsException">
+                <soap:fault name="InvalidCredentialsException"  use="literal"/>
+            </fault>
+
 
         </operation>
         <operation name="uploadFileToObjectFromPermanentURL">
@@ -415,6 +430,10 @@
             <fault name="FileIsLockedException">
                 <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
+            <fault name="InvalidCredentialsException">
+                <soap:fault name="InvalidCredentialsException"  use="literal"/>
+            </fault>
+
 
         </operation>
 
@@ -456,6 +475,10 @@
             <fault name="FileIsLockedException">
                 <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
+            <fault name="InvalidCredentialsException">
+                <soap:fault name="InvalidCredentialsException"  use="literal"/>
+            </fault>
+
 
         </operation>
         <operation name="delete">
@@ -482,6 +505,10 @@
             <fault name="FileIsLockedException">
                 <soap:fault name="FileIsLockedException" use="literal"/>
             </fault>
+            <fault name="InvalidCredentialsException">
+                <soap:fault name="InvalidCredentialsException"  use="literal"/>
+            </fault>
+
 
 
         </operation>
@@ -514,6 +541,10 @@
             </fault>
             <fault name="FileIsLockedException">
                 <soap:fault name="FileIsLockedException" use="literal"/>
+            </fault>
+
+            <fault name="InvalidCredentialsException">
+                <soap:fault name="InvalidCredentialsException"  use="literal"/>
             </fault>
 
 

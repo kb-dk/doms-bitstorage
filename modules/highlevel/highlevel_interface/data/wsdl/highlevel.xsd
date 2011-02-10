@@ -50,6 +50,9 @@
 
 
     <!--Exceptions-->
+    <xs:element name="InvalidCredentialsException"
+                type="xs:string"/>
+
     <xs:element name="ChecksumFailedException"
                 type="xs:string"/>
 
