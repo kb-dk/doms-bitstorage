@@ -20,7 +20,6 @@
       <excludeFolder url="file://$MODULE_DIR$/target/bitstorage-highlevel-service-0.0.15" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/target/dependency-maven-plugin-markers" />
-      <excludeFolder url="file://$MODULE_DIR$/target/highlevel_impl-0.0.15" />
       <excludeFolder url="file://$MODULE_DIR$/target/wsdl" />
     </content>
     <orderEntry type="inheritedJdk" />

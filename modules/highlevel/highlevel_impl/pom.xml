@@ -136,6 +136,12 @@
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 
     </dependencies>
 
