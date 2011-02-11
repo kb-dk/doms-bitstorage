@@ -32,7 +32,7 @@
     <endpoint
             name='Characteriser'
             interface='dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice'
-            implementation='dk.statsbiblioteket.doms.bitstorage.characteriser.frontend.CharacteriseSoapWebserviceImpl'
+            implementation='dk.statsbiblioteket.doms.bitstorage.characteriser.frontend.CharacteriserSoapWebserviceImpl'
             wsdl='WEB-INF/wsdl/characteriser.wsdl'
             service="{http://characterise.bitstorage.doms.statsbiblioteket.dk/}CharacteriseSoapWebserviceService"
             port="{http://characterise.bitstorage.doms.statsbiblioteket.dk/}CharacteriseSoapWebservicePort"
@@ -42,7 +42,7 @@
             name='SurveyableService'
             interface='dk.statsbiblioteket.doms.domsutil.surveyable.Surveyable'
             implementation='dk.statsbiblioteket.doms.domsutil.surveyable.SurveyableWebservice'
-            wsdl='wsdl/surveyable.wsdl'
+            wsdl='WEB-INF/wsdl/surveyable.wsdl'
             service="{http://surveyable.domsutil.doms.statsbiblioteket.dk/}SurveyableService"
             port="{http://surveyable.domsutil.doms.statsbiblioteket.dk/}Surveyable"
             url-pattern='/surveyable/'
