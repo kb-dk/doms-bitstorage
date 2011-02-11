@@ -135,6 +135,7 @@
         <dependency>
             <groupId>net.sourceforge.saxon</groupId>
             <artifactId>saxon</artifactId>
+            <classifier>dom</classifier>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
