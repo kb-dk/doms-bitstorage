@@ -39,7 +39,7 @@
     <packaging>pom</packaging>
 
     <groupId>dk.statsbiblioteket.doms.bitstorage.characteriser</groupId>
-    <artifactId>characteriser</artifactId>
+    <artifactId>bitstorage-characteriser</artifactId>
 
     <modules>
         <module>characteriser_interface</module>

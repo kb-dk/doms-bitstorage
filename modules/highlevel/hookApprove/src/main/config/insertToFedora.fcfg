@@ -1,0 +1,83 @@
+<!--
+  ~ $Id$
+  ~ $Revision$
+  ~ $Date$
+  ~ $Author$
+  ~
+  ~ The DOMS project.
+  ~ Copyright (C) 2007-2010  The State and University Library
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<module role="fedora.server.management.Management"
+        class="fedora.server.management.ManagementModule">
+    <comment>The management subsystem. This implements the methods necessary
+        to fulfill API-M requests without regard to:
+        - how the service is exposed
+        - how bytestreams and java types might be marshalled/demarshalled over
+        the wire
+        - how the storage subsystem is implemented.
+    </comment>
+    <param name="decorator1"
+           value="fedora.server.messaging.NotificationInvocationHandler"/>
+    <param name="decorator2"
+           value="dk.statsbiblioteket.doms.bitstorage.highlevel.HookApprove">
+        <comment>This is the hook that ensures that when a file object is
+            marked active, the corresponding file is approved in bitstorage
+        </comment>
+    </param>
+    <param name="dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.filecmodel"
+           value="doms:ContentModel_File">
+        <comment>This is the content model an object must have to be considered
+            a file object
+        </comment>
+    </param>
+    <param name="dk.statsbiblioteket.doms.bitstorage.highlevel.hookapprove.webservicelocation"
+           value="http://localhost:8080/highlevelbitstorage/highlevel/?wsdl">
+        <comment>This specifies the location of the highlevel webservice
+        </comment>
+    </param>
+    <param name="autoChecksum" value="false">
+        <comment>Controls whether a checksum is automatically computed for
+            every datastream as the datastream is added to the repository. This
+            will allow the integrity of datastream contents to be periodically
+            checked to insure the object is not corrupted.
+        </comment>
+    </param>
+    <param name="checksumAlgorithm" value="MD5">
+        <comment>Specifies which checksumming algorithm is to be used when
+            automatically computing checksums as specified by the above
+            parameter. Valid values are: MD5 SHA-1 SHA-256 SHA-384 SHA-512.
+        </comment>
+    </param>
+    <param name="purgeDelayInMillis" value="60000">
+        <comment>Optional, default is 60000 (1 minute).
+            This specifies the amount of time between checks to remove
+            temporary files uploaded via the API-M upload interface. During
+            each check, old files whose age exceeds uploadStorageMinutes
+            will be removed.
+        </comment>
+    </param>
+    <param name="uploadStorageMinutes" value="5">
+        <comment>Optional, default is 5.
+            This specifies the minimum amount of time that each uploaded
+            file should be kept in temporary storage.
+        </comment>
+    </param>
+</module>

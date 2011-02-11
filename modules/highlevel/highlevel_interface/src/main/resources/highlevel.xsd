@@ -1,0 +1,262 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ $Id$
+  ~ $Revision$
+  ~ $Date$
+  ~ $Author$
+  ~
+  ~ The DOMS project.
+  ~ Copyright (C) 2007-2010  The State and University Library
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<xs:schema xmlns:tns="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0"
+           targetNamespace="http://highlevel.bitstorage.doms.statsbiblioteket.dk/"
+           xmlns:char="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="1.0"
+           xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+           jaxb:extensionBindingPrefixes="xjc">
+
+    <xs:import
+            namespace="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
+            schemaLocation="characterisation.xsd">
+    </xs:import>
+
+    <xs:annotation>
+        <xs:appinfo>
+            <jaxb:globalBindings>
+                <xjc:simple/>
+            </jaxb:globalBindings>
+        </xs:appinfo>
+    </xs:annotation>
+
+
+    <!--Exceptions-->
+    <xs:element name="InvalidCredentialsException"
+                type="xs:string"/>
+
+    <xs:element name="ChecksumFailedException"
+                type="xs:string"/>
+
+    <xs:element name="CommunicationException"
+                type="xs:string"/>
+
+    <xs:element name="FileNotFoundException" type="xs:string"/>
+
+    <xs:element name="NotEnoughFreeSpaceException"
+                type="xs:string"/>
+
+    <xs:element name="UploadFailedException" type="xs:string"/>
+
+    <xs:element name="FileAlreadyApprovedException" type="xs:string"/>
+
+    <xs:element name="FileObjectAlreadyInUseException" type="xs:string"/>
+
+    <xs:element name="InvalidFilenameException" type="xs:string"/>
+
+    <xs:element name="CharacterisationFailedException" type="xs:string"/>
+
+    <xs:element name="ObjectNotFoundException" type="xs:string"/>
+
+    <xs:element name="FileIsLockedException" type="xs:string"/>
+
+    <!--<xs:complexType name="characterisation">
+            <xs:sequence>
+                <xs:element name="problem" type="xs:anyType"/>
+    --><!--            <xs:any minOccurs="0"/>--><!--
+        </xs:sequence>
+    </xs:complexType>
+-->
+
+    <!--Parameters and returns-->
+    <xs:element name="publish" type="tns:publish"/>
+
+    <xs:element name="publishResponse" type="tns:publishResponse"/>
+
+    <xs:element name="delete" type="tns:delete"/>
+
+    <xs:element name="deleteResponse" type="tns:deleteResponse"/>
+
+    <xs:element name="uploadFileToObject" type="tns:uploadFileToObject"/>
+
+    <xs:element name="uploadFileToObjectResponse"
+                type="tns:uploadFileToObjectResponse"/>
+
+    <xs:element name="uploadFileToObjectFromPermanentURL"
+                type="tns:uploadFileToObjectFromPermanentURL"/>
+
+    <xs:element name="uploadFileToObjectWithCharacterisation"
+                type="tns:uploadFileToObjectWithCharacterisation"/>
+
+    <xs:element name="uploadFileToObjectFromPermanentURLWithCharacterisation"
+                type="tns:uploadFileToObjectFromPermanentURLWithCharacterisation"/>
+
+    <!--
+
+        <xs:element name="status" type="tns:status"/>
+
+        <xs:element name="statusResponse" type="tns:statusResponse"/>
+
+        <xs:element name="operation" type="tns:operation"/>
+    -->
+
+    <!--Type defs-->
+    <!--
+        <xs:complexType name="status">
+            <xs:sequence/>
+        </xs:complexType>
+
+        <xs:complexType name="statusResponse">
+            <xs:sequence>
+                <xs:element name="status" type="tns:statusInformation"/>
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="statusInformation">
+            <xs:sequence>
+
+    -->
+    <!--            <xs:element name="freeSpace" type="xs:long"/>-->
+    <!--
+
+                <xs:element name="operations" type="tns:operation" minOccurs="0"
+                            maxOccurs="unbounded"/>
+
+            </xs:sequence>
+        </xs:complexType>
+
+        <xs:complexType name="operation">
+
+            <xs:sequence>
+                <xs:element name="ID" type="xs:string"/>
+                <xs:element name="fedoraPid" type="xs:string"/>
+                <xs:element name="fedoraDatastream" type="xs:string"/>
+                <xs:element name="fileSize" type="xs:long" minOccurs="0"/>
+                <xs:element name="highlevelMethod">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="upload"/>
+                            <xs:enumeration value="approve"/>
+                            <xs:enumeration value="delete"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="history" type="tns:event" minOccurs="0"
+                            maxOccurs="unbounded"/>
+            </xs:sequence>
+
+        </xs:complexType>
+
+        <xs:complexType name="event">
+            <xs:sequence>
+                <xs:element name="what" type="xs:string"/>
+                <xs:element name="when" type="xs:dateTime"/>
+            </xs:sequence>
+        </xs:complexType>
+    -->
+
+
+    <xs:complexType name="publish">
+
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="publishResponse">
+        <xs:sequence/>
+    </xs:complexType>
+
+
+    <xs:complexType
+            name="uploadFileToObjectFromPermanentURLWithCharacterisation">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element name="permanentURL" type="xs:anyURI"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+            <xs:element name="characterisation" type="char:characterisation"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="uploadFileToObjectFromPermanentURL">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element name="permanentURL" type="xs:anyURI"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="uploadFileToObjectWithCharacterisation">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element xmlns:ns1="http://www.w3.org/2005/05/xmlmime"
+                        name="filedata"
+                        ns1:expectedContentTypes="application/octet-stream"
+                        type="xs:base64Binary"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+            <xs:element ref="char:Characterisation"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="uploadFileToObject">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="filename" type="xs:string"/>
+            <xs:element xmlns:ns1="http://www.w3.org/2005/05/xmlmime"
+                        name="filedata"
+                        ns1:expectedContentTypes="application/octet-stream"
+                        type="xs:base64Binary"/>
+            <xs:element name="md5string" type="xs:string"/>
+            <xs:element name="filelength" type="xs:long"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="uploadFileToObjectResponse">
+        <xs:sequence>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:complexType name="delete">
+        <xs:sequence>
+            <xs:element name="pid" type="tns:fedoraPid"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="deleteResponse">
+        <xs:sequence/>
+    </xs:complexType>
+
+    <xs:simpleType name="fedoraPid">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+
+
+</xs:schema>

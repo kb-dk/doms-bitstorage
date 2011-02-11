@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  ~ $Id$
+  ~ $Revision$
+  ~ $Date$
+  ~ $Author$
+  ~
+  ~ The DOMS project.
+  ~ Copyright (C) 2007-2010  The State and University Library
+  ~
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+             xmlns:char="http://doms.statsbiblioteket.dk/types/characterisation/0/2/#"
+             name="CharacteriseSoapWebserviceService">
+    <types>
+        <xsd:schema>
+            <xsd:import
+                    namespace="http://characterise.bitstorage.doms.statsbiblioteket.dk/"
+                    schemaLocation="characteriser.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="characterise">
+        <part name="parameters" element="tns:characterise"/>
+    </message>
+    <message name="characteriseResponse">
+        <part name="parameters" element="tns:characteriseResponse"/>
+    </message>
+
+
+    <message name="FileNotAvailableException">
+        <part name="fault" element="tns:FileNotAvailableException"/>
+    </message>
+    <message name="CommunicationException">
+        <part name="fault" element="tns:CommunicationException"/>
+    </message>
+
+    <message name="ObjectNotFoundException">
+        <part name="fault" element="tns:ObjectNotFoundException"/>
+    </message>
+
+
+    <portType name="CharacteriseSoapWebservice">
+        <documentation>Java interface the bitstorage system.
+        </documentation>
+        <operation name="characterise">
+            <documentation>Upload the provided file to the temporary area of
+                bitstorage, giving it the provided file name. Return the MD5
+                checksum of the file. The file is only uploaded to a temporary
+                approve-area of the bitstorage, and needs to be approved by
+                calling approveFile before it is actually moved to the permanent
+                bitstorage.
+            </documentation>
+            <input message="tns:characterise"/>
+            <output message="tns:characteriseResponse"/>
+            <fault message="tns:FileNotAvailableException"
+                   name="FileNotAvailableException"/>
+            <fault message="tns:CommunicationException"
+                   name="CommunicationException"/>
+            <fault message="tns:ObjectNotFoundException"
+                   name="ObjectNotFoundException"/>
+        </operation>
+    </portType>
+    <binding name="CharacteriseSoapWebservicePortBinding"
+             type="tns:CharacteriseSoapWebservice">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http"
+                      style="document"/>
+        <operation name="characterise">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="FileNotAvailableException">
+                <soap:fault name="FileNotAvailableException" use="literal"/>
+            </fault>
+            <fault name="CommunicationException">
+                <soap:fault name="CommunicationException" use="literal"/>
+            </fault>
+            <fault name="ObjectNotFoundException">
+                <soap:fault name="ObjectNotFoundException" use="literal"/>
+            </fault>
+
+        </operation>
+    </binding>
+    <service name="CharacteriseSoapWebserviceService">
+        <port name="CharacteriseSoapWebservicePort"
+              binding="tns:CharacteriseSoapWebservicePortBinding">
+
+            <soap:address
+                    location="http://localhost:7910/highlevelbitstorage/highlevel/"/>
+        </port>
+    </service>
+</definitions>

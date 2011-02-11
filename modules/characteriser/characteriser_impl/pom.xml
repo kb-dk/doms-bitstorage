@@ -33,12 +33,12 @@
 
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.characteriser</groupId>
-        <artifactId>characteriser</artifactId>
+        <artifactId>bitstorage-characteriser</artifactId>
         <version>0.0.15</version>
     </parent>
     <packaging>war</packaging>
 
-    <artifactId>${parent.artifactId}_impl</artifactId>
+    <artifactId>${parent.artifactId}-service</artifactId>
 
 
     <build>
@@ -46,16 +46,34 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.0.2</version>
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${basedir}/web/WEB-INF</directory>
+                            <directory>${project.build.directory}/wsdl</directory>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
                     </webResources>
 
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Extract wsdl files</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <includeGroupIds>dk.statsbiblioteket.doms.domsutil,${groupId}</includeGroupIds>
+                            <includeArtifactIds>domsutil-surveyable_interface,${parent.artifactId}-interface</includeArtifactIds>
+                            <includes>wsdl/*</includes>
+                            <outputDirectory>${project.build.directory}/wsdl</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -63,7 +81,7 @@
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
-            <artifactId>${parent.artifactId}_interface</artifactId>
+            <artifactId>${parent.artifactId}-interface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -72,8 +90,8 @@
             <type>pom</type>
         </dependency>
         <dependency>
-          <groupId>com.sun.xml.ws</groupId>
-          <artifactId>jaxws-rt</artifactId>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -81,5 +99,5 @@
         </dependency>
 
     </dependencies>
-    
+
 </project>

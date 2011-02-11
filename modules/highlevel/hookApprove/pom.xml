@@ -33,22 +33,21 @@
 
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.highlevel</groupId>
-        <artifactId>highlevel</artifactId>
+        <artifactId>bitstorage-highlevel</artifactId>
         <version>0.0.15</version>
     </parent>
 
-    <artifactId>hookApprove</artifactId>
+    <artifactId>bitstorage-highlevel-hookApprove</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
-            <artifactId>${parent.artifactId}_interface</artifactId>
+            <artifactId>${parent.artifactId}-interface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.fcrepo</groupId>
             <artifactId>fcrepo-server</artifactId>
-            <version>${fedora.version}</version>
             <scope>provided</scope>
         </dependency>
 

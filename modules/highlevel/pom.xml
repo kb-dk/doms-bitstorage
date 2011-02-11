@@ -39,11 +39,11 @@
     <packaging>pom</packaging>
 
     <groupId>dk.statsbiblioteket.doms.bitstorage.highlevel</groupId>
-    <artifactId>highlevel</artifactId>
+    <artifactId>bitstorage-highlevel</artifactId>
 
     <modules>
-        <module>${artifactId}_impl</module>
-        <module>${artifactId}_interface</module>
+        <module>highlevel_impl</module>
+        <module>highlevel_interface</module>
         <module>hookApprove</module>
     </modules>
 
