@@ -39,7 +39,7 @@
     <packaging>pom</packaging>
 
     <groupId>dk.statsbiblioteket.doms.bitstorage.lowlevel</groupId>
-    <artifactId>lowlevel</artifactId>
+    <artifactId>bitstorage-lowlevel</artifactId>
 
     <modules>
         <module>lowlevel_interface</module>

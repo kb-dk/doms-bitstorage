@@ -33,12 +33,12 @@
 
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.lowlevel</groupId>
-        <artifactId>lowlevel</artifactId>
+        <artifactId>bitstorage-lowlevel</artifactId>
         <version>0.0.15</version>
     </parent>
     <packaging>war</packaging>
 
-    <artifactId>${parent.artifactId}_impl</artifactId>
+    <artifactId>${parent.artifactId}-service</artifactId>
 
 
     <build>
@@ -50,12 +50,31 @@
                 <configuration>
                     <webResources>
                         <resource>
-                            <directory>${basedir}/web/WEB-INF</directory>
+                            <directory>${project.build.directory}/wsdl</directory>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
                     </webResources>
 
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Extract wsdl files</id>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <includeGroupIds>dk.statsbiblioteket.doms.domsutil,${groupId}</includeGroupIds>
+                            <includeArtifactIds>domsutil-surveyable_interface,${parent.artifactId}-interface</includeArtifactIds>
+                            <includes>wsdl/*</includes>
+                            <outputDirectory>${project.build.directory}/wsdl</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -63,24 +82,13 @@
     <dependencies>
         <dependency>
             <groupId>${groupId}</groupId>
-            <artifactId>${parent.artifactId}_interface</artifactId>
+            <artifactId>${parent.artifactId}-interface</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>logappender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>surveyable_interface</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>surveyable_impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>webservice-common</artifactId>
+            <artifactId>domsutil-bundle</artifactId>
+            <type>pom</type>
         </dependency>
         <dependency>
           <groupId>com.sun.xml.ws</groupId>

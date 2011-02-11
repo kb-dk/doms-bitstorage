@@ -68,19 +68,8 @@
         </dependency>
         <dependency>
             <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>logappender</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>surveyable_interface</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>surveyable_impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dk.statsbiblioteket.doms.domsutil</groupId>
-            <artifactId>webservice-common</artifactId>
+            <artifactId>domsutil-bundle</artifactId>
+            <type>pom</type>
         </dependency>
         <dependency>
           <groupId>com.sun.xml.ws</groupId>
