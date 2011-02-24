@@ -32,7 +32,7 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.lowlevel</groupId>
         <artifactId>bitstorage-lowlevel</artifactId>
-        <version>0.0.16</version>
+        <version>0.0.17-SNAPSHOT</version>
     </parent>
     <packaging>war</packaging>
 
