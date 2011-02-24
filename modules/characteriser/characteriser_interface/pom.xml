@@ -34,7 +34,7 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.characteriser</groupId>
         <artifactId>bitstorage-characteriser</artifactId>
-        <version>0.0.15</version>
+        <version>0.0.16-SNAPSHOT</version>
     </parent>
 
     <artifactId>${parent.artifactId}-interface</artifactId>
@@ -53,6 +53,7 @@
                         <configuration>
                             <wsdlDirectory>src/main/resources/wsdl</wsdlDirectory>
                             <packageName>${groupId}</packageName>
+                            <sourceDestDir>src/main/java</sourceDestDir>
                             <verbose>true</verbose>
                         </configuration>
                     </execution>

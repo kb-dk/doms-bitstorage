@@ -34,7 +34,7 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage</groupId>
         <artifactId>bitstorage</artifactId>
-        <version>0.0.15</version>
+        <version>0.0.16-SNAPSHOT</version>
     </parent>
     <packaging>pom</packaging>
 
