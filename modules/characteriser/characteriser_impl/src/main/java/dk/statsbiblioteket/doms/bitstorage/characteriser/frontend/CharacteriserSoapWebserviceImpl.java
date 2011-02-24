@@ -30,6 +30,7 @@ package dk.statsbiblioteket.doms.bitstorage.characteriser.frontend;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.*;
 
 import javax.jws.WebParam;
+import javax.jws.WebService;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ import java.util.List;
  * Time: 3:08 PM
  * To change this template use File | Settings | File Templates.
  */
+@WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice")
 public class CharacteriserSoapWebserviceImpl implements CharacteriseSoapWebservice{
     @Override
     public Characterisation characterise(

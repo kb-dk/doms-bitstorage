@@ -277,7 +277,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throw new WebServiceException(e.getMessage(),e);
         }
         finally {
-            if (!failed) {
+            if (failed) {
                 try {
                     rollback(pid, uploadedURL, op, checkpoints);
                 } catch (Exception e2) {//failed in the rollback
