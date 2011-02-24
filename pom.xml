@@ -8,13 +8,13 @@
 
     <groupId>dk.statsbiblioteket.doms.bitstorage</groupId>
     <artifactId>bitstorage</artifactId>
-    <version>0.0.17</version>
+    <version>0.0.18-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
-        <connection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/bitstorage-0.0.17</connection>
-        <developerConnection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/tags/bitstorage-0.0.17</developerConnection>
-        <url>http://doms.svn.sourceforge.net/viewvc/doms/bitstorage/tags/bitstorage-0.0.17</url>
+        <connection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/trunk</connection>
+        <developerConnection>scm:svn:https://doms.svn.sourceforge.net/svnroot/doms/bitstorage/trunk</developerConnection>
+        <url>http://doms.svn.sourceforge.net/viewvc/doms/bitstorage/trunk</url>
     </scm>
 
     <modules>
