@@ -32,7 +32,7 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.highlevel</groupId>
         <artifactId>bitstorage-highlevel</artifactId>
-        <version>0.0.18</version>
+        <version>0.0.19-SNAPSHOT</version>
     </parent>
 
     <artifactId>bitstorage-highlevel-hookApprove</artifactId>
