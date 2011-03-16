@@ -178,6 +178,7 @@
 
         <xs:sequence>
             <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="logMessage" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -195,6 +196,7 @@
             <xs:element name="md5string" type="xs:string"/>
             <xs:element name="filelength" type="xs:long"/>
             <xs:element name="characterisation" type="char:characterisation"/>
+            <xs:element name="logMessage" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -206,6 +208,7 @@
             <xs:element name="permanentURL" type="xs:anyURI"/>
             <xs:element name="md5string" type="xs:string"/>
             <xs:element name="filelength" type="xs:long"/>
+            <xs:element name="logMessage" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -221,6 +224,7 @@
             <xs:element name="md5string" type="xs:string"/>
             <xs:element name="filelength" type="xs:long"/>
             <xs:element ref="char:Characterisation"/>
+            <xs:element name="logMessage" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -235,6 +239,7 @@
                         type="xs:base64Binary"/>
             <xs:element name="md5string" type="xs:string"/>
             <xs:element name="filelength" type="xs:long"/>
+            <xs:element name="logMessage" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -247,6 +252,7 @@
     <xs:complexType name="delete">
         <xs:sequence>
             <xs:element name="pid" type="tns:fedoraPid"/>
+            <xs:element name="logMessage" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

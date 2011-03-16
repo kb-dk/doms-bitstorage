@@ -56,7 +56,7 @@ import java.util.LinkedList;
  * HighLevelBitstorage is invoked on the object, which moves the file from
  * temporary bitstorage to permanent.
  *
- * @see HighlevelBitstorageSoapWebservice#publish(String)
+ * @see HighlevelBitstorageSoapWebservice#publish(String, String)
  *      <p/>
  *      author: abr
  *      reviewer: jrg
@@ -318,6 +318,12 @@ public class HookApprove extends AbstractInvocationHandler {
             Context context = (Context) args[0];//call context
             String pid = args[1].toString();
 
+            String logMessage = "no log message supplied";
+            if (args.length >=5 && args[5] != null){
+
+                logMessage = args[5].toString();
+            }
+
             //Get profile to check if the object has the correct content model
             // and save the profile for rollback
             ObjectProfile profile = accessModule.getObjectProfile(context,
@@ -337,7 +343,7 @@ public class HookApprove extends AbstractInvocationHandler {
                         String username
                                 = context.getSubjectValue(Constants.SUBJECT.LOGIN_ID.uri);
                         String password = context.getPassword();
-                        client.publish(pid);
+                        client.publish(pid, logMessage);
 
                         //publish moves the file from temporary bitstorage to
                         //permanent bitstorage

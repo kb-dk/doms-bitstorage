@@ -32,11 +32,9 @@ import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebserviceService;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.FileNotAvailableException;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.exceptions.InternalException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.FedoraSpeakerRestImpl;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraAuthenticationException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraCommunicationException;
-import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.FedoraException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.exceptions.ResourceNotFoundException;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.fedora.generated.DatastreamProfile;
 import dk.statsbiblioteket.doms.bitstorage.highlevel.status.Operation;
@@ -193,19 +191,20 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
 
+    @Override
     public void uploadFileToObjectFromPermanentURLWithCharacterisation(
             @WebParam(name = "pid", targetNamespace = "") String pid,
             @WebParam(name = "filename", targetNamespace = "") String filename,
-            @WebParam(name = "permanentURL", targetNamespace = "")
-            String permanentURL,
-            @WebParam(name = "md5string", targetNamespace = "")
-            String md5String,
-            @WebParam(name = "filelength", targetNamespace = "")
-            long filelength,
+            @WebParam(name = "permanentURL", targetNamespace = "") String permanentURL,
+            @WebParam(name = "md5string", targetNamespace = "") String md5String,
+            @WebParam(name = "filelength", targetNamespace = "") long filelength,
             @WebParam(name = "characterisation", targetNamespace = "")
-            dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation)
-            throws CommunicationException, ObjectNotFoundException,
-                   CharacterisationFailedException, InvalidCredentialsException {
+            dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation,
+            @WebParam(name = "logMessage", targetNamespace = "") String logMessage)
+            throws CharacterisationFailedException, ChecksumFailedException, CommunicationException,
+                   FileAlreadyApprovedException, FileIsLockedException, FileObjectAlreadyInUseException,
+                   InvalidCredentialsException, InvalidFilenameException, NotEnoughFreeSpaceException,
+                   ObjectNotFoundException {
 
         boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = permanentURL;
@@ -246,7 +245,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                               checkpoints,
                               uploadedURL,
                               op,
-                              characterisation.getBestFormat());
+                              characterisation.getBestFormat(),
+                              logMessage);
 
 
             //Checkpoint 3
@@ -254,13 +254,14 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                                  characterisation,
                                                                  checkpoints,
                                                                  uploadedURL,
-                                                                 op);
-
+                                                                 op,
+                                                                 logMessage);
 
 
             //Checkpoint 4, set the object label.
             uploadCheckpoint4(pid, uploadedURL, op, null,
-                              checkpoints);
+                              checkpoints,
+                              logMessage);
 
             failed = false; //WE HAVE SUCCESS
 
@@ -272,11 +273,9 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throw e;
         } catch (InvalidCredentialsException e) {
             throw e;
-        }
-        catch (Exception e){//everything else
-            throw new WebServiceException(e.getMessage(),e);
-        }
-        finally {
+        } catch (Exception e) {//everything else
+            throw new WebServiceException(e.getMessage(), e);
+        } finally {
             if (failed) {
                 try {
                     rollback(pid, uploadedURL, op, checkpoints);
@@ -293,7 +292,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                    String uploadedURL,
                                    Operation op,
                                    Characterisation localisedCharac,
-                                   boolean[] checkpoints)
+                                   boolean[] checkpoints, String logMessage)
             throws ConfigException, ObjectNotFoundException, CommunicationException, InvalidCredentialsException {
 
         log.trace("Entered uploadCheckpoint4() with pid = " + pid
@@ -314,7 +313,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             message1 = "Setting the object label to be the URL";
             log.debug(message1);
             StaticStatus.event(op, message1);
-            fedora.setObjectLabel(pid, uploadedURL);
+            fedora.setObjectLabel(pid, uploadedURL, logMessage);
 
 
             if (localisedCharac != null) {
@@ -324,22 +323,23 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
                 fedora.setDatastreamFormatURI(pid,
                                               contents_name,
-                                              localisedCharac.getBestFormat());
+                                              localisedCharac.getBestFormat(),
+                                              logMessage);
             }
             checkpoints[3] = true;
         } catch (ResourceNotFoundException e) {
-            throw new ObjectNotFoundException(e.getMessage(),e.getMessage(),e);
+            throw new ObjectNotFoundException(e.getMessage(), e.getMessage(), e);
         } catch (FedoraCommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getMessage(),e);
+            throw new CommunicationException(e.getMessage(), e.getMessage(), e);
         } catch (FedoraAuthenticationException e) {
-            throw new InvalidCredentialsException(e.getMessage(),e.getMessage(),e);
+            throw new InvalidCredentialsException(e.getMessage(), e.getMessage(), e);
         }
     }
 
     private Characterisation uploadCheckpoint3(String pid,
                                                dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation,
                                                boolean[] checkpoints,
-                                               String uploadedURL, Operation op)
+                                               String uploadedURL, Operation op, String logMessage)
             throws ConfigException,
                    ObjectNotFoundException, InvalidCredentialsException, CommunicationException,
                    CharacterisationFailedException {
@@ -376,7 +376,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                          uploadedURL,
                                          localisedCharac,
                                          formatURIs,
-                                         op);
+                                         op,
+                                         logMessage);
         checkpoints[2] = true;
         message = "Third Checkpoint reached. File stored, file object"
                   + " updated. Charac info stored";
@@ -388,7 +389,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     private Characterisation uploadCheckpoint3(String pid,
                                                boolean[] checkpoints,
-                                               String uploadedURL, Operation op)
+                                               String uploadedURL, Operation op, String logMessage)
             throws ObjectNotFoundException, ConfigException, InvalidCredentialsException, CommunicationException,
                    CharacterisationFailedException {
 
@@ -415,11 +416,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
             characterisation1 = charac.characterise(pid,
                                                     null);//TODO not fricking null
         } catch (dk.statsbiblioteket.doms.bitstorage.characteriser.CommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getFaultInfo(),e);
+            throw new CommunicationException(e.getMessage(), e.getFaultInfo(), e);
         } catch (FileNotAvailableException e) {
-            throw new ObjectNotFoundException(e.getMessage(),e.getFaultInfo(),e);
+            throw new ObjectNotFoundException(e.getMessage(), e.getFaultInfo(), e);
         } catch (dk.statsbiblioteket.doms.bitstorage.characteriser.ObjectNotFoundException e) {
-            throw new ObjectNotFoundException(e.getMessage(),e.getFaultInfo(),e);
+            throw new ObjectNotFoundException(e.getMessage(), e.getFaultInfo(), e);
         }
         message1 = "File characterised";
         log.debug(message1);
@@ -433,7 +434,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                          uploadedURL,
                                          characterisation,
                                          formatURIs,
-                                         op);
+                                         op,
+                                         logMessage);
         checkpoints[2] = true;
         message = "Third Checkpoint reached. File stored, file object"
                   + " updated. Charac info stored";
@@ -448,7 +450,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                    String md5String,
                                    boolean[] checkpoints,
                                    String uploadedURL, Operation op,
-                                   String formatURI)
+                                   String formatURI, String logMessage)
             throws FileNotFoundException, CommunicationException, ConfigException, InvalidCredentialsException {
         String message;
 
@@ -465,7 +467,8 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                             uploadedURL,
                                             md5String,
                                             filename,
-                                            formatURI);
+                                            formatURI,
+                                            logMessage);
         } catch (ResourceNotFoundException e1) {
             throw new FileNotFoundException(e1.getMessage(), e1.getMessage(), e1);
 
@@ -538,22 +541,24 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
 
-    public void uploadFileToObjectWithCharacterisation(
-            @WebParam(name = "pid", targetNamespace = "") String pid,
-            @WebParam(name = "filename", targetNamespace = "") String filename,
-            @WebParam(name = "filedata", targetNamespace = "")
-            DataHandler filedata,
-            @WebParam(name = "md5string", targetNamespace = "")
-            String md5String,
-            @WebParam(name = "filelength", targetNamespace = "")
-            long filelength,
-            @WebParam(name = "characterisation", targetNamespace = "")
-            dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation)
-            throws FileIsLockedException, CharacterisationFailedException, CommunicationException,
-                   ChecksumFailedException, NotEnoughFreeSpaceException, InvalidCredentialsException,
-                   ObjectNotFoundException
-
-    {
+    @Override
+    public void uploadFileToObjectWithCharacterisation(@WebParam(name = "pid", targetNamespace = "") String pid,
+                                                       @WebParam(name = "filename", targetNamespace = "")
+                                                       String filename,
+                                                       @WebParam(name = "filedata", targetNamespace = "")
+                                                       DataHandler filedata,
+                                                       @WebParam(name = "md5string", targetNamespace = "")
+                                                       String md5String,
+                                                       @WebParam(name = "filelength", targetNamespace = "")
+                                                       long filelength, @WebParam(name = "Characterisation",
+                                                                                  targetNamespace = "http://doms.statsbiblioteket.dk/types/characterisation/0/2/#")
+            dk.statsbiblioteket.doms.bitstorage.highlevel.Characterisation characterisation,
+                                                       @WebParam(name = "logMessage", targetNamespace = "")
+                                                       String logMessage)
+            throws CharacterisationFailedException, ChecksumFailedException, CommunicationException,
+                   FileAlreadyApprovedException, FileIsLockedException, FileObjectAlreadyInUseException,
+                   InvalidCredentialsException, InvalidFilenameException, NotEnoughFreeSpaceException,
+                   ObjectNotFoundException {
         boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = "";
         Operation op = null;
@@ -589,15 +594,16 @@ public class HighlevelBitstorageSoapWebserviceImpl
                               md5String,
                               checkpoints,
                               uploadedURL,
-                              op, characterisation.getBestFormat());
+                              op, characterisation.getBestFormat(), logMessage);
 
             Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                  characterisation,
                                                                  checkpoints,
                                                                  uploadedURL,
-                                                                 op);
+                                                                 op,
+                                                                 logMessage);
             uploadCheckpoint4(pid, uploadedURL, op, null,
-                              checkpoints);
+                              checkpoints, logMessage);
 
             failed = false; //SUCCESS
         } catch (ObjectNotFoundException e) {
@@ -606,7 +612,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throw e;
         } catch (NotEnoughFreeSpaceException e) {
             throw e;
-        }  catch (ChecksumFailedException e) {
+        } catch (ChecksumFailedException e) {
             throw e;
         } catch (CommunicationException e) {
             throw e;
@@ -614,11 +620,10 @@ public class HighlevelBitstorageSoapWebserviceImpl
             throw e;
         } catch (FileIsLockedException e) {
             throw e;
-        } catch (Exception e){
-            throw new WebServiceException(e.getMessage(),e);
-        }
-        finally {
-            if (failed){
+        } catch (Exception e) {
+            throw new WebServiceException(e.getMessage(), e);
+        } finally {
+            if (failed) {
                 try {
                     rollback(pid, uploadedURL, op, checkpoints);
                 } catch (Exception e2) {//failed in the rollback
@@ -637,16 +642,19 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
 
-    public void uploadFileToObjectFromPermanentURL(
-            @WebParam(name = "pid", targetNamespace = "") String pid,
-            @WebParam(name = "filename", targetNamespace = "") String filename,
-            @WebParam(name = "permanentURL", targetNamespace = "")
-            String permanentURL,
-            @WebParam(name = "md5string", targetNamespace = "")
-            String md5String,
-            @WebParam(name = "filelength", targetNamespace = "")
-            long filelength) throws ObjectNotFoundException, InvalidCredentialsException, CommunicationException,
-                                    CharacterisationFailedException {
+    @Override
+    public void uploadFileToObjectFromPermanentURL(@WebParam(name = "pid", targetNamespace = "") String pid,
+                                                   @WebParam(name = "filename", targetNamespace = "") String filename,
+                                                   @WebParam(name = "permanentURL", targetNamespace = "")
+                                                   String permanentURL,
+                                                   @WebParam(name = "md5string", targetNamespace = "") String md5String,
+                                                   @WebParam(name = "filelength", targetNamespace = "") long filelength,
+                                                   @WebParam(name = "logMessage", targetNamespace = "")
+                                                   String logMessage)
+            throws CharacterisationFailedException, ChecksumFailedException, CommunicationException,
+                   FileAlreadyApprovedException, FileIsLockedException, FileObjectAlreadyInUseException,
+                   InvalidCredentialsException, InvalidFilenameException, NotEnoughFreeSpaceException,
+                   ObjectNotFoundException {
         boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = permanentURL;
         Operation op = null;
@@ -672,14 +680,15 @@ public class HighlevelBitstorageSoapWebserviceImpl
                               md5String,
                               checkpoints,
                               uploadedURL,
-                              op, null);
+                              op, null, logMessage);
 
             Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                  checkpoints,
                                                                  uploadedURL,
-                                                                 op);
+                                                                 op,
+                                                                 logMessage);
             uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
-                              checkpoints);
+                              checkpoints, logMessage);
             failed = false; //SUCCESS
 
         } catch (ObjectNotFoundException e) {
@@ -693,7 +702,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         } catch (Exception e) {//something unexpected failed down there
             throw new WebServiceException(e);
         } finally {
-            if (failed){
+            if (failed) {
                 try {
                     rollback(pid, uploadedURL, op, checkpoints);
                 } catch (Exception e2) {//failed in the rollback
@@ -705,17 +714,17 @@ public class HighlevelBitstorageSoapWebserviceImpl
         }
     }
 
-    public void uploadFileToObject(
-            @WebParam(name = "pid", targetNamespace = "") String pid,
-            @WebParam(name = "filename", targetNamespace = "") String filename,
-            @WebParam(name = "filedata", targetNamespace = "")
-            DataHandler filedata,
-            @WebParam(name = "md5string", targetNamespace = "")
-            String md5String,
-            @WebParam(name = "filelength", targetNamespace = "")
-            long filelength) throws ObjectNotFoundException, InvalidCredentialsException, NotEnoughFreeSpaceException,
-                                    ChecksumFailedException, CommunicationException, CharacterisationFailedException,
-                                    FileIsLockedException {
+    @Override
+    public void uploadFileToObject(@WebParam(name = "pid", targetNamespace = "") String pid,
+                                   @WebParam(name = "filename", targetNamespace = "") String filename,
+                                   @WebParam(name = "filedata", targetNamespace = "") DataHandler filedata,
+                                   @WebParam(name = "md5string", targetNamespace = "") String md5String,
+                                   @WebParam(name = "filelength", targetNamespace = "") long filelength,
+                                   @WebParam(name = "logMessage", targetNamespace = "") String logMessage)
+            throws CharacterisationFailedException, ChecksumFailedException, CommunicationException,
+                   FileAlreadyApprovedException, FileIsLockedException, FileObjectAlreadyInUseException,
+                   InvalidCredentialsException, InvalidFilenameException, NotEnoughFreeSpaceException,
+                   ObjectNotFoundException {
         boolean[] checkpoints = createNewCheckpointset();
         String uploadedURL = "";
         Operation op = null;
@@ -747,14 +756,14 @@ public class HighlevelBitstorageSoapWebserviceImpl
                               md5String,
                               checkpoints,
                               uploadedURL,
-                              op, null);
+                              op, null, logMessage);
 
             Characterisation localisedCharac = uploadCheckpoint3(pid,
                                                                  checkpoints,
                                                                  uploadedURL,
-                                                                 op);
+                                                                 op,logMessage);
             uploadCheckpoint4(pid, uploadedURL, op, localisedCharac,
-                              checkpoints);
+                              checkpoints, logMessage);
             failed = false;
 
         } catch (ObjectNotFoundException e) {
@@ -774,7 +783,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         } catch (Exception e) {//something unexpected failed down there
             throw new WebServiceException(e);
         } finally {
-            if (failed){
+            if (failed) {
                 try {
                     rollback(pid, uploadedURL, op, checkpoints);
                 } catch (Exception e2) {//failed in the rollback
@@ -818,15 +827,16 @@ public class HighlevelBitstorageSoapWebserviceImpl
                                                   String uploadedURL,
                                                   Characterisation characterisation,
                                                   Collection<String> formatURIs,
-                                                  Operation op)
+                                                  Operation op,
+                                                  String logMessage)
             throws CharacterisationFailedException, ObjectNotFoundException, ConfigException,
                    InvalidCredentialsException, CommunicationException {
         String message;
-        String logMessage = "Entered evaluateCharacterisationAndStore() "
+        String traceMessage = "Entered evaluateCharacterisationAndStore() "
                             + "with params '" + pid + "', '" + uploadedURL + "', '"
                             + "', '" + characterisation.toString() + "', '"
                             + formatURIs + "', '" + op + "'";
-        log.trace(logMessage);
+        log.trace(traceMessage);
         boolean goodfile = true;
         List<String> objectFormats = characterisation.getFormatURIs();
         if (formatURIs != null && !formatURIs.isEmpty()) {
@@ -859,16 +869,16 @@ public class HighlevelBitstorageSoapWebserviceImpl
             String error =
                     "File not accepted by the characteriser. Characterisator output: '"
                     + characterisation.toString() + "'";
-            throw new CharacterisationFailedException(error,error);
+            throw new CharacterisationFailedException(error, error);
         } else {
-            storeCharacterisation(pid, uploadedURL, characterisation, op);
+            storeCharacterisation(pid, uploadedURL, characterisation, op, logMessage);
         }
     }
 
     private void storeCharacterisation(String pid,
                                        String uploadedURL,
                                        Characterisation characterisation,
-                                       Operation op)
+                                       Operation op, String logMessage)
             throws ConfigException, CommunicationException, InvalidCredentialsException, ObjectNotFoundException {
         String message;
 
@@ -882,13 +892,14 @@ public class HighlevelBitstorageSoapWebserviceImpl
             fedora.createInternalDatastream(pid,
                                             charac_name,
                                             characterisation,
-                                            "Characterisation");
+                                            "Characterisation",
+                                            logMessage);
         } catch (FedoraCommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getMessage(),e);
+            throw new CommunicationException(e.getMessage(), e.getMessage(), e);
         } catch (FedoraAuthenticationException e) {
-            throw new InvalidCredentialsException(e.getMessage(),e.getMessage(),e);
+            throw new InvalidCredentialsException(e.getMessage(), e.getMessage(), e);
         } catch (ResourceNotFoundException e) {
-            throw new ObjectNotFoundException(e.getMessage(),e.getMessage(),e);
+            throw new ObjectNotFoundException(e.getMessage(), e.getMessage(), e);
         }
 
         message = "Characterisation of '" + uploadedURL
@@ -922,10 +933,11 @@ public class HighlevelBitstorageSoapWebserviceImpl
     }
 
 
-    public void delete(@WebParam(name = "pid", targetNamespace = "") String pid)
-            throws CommunicationException, ObjectNotFoundException, InvalidCredentialsException, FileNotFoundException
-
-    {
+    @Override
+    public void delete(@WebParam(name = "pid", targetNamespace = "") String pid,
+                       @WebParam(name = "logMessage", targetNamespace = "") String logMessage)
+            throws CommunicationException, FileAlreadyApprovedException, FileIsLockedException, FileNotFoundException,
+                   InvalidCredentialsException, ObjectNotFoundException {
         //This method is invoked as a result of deleting a file object. As such,
         // it should not set the file object to deleted.
         Operation op = StaticStatus.initOperation("Delete");
@@ -968,15 +980,15 @@ public class HighlevelBitstorageSoapWebserviceImpl
                 StaticStatus.event(op, message);
             }
         } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getFaultInfo(),e);
+            throw new CommunicationException(e.getMessage(), e.getFaultInfo(), e);
         } catch (ResourceNotFoundException e) {
-            throw new ObjectNotFoundException(e.getMessage(),e.getMessage(),e);
+            throw new ObjectNotFoundException(e.getMessage(), e.getMessage(), e);
         } catch (FedoraAuthenticationException e) {
-            throw new InvalidCredentialsException(e.getMessage(),e.getMessage(),e);
+            throw new InvalidCredentialsException(e.getMessage(), e.getMessage(), e);
         } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.FileNotFoundException e) {
-            throw new FileNotFoundException(e.getMessage(),e.getFaultInfo(),e);
+            throw new FileNotFoundException(e.getMessage(), e.getFaultInfo(), e);
         } catch (FedoraCommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getMessage(),e);
+            throw new CommunicationException(e.getMessage(), e.getMessage(), e);
         } catch (Exception e) {
             throw new WebServiceException(e);
         } finally {
@@ -985,10 +997,13 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
     }
 
-    public void publish(
-            @WebParam(name = "pid", targetNamespace = "") String pid)
-            throws CommunicationException, ObjectNotFoundException, ChecksumFailedException,
-                   InvalidCredentialsException {
+
+    @Override
+    public void publish(@WebParam(name = "pid", targetNamespace = "") String pid,
+                        @WebParam(name = "logMessage", targetNamespace = "") String logMessage)
+            throws ChecksumFailedException, CommunicationException, FileAlreadyApprovedException, FileIsLockedException,
+                   FileNotFoundException, InvalidCredentialsException, NotEnoughFreeSpaceException,
+                   ObjectNotFoundException {
 
         /*
        Pseudo kode
@@ -1030,15 +1045,15 @@ public class HighlevelBitstorageSoapWebserviceImpl
 
 
         } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.CommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getFaultInfo(),e);
+            throw new CommunicationException(e.getMessage(), e.getFaultInfo(), e);
         } catch (ResourceNotFoundException e) {
-            throw new ObjectNotFoundException(e.getMessage(),e.getMessage(),e);
+            throw new ObjectNotFoundException(e.getMessage(), e.getMessage(), e);
         } catch (FedoraCommunicationException e) {
-            throw new CommunicationException(e.getMessage(),e.getMessage(),e);
+            throw new CommunicationException(e.getMessage(), e.getMessage(), e);
         } catch (dk.statsbiblioteket.doms.bitstorage.lowlevel.ChecksumFailedException e) {
-            throw new ChecksumFailedException(e.getMessage(),e.getFaultInfo(),e);
+            throw new ChecksumFailedException(e.getMessage(), e.getFaultInfo(), e);
         } catch (FedoraAuthenticationException e) {
-            throw new InvalidCredentialsException(e.getMessage(),e.getMessage(),e);
+            throw new InvalidCredentialsException(e.getMessage(), e.getMessage(), e);
         } catch (Exception e) {
             throw new WebServiceException(e);
         } finally {
@@ -1076,7 +1091,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         log.debug(message);
 
 
-        fedora.deleteDatastream(pid, contents_name);
+        fedora.deleteDatastream(pid, contents_name, message);
 
     }
 
@@ -1093,7 +1108,7 @@ public class HighlevelBitstorageSoapWebserviceImpl
         log.debug(message);
 
 
-        fedora.deleteDatastream(pid, charac_name);
+        fedora.deleteDatastream(pid, charac_name, message);
 
 
     }
