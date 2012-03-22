@@ -28,6 +28,7 @@
 package dk.statsbiblioteket.doms.bitstorage.highlevel;
 
 
+import com.sun.xml.ws.developer.servlet.HttpSessionScope;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.Characterisation;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebservice;
 import dk.statsbiblioteket.doms.bitstorage.characteriser.CharacteriseSoapWebserviceService;
@@ -72,6 +73,7 @@ import java.util.List;
  */
 @MTOM
 @WebService(endpointInterface = "dk.statsbiblioteket.doms.bitstorage.highlevel.HighlevelBitstorageSoapWebservice")
+@HttpSessionScope
 public class HighlevelBitstorageSoapWebserviceImpl
         implements HighlevelBitstorageSoapWebservice {
 

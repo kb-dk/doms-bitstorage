@@ -32,7 +32,7 @@
     <parent>
         <groupId>dk.statsbiblioteket.doms.bitstorage.characteriser</groupId>
         <artifactId>bitstorage-characteriser</artifactId>
-        <version>0.0.18</version>
+        <version>0.0.18.1</version>
     </parent>
 
     <artifactId>${parent.artifactId}-interface</artifactId>
