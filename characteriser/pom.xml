@@ -40,8 +40,8 @@
     <artifactId>bitstorage-characteriser</artifactId>
 
     <modules>
-        <module>characteriser_interface</module>
-        <module>characteriser_impl</module>
+        <module>characteriser-interface</module>
+        <module>characteriser-service</module>
     </modules>
     
 </project>

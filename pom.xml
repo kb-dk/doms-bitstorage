@@ -18,9 +18,9 @@
     </scm>
 
     <modules>
-        <module>modules/characteriser</module>
-        <module>modules/highlevel</module>
-        <module>modules/lowlevel</module>
+        <module>characteriser</module>
+        <module>highlevel</module>
+        <module>lowlevel</module>
     </modules>
 
     <dependencyManagement>
